@@ -1,6 +1,6 @@
 import { webcontainerService } from "./webcontainer-service";
 import { useTerminalStore } from "@/stores/terminal";
-import { useEditorCode } from "@/stores/editor";
+import { useEditorCode } from "@/stores/editor"; // not used??? why??
 import type { projectFiles } from "@/types/webcontainer-files";
 import type { WebContainerProcess } from "@webcontainer/api";
 

@@ -28,8 +28,9 @@ import { webcontainerService } from "@/lib/services/webcontainer-service";
 import { findFileContent } from "@/lib/utils/code-utils";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
-import { CodeMirrorEditor } from "@/components/chat/editor/code-mirror-editor";
+import { CodeMirrorEditorV2 } from "@/components/chat/editor/code-mirror-editor";
 import { toast } from "sonner";
+import type { EditorSelection } from "@codemirror/state";
 
 export function EditorClient() {
   const { filePaths } = useFilePaths();
@@ -48,7 +49,10 @@ export function EditorClient() {
 
   const code = findFileContent(EditorCode, filePaths) ?? "";
 
-  const handleEditorChange = (update: { content: string }) => {
+  const handleEditorChange = (update: {
+    content: string;
+    selection: EditorSelection;
+  }) => {
     setEditorCode(filePaths, update.content);
   };
 
@@ -106,7 +110,7 @@ export function EditorClient() {
   }, [setCode, setShowWorkspace, setShowCode, addCommand, setIsSavingFiles]);
 
   return (
-    <div className="h-full w-full overflow-hidden p-2 font-mono">
+    <div className="h-full w-full flex flex-col p-2 font-mono">
       <ResizablePanelGroup direction="horizontal" className="h-full">
         {/* Chat Panel - Left Side */}
         <ResizablePanel defaultSize={40} minSize={30} maxSize={70}>
@@ -155,7 +159,7 @@ export function EditorClient() {
               </div>
 
               {/* Tab Content */}
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 h-0 overflow-hidden">
                 <TabsContent value={Show.CODE} className="h-full m-0">
                   <ResizablePanelGroup
                     direction="horizontal"
@@ -198,14 +202,7 @@ export function EditorClient() {
                         </div>
 
                         {/* CodeMirror Editor */}
-                        <div className="flex-1 h-full">
-                          <CodeMirrorEditor
-                            doc={{ filePath: filePaths, value: code }}
-                            onChange={handleEditorChange}
-                            onSave={handleSaveFiles}
-                            className="h-full"
-                          />
-                        </div>
+                        <CodeMirrorEditorV2 />
                       </div>
                     </ResizablePanel>
                   </ResizablePanelGroup>
