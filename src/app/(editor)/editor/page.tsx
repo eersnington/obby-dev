@@ -140,7 +140,7 @@ export default function EditorPage() {
         <ResizablePanel defaultSize={60} minSize={40}>
           <Card className="h-full flex flex-col">
             {/* Tabs Header */}
-            <div className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center justify-between border-b">
               <Tabs value={showTab} className="flex-1">
                 <TabsList className="bg-transparent">
                   <TabsTrigger
@@ -182,7 +182,7 @@ export default function EditorPage() {
             </div>
 
             {/* Tab Content */}
-            <div className="overflow-hidden">
+            <div className="h-full overflow-hidden">
               {showTab === Show.CODE && (
                 <ResizablePanelGroup direction="horizontal">
                   {/* File Explorer */}
