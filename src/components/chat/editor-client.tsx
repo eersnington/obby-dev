@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -18,25 +18,23 @@ import { useEditorCode } from "@/stores/editor";
 import { useShowTab, Show } from "@/stores/code-tabs";
 import { useTerminalStore } from "@/stores/terminal";
 import { defaultProjectFiles } from "@/lib/utils/default-project-files";
-import { Editor } from "@monaco-editor/react";
 import {
-  findFileContent,
-  getLanguageFromExtension,
-} from "@/lib/utils/code-utils";
-import { Save } from "lucide-react";
+  globalEventManager,
+  subscribeToEditorEvent,
+  emitEditorEvent,
+} from "@/lib/services/event-manager";
+import { fileOperationsManager } from "@/lib/services/file-operations-manager";
+import { webcontainerService } from "@/lib/services/webcontainer-service";
+import { findFileContent } from "@/lib/utils/code-utils";
 import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
+import { CodeMirrorEditor } from "@/components/chat/editor/code-mirror-editor";
 import { toast } from "sonner";
-import type { projectFiles } from "@/types/webcontainer-files";
-import { Geist_Mono } from "next/font/google";
-
-const GeistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export function EditorClient() {
   const { filePaths } = useFilePaths();
   const { setCode, EditorCode, setEditorCode } = useEditorCode();
+  const [editorTheme, setEditorTheme] = useState("vs-dark");
   const {
     setShowWorkspace,
     setShowCode,
@@ -45,33 +43,21 @@ export function EditorClient() {
     setShowTerminal,
   } = useShowTab();
   const { addCommand, isSavingFiles, setIsSavingFiles } = useTerminalStore();
-  const [editorTheme, setEditorTheme] = useState("vs-dark");
 
-  const code = findFileContent(EditorCode as projectFiles, filePaths) ?? "";
+  const eventManager = useRef(globalEventManager);
 
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      setEditorCode(filePaths, value);
-    }
+  const code = findFileContent(EditorCode, filePaths) ?? "";
+
+  const handleEditorChange = (update: { content: string }) => {
+    setEditorCode(filePaths, update.content);
   };
 
   const handleSaveFiles = () => {
-    try {
-      setIsSavingFiles(true);
-      const event = new CustomEvent("save-files", {
-        detail: { files: EditorCode },
-      });
-      window.dispatchEvent(event);
-      toast.success("Files saved successfully");
-    } catch (error) {
-      console.error("Error saving files:", error);
-      toast.error("Failed to save files");
-      setIsSavingFiles(false);
-    }
+    emitEditorEvent("save-files", { files: EditorCode });
   };
 
   useEffect(() => {
-    const initializeEditor = () => {
+    const initializeApp = async () => {
       try {
         // Set editor code from default project files first
         setCode(defaultProjectFiles);
@@ -85,17 +71,42 @@ export function EditorClient() {
         addCommand("Type commands to get started...");
 
         toast.success("Editor initialized successfully");
+
+        // Initialize WebContainer and project
+        await fileOperationsManager.initializeProject(defaultProjectFiles);
       } catch (error) {
         toast.error("Failed to initialize editor");
         console.error("Editor initialization error:", error);
       }
     };
 
-    initializeEditor();
-  }, [setCode, setShowWorkspace, setShowCode, addCommand]);
+    initializeApp();
+
+    const unsubscribeSave = subscribeToEditorEvent(
+      "save-files",
+      async (event) => {
+        try {
+          setIsSavingFiles(true);
+          await fileOperationsManager.saveFiles(event.detail.files);
+          toast.success("Files saved successfully");
+        } catch (error) {
+          console.error("Error saving files:", error);
+          toast.error("Failed to save files");
+        } finally {
+          setIsSavingFiles(false);
+        }
+      },
+    );
+
+    return () => {
+      unsubscribeSave();
+      eventManager.current.cleanup();
+      webcontainerService.cleanup();
+    };
+  }, [setCode, setShowWorkspace, setShowCode, addCommand, setIsSavingFiles]);
 
   return (
-    <div className="h-full w-full overflow-hidden p-2">
+    <div className="h-full w-full overflow-hidden p-2 font-mono">
       <ResizablePanelGroup direction="horizontal" className="h-full">
         {/* Chat Panel - Left Side */}
         <ResizablePanel defaultSize={40} minSize={30} maxSize={70}>
@@ -186,74 +197,13 @@ export function EditorClient() {
                           </Button>
                         </div>
 
-                        {/* Monaco Editor */}
-                        <div className="flex-1">
-                          <Editor
-                            className={GeistMono.className}
-                            height="100%"
-                            language={getLanguageFromExtension(filePaths)}
-                            value={code}
-                            theme={editorTheme}
+                        {/* CodeMirror Editor */}
+                        <div className="flex-1 h-full">
+                          <CodeMirrorEditor
+                            doc={{ filePath: filePaths, value: code }}
                             onChange={handleEditorChange}
-                            options={{
-                              wordWrap: "on",
-                              fontSize: 14,
-                              fontFamily:
-                                "var(--font-geist-mono), JetBrains Mono, monospace",
-                              lineNumbers: "on",
-                              minimap: { enabled: false },
-                              scrollBeyondLastLine: false,
-                              cursorStyle: "line",
-                              automaticLayout: true,
-                              padding: { top: 16 },
-                              folding: true,
-                              bracketPairColorization: { enabled: true },
-                              quickSuggestions: false,
-                              parameterHints: { enabled: false },
-                              suggestOnTriggerCharacters: false,
-                              acceptSuggestionOnEnter: "off",
-                              tabCompletion: "off",
-                              wordBasedSuggestions: "off",
-                            }}
-                            beforeMount={(monaco) => {
-                              // Configure TypeScript compiler options
-                              monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-                                {
-                                  jsx: monaco.languages.typescript.JsxEmit
-                                    .React,
-                                  jsxFactory: "React.createElement",
-                                  reactNamespace: "React",
-                                  allowNonTsExtensions: true,
-                                  allowJs: true,
-                                  target:
-                                    monaco.languages.typescript.ScriptTarget
-                                      .Latest,
-                                },
-                              );
-                            }}
-                            onMount={(editor, monaco) => {
-                              // Disable TypeScript/JavaScript validations for cleaner editing
-                              monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(
-                                {
-                                  noSemanticValidation: true,
-                                  noSyntaxValidation: true,
-                                  noSuggestionDiagnostics: true,
-                                },
-                              );
-                              monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
-                                {
-                                  noSemanticValidation: true,
-                                  noSyntaxValidation: true,
-                                  noSuggestionDiagnostics: true,
-                                },
-                              );
-
-                              // Clear any existing markers
-                              const model = editor.getModel();
-                              if (model) {
-                                monaco.editor.setModelMarkers(model, "", []);
-                              }
-                            }}
+                            onSave={handleSaveFiles}
+                            className="h-full"
                           />
                         </div>
                       </div>

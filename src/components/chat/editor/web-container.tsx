@@ -1,16 +1,16 @@
 import { useFullPreview } from "@/stores/code-tabs";
 import { useTerminalStore } from "@/stores/terminal";
+import { useEditorCode } from "@/stores/editor";
 import { RefreshCw, ExternalLink, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import WebContainerLoading from "./webcontainer-loading";
-import { useEditorCode } from "@/stores/editor";
+import { emitEditorEvent } from "@/lib/services/event-manager";
 
-const WebContainer = () => {
-  const { url } = useTerminalStore();
+const NewWebContainer = () => {
+  const { url, isLoadingWebContainer, isLoadingWebContainerMessage } =
+    useTerminalStore();
   const { EditorCode } = useEditorCode();
-  const { isLoadingWebContainer, isLoadingWebContainerMessage } =
-    useTerminalStore((state) => state);
   const { setFullPreview } = useFullPreview();
 
   if (isLoadingWebContainer) {
@@ -34,12 +34,9 @@ const WebContainer = () => {
                 </p>
               </div>
               <Button
-                onClick={() => {
-                  const event = new CustomEvent("remount-webcontainer", {
-                    detail: { files: EditorCode },
-                  });
-                  window.dispatchEvent(event);
-                }}
+                onClick={() =>
+                  emitEditorEvent("remount-webcontainer", { files: EditorCode })
+                }
                 className="w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
@@ -62,7 +59,7 @@ const WebContainer = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
             <span className="text-sm text-muted-foreground truncate">
-              http://localhost:5173
+              {url}
             </span>
           </div>
         </div>
@@ -71,10 +68,9 @@ const WebContainer = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              const event = new CustomEvent("remount-webcontainer");
-              window.dispatchEvent(event);
-            }}
+            onClick={() =>
+              emitEditorEvent("remount-webcontainer", { files: EditorCode })
+            }
             className="h-8"
           >
             <RefreshCw className="h-3 w-3 mr-2" />
@@ -107,4 +103,4 @@ const WebContainer = () => {
   );
 };
 
-export default WebContainer;
+export default NewWebContainer;
