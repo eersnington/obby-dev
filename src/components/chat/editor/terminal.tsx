@@ -3,36 +3,28 @@
 import { useEffect, useRef, useState } from "react";
 import type { Terminal as TerminalType } from "@xterm/xterm";
 import type { FitAddon as FitAddonType } from "@xterm/addon-fit";
-import type { ClipboardAddon as ClipboardAddonType } from "@xterm/addon-clipboard";
-import type { WebLinksAddon as WebLinksAddonType } from "@xterm/addon-web-links";
-import type { SearchAddon as SearchAddonType } from "@xterm/addon-search";
 import type { WebContainerProcess, FileSystemTree } from "@webcontainer/api";
 import { useWebContainer } from "@/hooks/use-webcontainers";
 import { useTerminalStore } from "@/stores/terminal";
 import { useEditorCode } from "@/stores/editor";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { TerminalIcon, Search, Copy } from "lucide-react";
+import { TerminalIcon } from "lucide-react";
+import { getTerminalTheme } from "./terminal-theme";
 
 interface TerminalState {
   terminal: TerminalType | null;
   fitAddon: FitAddonType | null;
-  clipboardAddon: ClipboardAddonType | null;
-  webLinksAddon: WebLinksAddonType | null;
-  searchAddon: SearchAddonType | null;
   shellProcess: WebContainerProcess | null;
   inputWriter: WritableStreamDefaultWriter<string> | null;
   isReady: boolean;
 }
 
-const TerminalMain = () => {
+export default function Terminal() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<TerminalState>({
     terminal: null,
     fitAddon: null,
-    clipboardAddon: null,
-    webLinksAddon: null,
-    searchAddon: null,
     shellProcess: null,
     inputWriter: null,
     isReady: false,
@@ -45,101 +37,42 @@ const TerminalMain = () => {
   const { webcontainer } = useWebContainer();
   const { EditorCode } = useEditorCode();
 
-  // Initialize xterm.js and addons
+  // Initialize xterm.js with minimal setup
   useEffect(() => {
     if (!isClient || !terminalRef.current || stateRef.current.isReady) return;
 
     const loadTerminal = async () => {
       try {
         // Dynamic imports to avoid SSR issues
-        const [
-          xtermModule,
-          fitAddonModule,
-          clipboardAddonModule,
-          webLinksAddonModule,
-          searchAddonModule,
-        ] = await Promise.all([
+        const [xtermModule, fitAddonModule] = await Promise.all([
           import("@xterm/xterm"),
           import("@xterm/addon-fit"),
-          import("@xterm/addon-clipboard"),
-          import("@xterm/addon-web-links"),
-          import("@xterm/addon-search"),
         ]);
-
-        // Import CSS
-        try {
-          // @ts-expect-error - CSS import is not typed
-          await import("@xterm/xterm/css/xterm.css");
-        } catch (e) {
-          console.warn("Could not load xterm.css");
-        }
 
         const { Terminal } = xtermModule;
         const { FitAddon } = fitAddonModule;
-        const { ClipboardAddon } = clipboardAddonModule;
-        const { WebLinksAddon } = webLinksAddonModule;
-        const { SearchAddon } = searchAddonModule;
 
-        // Create terminal with optimized configuration for proper text selection
+        // Create terminal with theme-based configuration
         const terminal = new Terminal({
           cursorBlink: true,
-          fontFamily: "monospace", // Use system monospace for better compatibility
+          fontFamily: "Menlo, courier-new, courier, monospace",
           fontSize: 14,
-          lineHeight: 1.0, // Important: Use 1.0 for proper character alignment
-          letterSpacing: 0,
-          allowProposedApi: true, // Enable proposed APIs for better features
-          theme: {
-            background: "#1e1e1e",
-            foreground: "#d4d4d4",
-            cursor: "#ffffff",
-            cursorAccent: "#000000",
-            selectionBackground: "#264f78",
-            selectionForeground: "#ffffff",
-            black: "#000000",
-            red: "#cd3131",
-            green: "#0dbc79",
-            yellow: "#e5e510",
-            blue: "#2472c8",
-            magenta: "#bc3fbc",
-            cyan: "#11a8cd",
-            white: "#e5e5e5",
-            brightBlack: "#666666",
-            brightRed: "#f14c4c",
-            brightGreen: "#23d18b",
-            brightYellow: "#f5f543",
-            brightBlue: "#3b8eea",
-            brightMagenta: "#d670d6",
-            brightCyan: "#29b8db",
-            brightWhite: "#e5e5e5",
-          },
+          lineHeight: 1.0,
+          theme: getTerminalTheme(),
           cursorStyle: "block",
           convertEol: true,
           scrollback: 10000,
           rightClickSelectsWord: true,
-          fastScrollModifier: "alt",
-          fastScrollSensitivity: 5,
-          scrollSensitivity: 1,
-          minimumContrastRatio: 4.5,
         });
 
-        // Create and load addons
+        // Create and load fit addon
         const fitAddon = new FitAddon();
-        const clipboardAddon = new ClipboardAddon();
-        const webLinksAddon = new WebLinksAddon();
-        const searchAddon = new SearchAddon();
-
         terminal.loadAddon(fitAddon);
-        terminal.loadAddon(clipboardAddon);
-        terminal.loadAddon(webLinksAddon);
-        terminal.loadAddon(searchAddon);
 
         // Store references
         stateRef.current = {
           terminal,
           fitAddon,
-          clipboardAddon,
-          webLinksAddon,
-          searchAddon,
           shellProcess: null,
           inputWriter: null,
           isReady: true,
@@ -148,78 +81,6 @@ const TerminalMain = () => {
         // Open terminal
         if (terminalRef.current) {
           terminal.open(terminalRef.current);
-
-          // Apply custom styling for better text selection and appearance
-          const style = document.createElement("style");
-          style.textContent = `
-            /* Terminal container styles */
-            .xterm {
-              font-variant-ligatures: none;
-              position: relative;
-              width: 100% !important;
-              height: 100% !important;
-            }
-            
-            /* Viewport styles */
-            .xterm-viewport {
-              background-color: #1e1e1e !important;
-              overflow-y: auto !important;
-            }
-            
-            /* Scrollbar styles */
-            .xterm-viewport::-webkit-scrollbar {
-              width: 8px;
-            }
-            .xterm-viewport::-webkit-scrollbar-track {
-              background: transparent;
-            }
-            .xterm-viewport::-webkit-scrollbar-thumb {
-              background-color: rgba(255, 255, 255, 0.1);
-              border-radius: 4px;
-            }
-            .xterm-viewport::-webkit-scrollbar-thumb:hover {
-              background-color: rgba(255, 255, 255, 0.2);
-            }
-            
-            /* Screen and text styles for proper alignment */
-            .xterm-screen {
-              padding: 8px !important;
-              background-color: #1e1e1e !important;
-            }
-            
-            .xterm-rows {
-              font-family: monospace !important;
-              font-size: 14px !important;
-              line-height: 1.0 !important;
-              letter-spacing: 0 !important;
-              color: #d4d4d4 !important;
-            }
-            
-            /* Selection styles for better visibility */
-            .xterm-selection div {
-              background-color: rgba(38, 79, 120, 0.6) !important;
-              position: absolute !important;
-              pointer-events: none !important;
-            }
-            
-            /* Character spacing fix */
-            .xterm-char-measure-element {
-              font-family: monospace !important;
-              font-size: 14px !important;
-              line-height: 1.0 !important;
-              letter-spacing: 0 !important;
-            }
-            
-            /* Ensure text is visible */
-            .xterm-rows canvas {
-              background-color: transparent !important;
-            }
-            
-            .xterm-text-layer {
-              color: #d4d4d4 !important;
-            }
-          `;
-          document.head.appendChild(style);
 
           // Focus terminal
           terminal.focus();
@@ -236,7 +97,25 @@ const TerminalMain = () => {
             terminal.writeln("");
           }
 
-          // Fit terminal to container
+          // Setup resize observer for better responsiveness
+          const resizeObserver = new ResizeObserver(() => {
+            try {
+              fitAddon.fit();
+              // Notify shell process of resize
+              if (stateRef.current.shellProcess) {
+                stateRef.current.shellProcess.resize({
+                  cols: terminal.cols,
+                  rows: terminal.rows,
+                });
+              }
+            } catch (error) {
+              console.error("Error resizing terminal:", error);
+            }
+          });
+
+          resizeObserver.observe(terminalRef.current);
+
+          // Fit terminal to container initially
           setTimeout(() => {
             try {
               fitAddon.fit();
@@ -246,40 +125,53 @@ const TerminalMain = () => {
             }
           }, 100);
 
-          // Setup keyboard handling
-          setupKeyboardHandling(terminal, clipboardAddon);
+          // Setup basic keyboard handling
+          terminal.attachCustomKeyEventHandler((event: KeyboardEvent) => {
+            const { ctrlKey, metaKey, key } = event;
+            const isCtrlOrCmd = ctrlKey || metaKey;
+
+            // Copy (Ctrl+C / Cmd+C) when text is selected
+            if (isCtrlOrCmd && key === "c" && terminal.hasSelection()) {
+              event.preventDefault();
+              navigator.clipboard.writeText(terminal.getSelection());
+              return false;
+            }
+
+            // Paste (Ctrl+V / Cmd+V)
+            if (isCtrlOrCmd && key === "v") {
+              event.preventDefault();
+              navigator.clipboard
+                .readText()
+                .then((text: string) => {
+                  if (text && stateRef.current.inputWriter) {
+                    try {
+                      stateRef.current.inputWriter.write(text);
+                    } catch (error) {
+                      console.error("Error pasting text:", error);
+                    }
+                  }
+                })
+                .catch(console.error);
+              return false;
+            }
+
+            // Clear terminal (Ctrl+L / Cmd+L)
+            if (isCtrlOrCmd && key === "l") {
+              event.preventDefault();
+              terminal.clear();
+              return false;
+            }
+
+            return true;
+          });
 
           // Handle container clicks
           const handleClick = () => terminal.focus();
           terminalRef.current.addEventListener("click", handleClick);
 
-          // Handle window resize
-          const handleResize = () => {
-            if (fitAddon && terminalRef.current) {
-              try {
-                const { width, height } =
-                  terminalRef.current.getBoundingClientRect();
-                if (width > 0 && height > 0) {
-                  fitAddon.fit();
-                  // Notify shell process of resize
-                  if (stateRef.current.shellProcess) {
-                    stateRef.current.shellProcess.resize({
-                      cols: terminal.cols,
-                      rows: terminal.rows,
-                    });
-                  }
-                }
-              } catch (error) {
-                console.error("Error resizing terminal:", error);
-              }
-            }
-          };
-
-          window.addEventListener("resize", handleResize);
-
           // Cleanup function
           return () => {
-            window.removeEventListener("resize", handleResize);
+            resizeObserver.disconnect();
             if (terminalRef.current) {
               terminalRef.current.removeEventListener("click", handleClick);
             }
@@ -306,9 +198,6 @@ const TerminalMain = () => {
             stateRef.current = {
               terminal: null,
               fitAddon: null,
-              clipboardAddon: null,
-              webLinksAddon: null,
-              searchAddon: null,
               shellProcess: null,
               inputWriter: null,
               isReady: false,
@@ -322,67 +211,6 @@ const TerminalMain = () => {
 
     loadTerminal();
   }, [isClient, terminalHistory]);
-
-  // Setup keyboard handling for proper clipboard and shortcuts
-  const setupKeyboardHandling = (
-    terminal: TerminalType,
-    clipboardAddon: ClipboardAddonType,
-  ) => {
-    // Handle keyboard events
-    terminal.attachCustomKeyEventHandler((event: KeyboardEvent) => {
-      const { ctrlKey, metaKey, key, shiftKey } = event;
-      const isCtrlOrCmd = ctrlKey || metaKey;
-
-      // Copy (Ctrl+C / Cmd+C) when text is selected
-      if (isCtrlOrCmd && key === "c" && terminal.hasSelection()) {
-        event.preventDefault();
-        navigator.clipboard.writeText(terminal.getSelection());
-        return false;
-      }
-
-      // Paste (Ctrl+V / Cmd+V)
-      if (isCtrlOrCmd && key === "v") {
-        event.preventDefault();
-        navigator.clipboard
-          .readText()
-          .then((text: string) => {
-            if (text && stateRef.current.inputWriter) {
-              try {
-                stateRef.current.inputWriter.write(text);
-              } catch (error) {
-                console.error("Error pasting text:", error);
-              }
-            }
-          })
-          .catch(console.error);
-        return false;
-      }
-
-      // Clear terminal (Ctrl+L / Cmd+L)
-      if (isCtrlOrCmd && key === "l") {
-        event.preventDefault();
-        terminal.clear();
-        return false;
-      }
-
-      // Find (Ctrl+F / Cmd+F)
-      if (isCtrlOrCmd && key === "f") {
-        event.preventDefault();
-        // You can implement a search UI here
-        console.log("Search functionality can be implemented here");
-        return false;
-      }
-
-      // Select all (Ctrl+A / Cmd+A)
-      if (isCtrlOrCmd && key === "a") {
-        event.preventDefault();
-        terminal.selectAll();
-        return false;
-      }
-
-      return true;
-    });
-  };
 
   // Initialize files in WebContainer when ready
   useEffect(() => {
@@ -401,16 +229,8 @@ const TerminalMain = () => {
         if (terminal) {
           terminal.writeln("✅ Project files mounted successfully");
           terminal.writeln("🎉 WebContainer is ready!");
-          terminal.writeln("");
-          terminal.writeln("Available commands:");
-          terminal.writeln("  ls              - List files and directories");
-          terminal.writeln("  cd <dir>        - Change directory");
-          terminal.writeln("  cat <file>      - View file contents");
-          terminal.writeln("  mkdir <dir>     - Create directory");
-          terminal.writeln("  touch <file>    - Create file");
-          terminal.writeln("  echo 'text'     - Print text");
-          terminal.writeln("");
-          terminal.writeln("Note: npm commands will work after you add a package.json file");
+          terminal.writeln("  npm install     - Install dependencies");
+          terminal.writeln("  npm run dev     - Start development server");
           terminal.writeln("");
         }
 
@@ -422,12 +242,8 @@ const TerminalMain = () => {
           stateRef.current.terminal.writeln(
             `❌ Failed to initialize: ${error instanceof Error ? error.message : String(error)}`,
           );
-          stateRef.current.terminal.writeln(
-            "You can still use basic commands, but the project files may not be available.",
-          );
           stateRef.current.terminal.writeln("");
         }
-        // Still set as initialized so user can use basic shell
         setFilesInitialized(true);
       }
     };
@@ -435,9 +251,10 @@ const TerminalMain = () => {
     initializeFiles();
   }, [webcontainer, isTerminalReady, filesInitialized, EditorCode]);
 
-  // Re-mount files when EditorCode changes (after initial setup)
+  // Re-mount files when EditorCode changes
   useEffect(() => {
-    if (!webcontainer || !filesInitialized || !stateRef.current.terminal) return;
+    if (!webcontainer || !filesInitialized || !stateRef.current.terminal)
+      return;
 
     const remountFiles = async () => {
       try {
@@ -468,7 +285,7 @@ const TerminalMain = () => {
 
         terminal.writeln("🔧 Starting interactive shell...");
 
-        // Start JavaScript shell (jsh) - the recommended shell for WebContainer
+        // Start shell process
         const shellProcess = await webcontainer.spawn("jsh", [], {
           terminal: {
             cols: terminal.cols,
@@ -490,23 +307,11 @@ const TerminalMain = () => {
         );
 
         // Handle terminal input and send to shell
-        // Create a single writable stream to handle all input
         const inputWriter = shellProcess.input.getWriter();
-
-        // Store the writer reference for cleanup
-        const currentState = stateRef.current;
-        currentState.inputWriter = inputWriter;
+        stateRef.current.inputWriter = inputWriter;
 
         terminal.onData((data) => {
           try {
-            // Handle Ctrl+C (interrupt)
-            if (data === "\u0003") {
-              // Send interrupt signal
-              inputWriter.write(data);
-              return;
-            }
-
-            // Send data to shell
             inputWriter.write(data);
           } catch (error) {
             console.error("Error writing to shell input:", error);
@@ -527,35 +332,6 @@ const TerminalMain = () => {
     startShell();
   }, [webcontainer, isTerminalReady, filesInitialized]);
 
-  // Handle terminal visibility changes for proper fitting
-  useEffect(() => {
-    if (!isClient || !terminalRef.current) return;
-
-    const container = terminalRef.current;
-    const observer = new MutationObserver(() => {
-      if (stateRef.current.fitAddon && container) {
-        const { width, height } = container.getBoundingClientRect();
-        if (width > 0 && height > 0) {
-          setTimeout(() => {
-            try {
-              stateRef.current.fitAddon?.fit();
-              stateRef.current.terminal?.focus();
-            } catch (error) {
-              console.error("Error in mutation observer:", error);
-            }
-          }, 100);
-        }
-      }
-    });
-
-    observer.observe(container, {
-      attributes: true,
-      attributeFilter: ["style", "class"],
-    });
-
-    return () => observer.disconnect();
-  }, [isClient]);
-
   // Set client-side flag
   useEffect(() => {
     setIsClient(true);
@@ -566,27 +342,6 @@ const TerminalMain = () => {
     if (stateRef.current.terminal) {
       stateRef.current.terminal.clear();
       stateRef.current.terminal.focus();
-    }
-  };
-
-  // Handle copy selection
-  const handleCopySelection = () => {
-    if (stateRef.current.terminal) {
-      const selection = stateRef.current.terminal.getSelection();
-      if (selection) {
-        navigator.clipboard.writeText(selection).catch(console.error);
-      }
-    }
-  };
-
-  // Handle search
-  const handleSearch = () => {
-    if (stateRef.current.searchAddon) {
-      // You can implement a search UI here
-      const searchTerm = prompt("Search:");
-      if (searchTerm) {
-        stateRef.current.searchAddon.findNext(searchTerm);
-      }
     }
   };
 
@@ -604,26 +359,6 @@ const TerminalMain = () => {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleSearch}
-            className="h-7 px-2 text-xs"
-            disabled={!isTerminalReady}
-          >
-            <Search className="h-3 w-3 mr-1" />
-            Search
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopySelection}
-            className="h-7 px-2 text-xs"
-            disabled={!isTerminalReady}
-          >
-            <Copy className="h-3 w-3 mr-1" />
-            Copy
-          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -649,7 +384,7 @@ const TerminalMain = () => {
             ref={terminalRef}
             className="h-full w-full bg-background"
             style={{
-              fontFamily: "monospace",
+              fontFamily: "Menlo, courier-new, courier, monospace",
               fontSize: "14px",
               lineHeight: "1.0",
               position: "relative",
@@ -659,6 +394,4 @@ const TerminalMain = () => {
       </div>
     </div>
   );
-};
-
-export default TerminalMain;
+}

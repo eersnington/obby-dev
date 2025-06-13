@@ -61,3 +61,32 @@ export function findFileContent(
   // Return the file contents if we found them
   return current?.file?.contents ?? null;
 }
+
+export const getLanguageFromExtension = (ext: string): string => {
+  const normalizedExt = ext.toLowerCase().split(".").pop();
+
+  if (!normalizedExt) return "typescript"; // Default to TypeScript if no extension is found
+
+  const map: Record<string, string> = {
+    js: "javascript",
+    jsx: "jsx",
+    ts: "typescript",
+    tsx: "tsx",
+    json: "json",
+    html: "html",
+    css: "css",
+    py: "python",
+    java: "java",
+    rb: "ruby",
+    cpp: "cpp",
+    c: "c",
+    cs: "csharp",
+    go: "go",
+    rs: "rust",
+    php: "php",
+    swift: "swift",
+    md: "plaintext",
+    sh: "bash",
+  };
+  return map[normalizedExt] || "typescript";
+};
