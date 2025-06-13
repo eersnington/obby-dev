@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/resizable";
 import FileExplorer from "./file-explorer";
 import DevNavbar from "./dev-nav-bar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFilePaths } from "@/stores/file-explorer";
 import WebContainer from "./web-container";
 import { useEditorCode } from "@/stores/editor";
@@ -21,12 +21,6 @@ import {
   getLanguageFromExtension,
 } from "@/lib/utils/code-utils";
 import type { projectFiles } from "@/types/webcontainer-files";
-import { Geist_Mono } from "next/font/google";
-
-const GeistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default function CodeEditor() {
   const { filePaths, fileupdating } = useFilePaths();
@@ -105,7 +99,7 @@ export default function CodeEditor() {
 
                 {/* Monaco Editor */}
                 <Editor
-                  className={GeistMono.className}
+                  className={"font-mono"}
                   height="88vh"
                   language={getLanguageFromExtension(filePaths)}
                   value={code}

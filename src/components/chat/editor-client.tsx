@@ -27,12 +27,6 @@ import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import type { projectFiles } from "@/types/webcontainer-files";
-import { Geist_Mono } from "next/font/google";
-
-const GeistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export function EditorClient() {
   const { filePaths } = useFilePaths();
@@ -189,7 +183,7 @@ export function EditorClient() {
                         {/* Monaco Editor */}
                         <div className="flex-1">
                           <Editor
-                            className={GeistMono.className}
+                            className={"font-mono"}
                             height="100%"
                             language={getLanguageFromExtension(filePaths)}
                             value={code}
