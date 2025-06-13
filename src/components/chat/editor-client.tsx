@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import type { projectFiles } from "@/types/webcontainer-files";
 
 export function EditorClient() {
-  const { filePaths } = useFilePaths();
+  const { selectedFilePath } = useFilePaths();
   const { setCode, EditorCode, setEditorCode } = useEditorCode();
   const {
     setShowWorkspace,
@@ -41,11 +41,12 @@ export function EditorClient() {
   const { addCommand, isSavingFiles, setIsSavingFiles } = useTerminalStore();
   const [editorTheme, setEditorTheme] = useState("vs-dark");
 
-  const code = findFileContent(EditorCode as projectFiles, filePaths) ?? "";
+  const code =
+    findFileContent(EditorCode as projectFiles, selectedFilePath ?? "") ?? "";
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
-      setEditorCode(filePaths, value);
+      setEditorCode(selectedFilePath ?? "", value);
     }
   };
 
@@ -157,7 +158,7 @@ export function EditorClient() {
                         {/* File Header */}
                         <div className="px-4 py-2 bg-muted/30 border-b flex items-center justify-between">
                           <span className="text-sm font-medium">
-                            {filePaths}
+                            {selectedFilePath}
                           </span>
                           <Button
                             variant="ghost"
@@ -185,7 +186,9 @@ export function EditorClient() {
                           <Editor
                             className={"font-mono"}
                             height="100%"
-                            language={getLanguageFromExtension(filePaths)}
+                            language={getLanguageFromExtension(
+                              selectedFilePath ?? "",
+                            )}
                             value={code}
                             theme={editorTheme}
                             onChange={handleEditorChange}

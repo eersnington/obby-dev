@@ -1,296 +1,103 @@
 import { create } from "zustand";
-import { fileStructure, type FileItem } from "@/types/file-structure";
-import { syncFileExplorerFromEditorCode } from "@/lib/utils/file-explorer-utils";
+import type { FileItem } from "@/types/file-structure";
+import { convertEditorCodeToFileExplorer } from "@/lib/utils/file-explorer-utils";
 import { useEditorCode } from "@/stores/editor";
+import type { projectFiles } from "@/types/webcontainer-files";
 
-export interface FilePaths {
-  filePaths: string;
-  fileupdating: boolean;
-  setFilePaths: (filePaths: string) => void;
-  setFileupdating: (fileupdating: boolean) => void;
-  resetFilePaths: () => void;
+// Manages the currently selected file path in the editor UI
+export interface FilePathsStore {
+  selectedFilePath: string | null;
+  setSelectedFilePath: (filePath: string | null) => void;
+  resetSelectedFilePath: () => void;
 }
 
-export const useFilePaths = create<FilePaths>((set) => ({
-  fileupdating: false,
-  filePaths: "",
-  setFilePaths: (filePaths) => set({ filePaths }),
-  setFileupdating: (fileupdating: boolean) =>
-    set({ fileupdating: !fileupdating }),
-  resetFilePaths: () => set({ filePaths: "", fileupdating: false }),
+export const useFilePaths = create<FilePathsStore>((set) => ({
+  selectedFilePath: null,
+  setSelectedFilePath: (filePath) => set({ selectedFilePath: filePath }),
+  resetSelectedFilePath: () => set({ selectedFilePath: null }),
 }));
 
-export interface FileExplorerOpenStates {
-  openFolders: Set<string>;
-  setOpenFolder: (path: string, isOpen: boolean) => void;
-  resetOpenFolders: () => void;
+// Manages the open/closed state of folders in the file explorer UI
+export interface FileExplorerOpenStatesStore {
+  expandedFolders: Set<string>;
+  toggleFolder: (folderPath: string) => void;
+  expandFolder: (folderPath: string) => void;
+  collapseFolder: (folderPath: string) => void;
+  resetExpandedFolders: () => void;
 }
 
-export const useFileExplorerOpenStates = create<FileExplorerOpenStates>(
+export const useFileExplorerOpenStates = create<FileExplorerOpenStatesStore>(
   (set) => ({
-    openFolders: new Set<string>(),
-    setOpenFolder: (path: string, isOpen: boolean) =>
+    expandedFolders: new Set<string>(),
+    toggleFolder: (folderPath) =>
       set((state) => {
-        const newOpenFolders = new Set(state.openFolders);
-        if (isOpen) {
-          newOpenFolders.add(path);
+        const newSet = new Set(state.expandedFolders);
+        if (newSet.has(folderPath)) {
+          newSet.delete(folderPath);
         } else {
-          newOpenFolders.delete(path);
+          newSet.add(folderPath);
         }
-        return { openFolders: newOpenFolders };
+        return { expandedFolders: newSet };
       }),
-    resetOpenFolders: () => set({ openFolders: new Set<string>() }),
+    expandFolder: (folderPath) =>
+      set((state) => ({
+        expandedFolders: new Set(state.expandedFolders).add(folderPath),
+      })),
+    collapseFolder: (folderPath) =>
+      set((state) => {
+        const newSet = new Set(state.expandedFolders);
+        newSet.delete(folderPath);
+        return { expandedFolders: newSet };
+      }),
+    resetExpandedFolders: () => set({ expandedFolders: new Set<string>() }),
   }),
 );
 
-interface FileExplorer {
-  fileExplorer: FileItem[];
-  setFileExplorer: (fileExplorer: FileItem[]) => void;
-  resetFileExplorer: () => void;
-  addFileExplorer: (fileName: string, targetPath?: string) => void;
-  addFileByAI: (filePath: string, fileName: string) => void;
-  deleteFileExplorer: (itemPath: string) => void;
-  renameItemExplorer: (itemPath: string, newName: string) => void;
-  newFolderExplorer: (folderName: string, targetPath?: string) => void;
+// Manages the file explorer tree structure (derived from EditorCode)
+interface FileExplorerStore {
+  fileExplorerTree: FileItem[];
 }
 
-// Helper function to add an item to the file tree at a specific path
-const addItemToTree = (
-  items: FileItem[],
-  newItem: FileItem,
-  targetPath?: string,
-): FileItem[] => {
-  const { openFolders } = useFileExplorerOpenStates.getState();
-  const currentPath =
-    targetPath !== undefined ? targetPath : Array.from(openFolders).pop() || "";
-
-  if (!currentPath || currentPath === "") {
-    // Add to root level
-    return [...items, newItem];
-  }
-
-  const pathParts = currentPath.split("/");
-
-  const addItemToPath = (items: FileItem[], path: string[]): FileItem[] => {
-    if (path.length === 0) {
-      return [...items, newItem];
-    }
-
-    const currentFolder = path[0];
-    const remainingPath = path.slice(1);
-
-    return items.map((item) => {
-      if (item.name === currentFolder && item.type === "folder") {
-        return {
-          ...item,
-          children: addItemToPath(item.children || [], remainingPath),
-        };
-      }
-      return item;
-    });
+export const useFileExplorer = create<FileExplorerStore>((set, get) => {
+  const deriveFileExplorerTree = (editorCode: projectFiles): FileItem[] => {
+    return convertEditorCodeToFileExplorer(editorCode);
   };
 
-  return addItemToPath(items, pathParts);
-};
+  // Initialize fileExplorerTree with the initial state from useEditorCode
+  set({
+    fileExplorerTree: deriveFileExplorerTree(
+      useEditorCode.getState().EditorCode,
+    ),
+  });
 
-export const useFileExplorer = create<FileExplorer>((set) => ({
-  fileExplorer: fileStructure,
-  setFileExplorer: (fileExplorer) => set({ fileExplorer }),
-  resetFileExplorer: () => set({ fileExplorer: fileStructure }),
-  addFileByAI: (filePath: string, fileName: string) =>
-    set((state) => {
-      const { setOpenFolder } = useFileExplorerOpenStates.getState();
-      // Parse the file path to extract folder structure
-      const pathParts = filePath.split("/");
-      const fileNameFromPath = pathParts.pop() || fileName; // Use the last part as filename or fallback to provided fileName
+  // Subscribe to useEditorCode store.
+  // The listener receives the entire state of useEditorCode.
+  const unsubscribe = useEditorCode.subscribe((editorState) => {
+    // We need to compare the relevant part of the state (EditorCode)
+    // to decide if we need to update our derived tree.
+    // This requires knowing the previous state of EditorCode or using
+    // a selector within the component that uses useFileExplorer.
+    // For simplicity here, we'll re-derive on every notification.
+    // Zustand's `set` will handle not updating if the result is shallowly equal.
+    set({
+      fileExplorerTree: deriveFileExplorerTree(editorState.EditorCode),
+    });
+  });
+  // Note: It's good practice to return the unsubscribe function from the store
+  // if it were to be used in a context where the store itself might be "destroyed",
+  // though for global stores like this, it's less critical.
 
-      // If there are no folders in the path, just add the file to root
-      if (pathParts.length === 0) {
-        return {
-          fileExplorer: [
-            ...state.fileExplorer,
-            { name: fileNameFromPath, type: "file" },
-          ],
-        };
-      }
+  return {
+    fileExplorerTree: get().fileExplorerTree,
+  };
+});
 
-      // Keep track of the current path as we build it
-      let currentPath = "";
-
-      // Helper function to recursively create/navigate folder structure
-      const addFileToPath = (
-        items: FileItem[],
-        remainingPath: string[],
-        file: string,
-      ): FileItem[] => {
-        if (remainingPath.length === 0) {
-          // We've reached the target folder, add the file here
-          return [...items, { name: file, type: "file" }];
-        }
-
-        const currentFolder = remainingPath[0];
-        const nextPath = remainingPath.slice(1);
-
-        // Update the current path
-        currentPath = currentPath
-          ? `${currentPath}/${currentFolder}`
-          : currentFolder;
-        // Open the folder
-        setOpenFolder(currentPath, true);
-
-        // Check if the folder already exists
-        const existingFolder = items.find(
-          (item) => item.name === currentFolder && item.type === "folder",
-        );
-
-        if (existingFolder) {
-          // Folder exists, continue navigating
-          return items.map((item) => {
-            if (item.name === currentFolder && item.type === "folder") {
-              return {
-                ...item,
-                children: addFileToPath(item.children || [], nextPath, file),
-              };
-            }
-            return item;
-          });
-        }
-        // Folder doesn't exist, create it and continue
-        return [
-          ...items,
-          {
-            name: currentFolder,
-            type: "folder",
-            children: addFileToPath([], nextPath, file),
-          },
-        ];
-      };
-
-      // Start the recursive process
-      return {
-        fileExplorer: addFileToPath(
-          state.fileExplorer,
-          pathParts,
-          fileNameFromPath,
-        ),
-      };
-    }),
-  addFileExplorer: (fileName: string, targetPath?: string) =>
-    set((state) => {
-      return {
-        fileExplorer: addItemToTree(
-          state.fileExplorer,
-          { name: fileName, type: "file" },
-          targetPath,
-        ),
-      };
-    }),
-  deleteFileExplorer: (itemPath: string) =>
-    set((state) => {
-      // Helper function to recursively delete an item from the file tree
-      const deleteItemFromTree = (
-        items: FileItem[],
-        pathParts: string[],
-        currentDepth: number = 0,
-      ): FileItem[] => {
-        if (currentDepth === pathParts.length - 1) {
-          // We're at the target level, filter out the item to delete
-          const itemToDelete = pathParts[currentDepth];
-          return items.filter((item) => item.name !== itemToDelete);
-        }
-
-        const currentFolder = pathParts[currentDepth];
-        return items.map((item) => {
-          if (item.name === currentFolder && item.type === "folder") {
-            return {
-              ...item,
-              children: deleteItemFromTree(
-                item.children || [],
-                pathParts,
-                currentDepth + 1,
-              ),
-            };
-          }
-          return item;
-        });
-      };
-
-      const pathParts = itemPath.split("/");
-
-      // Also update EditorCode for WebContainer sync
-      const { EditorCode, setCode } = useEditorCode.getState();
-      const newEditorCode = { ...EditorCode };
-
-      if (pathParts.length === 1) {
-        delete newEditorCode[itemPath];
-      } else {
-        let current = newEditorCode as Record<string, unknown>;
-        for (let i = 0; i < pathParts.length - 1; i++) {
-          if (
-            current[pathParts[i]] &&
-            typeof current[pathParts[i]] === "object" &&
-            (current[pathParts[i]] as { directory?: unknown }).directory
-          ) {
-            current = (
-              current[pathParts[i]] as { directory: Record<string, unknown> }
-            ).directory;
-          }
-        }
-        delete current[pathParts[pathParts.length - 1]];
-      }
-
-      setCode(newEditorCode);
-
-      return {
-        fileExplorer: deleteItemFromTree(state.fileExplorer, pathParts),
-      };
-    }),
-  renameItemExplorer: (itemPath: string, newName: string) =>
-    set((state) => {
-      // Helper function to recursively find and rename an item
-      const renameItemInTree = (
-        items: FileItem[],
-        pathParts: string[],
-        currentDepth: number = 0,
-      ): FileItem[] => {
-        if (currentDepth === pathParts.length - 1) {
-          // We're at the target level, rename the item
-          const itemToRename = pathParts[currentDepth];
-          return items.map((item) =>
-            item.name === itemToRename ? { ...item, name: newName } : item,
-          );
-        }
-
-        const currentFolder = pathParts[currentDepth];
-        return items.map((item) => {
-          if (item.name === currentFolder && item.type === "folder") {
-            return {
-              ...item,
-              children: renameItemInTree(
-                item.children || [],
-                pathParts,
-                currentDepth + 1,
-              ),
-            };
-          }
-          return item;
-        });
-      };
-
-      const pathParts = itemPath.split("/");
-
-      return {
-        fileExplorer: renameItemInTree(state.fileExplorer, pathParts),
-      };
-    }),
-  newFolderExplorer: (folderName: string, targetPath?: string) =>
-    set((state) => {
-      return {
-        fileExplorer: addItemToTree(
-          state.fileExplorer,
-          { name: folderName, type: "folder", children: [] },
-          targetPath,
-        ),
-      };
-    }),
-}));
+// Helper function to get the parent path of an item
+export function getParentPath(itemPath: string): string {
+  const parts = itemPath.split("/");
+  if (parts.length <= 1) {
+    return ""; // Root item, parent is root
+  }
+  parts.pop();
+  return parts.join("/");
+}
