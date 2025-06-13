@@ -1,6 +1,6 @@
 "use server";
 
-import { workos } from "@/app/api/workos";
+import { workos } from "@/app/(api)/api/workos";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { GeneratePortalLinkIntent } from "@workos-inc/node";
 

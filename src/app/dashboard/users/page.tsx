@@ -3,7 +3,7 @@ import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes";
 
 import { UsersManagement, WorkOsWidgets } from "@workos-inc/widgets";
 import { withAuth } from "@workos-inc/authkit-nextjs";
-import { workos } from "@/app/api/workos";
+import { workos } from "@/app/(api)/api/workos";
 
 export default async function Users() {
   const { user, organizationId } = await withAuth({ ensureSignedIn: true });

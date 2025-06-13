@@ -1,5 +1,5 @@
 import { Button, Flex, Heading, Box, Text } from "@radix-ui/themes";
-import { workos } from "@/app/api/workos";
+import { workos } from "@/app/(api)/api/workos";
 import { GeneratePortalLinkIntent } from "@workos-inc/node";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import Link from "next/link";

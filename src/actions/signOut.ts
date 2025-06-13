@@ -1,7 +1,7 @@
 "use server";
 
 import { signOut as workosSignOut, withAuth } from "@workos-inc/authkit-nextjs";
-import { workos } from "../app/api/workos";
+import { workos } from "../app/(api)/api/workos";
 import { headers } from "next/headers";
 
 export default async function authkitSignOut() {

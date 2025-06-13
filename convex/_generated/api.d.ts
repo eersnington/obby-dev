@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as chats from "../chats.js";
 import type * as http from "../http.js";
 import type * as organizations from "../organizations.js";
 import type * as stripe from "../stripe.js";
@@ -28,6 +29,7 @@ import type * as workos from "../workos.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  chats: typeof chats;
   http: typeof http;
   organizations: typeof organizations;
   stripe: typeof stripe;

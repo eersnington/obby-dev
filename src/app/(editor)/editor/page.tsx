@@ -1,0 +1,258 @@
+"use client";
+
+import { useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
+import { ChatPanel } from "@/components/chat/editor/chat-panel";
+import FileExplorer from "@/components/chat/editor/file-explorer";
+import WebContainer from "@/components/chat/editor/web-container";
+import TerminalMain from "@/components/chat/editor/terminal";
+import { EditorThemeSelector } from "@/components/chat/editor/editor-theme-selector";
+import {
+  useFileExplorer,
+  useFilePaths,
+  useFileExplorerOpenStates,
+} from "@/stores/file-explorer";
+import { useEditorCode } from "@/stores/editor";
+import { useShowTab, Show } from "@/stores/code-tabs";
+import { useTerminalStore } from "@/stores/terminal";
+import { defaultProjectFiles } from "@/lib/utils/default-project-files";
+import { Editor } from "@monaco-editor/react";
+import type * as monaco from "monaco-editor";
+import { useState, useCallback } from "react";
+import { findFileContent } from "@/lib/utils/code-utils";
+import { Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import type { projectFiles } from "@/types/webcontainer-files";
+
+export default function EditorPage() {
+  const { setFileExplorer } = useFileExplorer();
+  const { setFilePaths, filePaths } = useFilePaths();
+  const { setOpenFolder } = useFileExplorerOpenStates();
+  const { setCode, EditorCode, setEditorCode } = useEditorCode();
+  const { setShowWorkspace, setShowCode, showTab } = useShowTab();
+  const { addCommand, isSavingFiles, setIsSavingFiles } = useTerminalStore();
+  const [editorTheme, setEditorTheme] = useState("vs-dark");
+  const [editor, setEditor] =
+    useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [monacoInstance, setMonacoInstance] = useState<typeof monaco | null>(
+    null,
+  );
+
+  const getLanguageFromPath = useCallback((path: string): string => {
+    const ext = path.split(".").pop()?.toLowerCase();
+    switch (ext) {
+      case "js":
+      case "jsx":
+        return "javascript";
+      case "ts":
+      case "tsx":
+        return "typescript";
+      case "css":
+        return "css";
+      case "json":
+        return "json";
+      case "html":
+        return "html";
+      case "md":
+        return "markdown";
+      default:
+        return "javascript";
+    }
+  }, []);
+
+  const code = findFileContent(EditorCode as projectFiles, filePaths) ?? "";
+
+  const handleEditorChange = (value: string | undefined) => {
+    if (value) {
+      setEditorCode(filePaths, value);
+    }
+  };
+
+  const handleSaveFiles = () => {
+    setIsSavingFiles(true);
+    const event = new CustomEvent("save-files", {
+      detail: { files: EditorCode },
+    });
+    window.dispatchEvent(event);
+  };
+
+  useEffect(() => {
+    // Initialize the editor with default project structure
+    const initializeEditor = () => {
+      // Set up default file structure for display
+      const defaultFileStructure = [
+        {
+          name: "package.json",
+          type: "file" as const,
+        },
+      ];
+
+      // Set up file explorer structure
+      setFileExplorer(defaultFileStructure);
+
+      // Open the src folder by default
+      setOpenFolder("src", true);
+
+      // Set default selected file
+      setFilePaths("package.json");
+
+      // Set editor code from default project files
+      setCode(defaultProjectFiles);
+
+      // Show workspace and code tab by default
+      setShowWorkspace(true);
+      setShowCode();
+
+      // Add welcome terminal messages
+      addCommand("Welcome to Obby Dev Editor!");
+      addCommand("Type commands to get started...");
+    };
+
+    initializeEditor();
+  }, [
+    setFileExplorer,
+    setFilePaths,
+    setOpenFolder,
+    setCode,
+    setShowWorkspace,
+    setShowCode,
+    addCommand,
+  ]);
+
+  return (
+    <div className="h-full w-full overflow-hidden p-2">
+      <ResizablePanelGroup direction="horizontal" className="h-full">
+        {/* Chat Panel - Left Side */}
+        <ResizablePanel defaultSize={40} minSize={30} maxSize={70}>
+          <ChatPanel />
+        </ResizablePanel>
+
+        <ResizableHandle className="bg-transparent hover:bg-accent rounded-full transition-colors mx-0.5 my-2 w-0.5" />
+
+        {/* WebContainer Panel - Right Side */}
+        <ResizablePanel defaultSize={60} minSize={40}>
+          <Card className="h-full flex flex-col">
+            {/* Tabs Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <Tabs value={showTab} className="flex-1">
+                <TabsList className="bg-transparent">
+                  <TabsTrigger
+                    value={Show.CODE}
+                    onClick={() => setShowCode()}
+                    className="data-[state=active]:bg-muted data-[state=active]:shadow-sm rounded-lg"
+                  >
+                    Code
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value={Show.PREVIEW}
+                    onClick={() => {
+                      const { setShowPreview } = useShowTab.getState();
+                      setShowPreview();
+                    }}
+                    className="data-[state=active]:bg-muted data-[state=active]:shadow-sm rounded-lg"
+                  >
+                    Preview
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value={Show.TERMINAL}
+                    onClick={() => {
+                      const { setShowTerminal } = useShowTab.getState();
+                      setShowTerminal();
+                    }}
+                    className="data-[state=active]:bg-muted data-[state=active]:shadow-sm rounded-lg"
+                  >
+                    Terminal
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              {showTab === Show.CODE && (
+                <EditorThemeSelector
+                  currentTheme={editorTheme}
+                  onThemeChange={setEditorTheme}
+                />
+              )}
+            </div>
+
+            {/* Tab Content */}
+            <div className="overflow-hidden">
+              {showTab === Show.CODE && (
+                <ResizablePanelGroup direction="horizontal">
+                  {/* File Explorer */}
+                  <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
+                    <FileExplorer />
+                  </ResizablePanel>
+
+                  <ResizableHandle />
+
+                  {/* Code Editor */}
+                  <ResizablePanel defaultSize={75} minSize={60}>
+                    <div className="h-full flex flex-col">
+                      {/* File Header */}
+                      <div className="px-4 py-2 bg-muted/30 border-b flex items-center justify-between">
+                        <span className="text-sm font-medium">{filePaths}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isSavingFiles}
+                          onClick={handleSaveFiles}
+                          className="h-7 px-2"
+                        >
+                          {isSavingFiles ? (
+                            <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+                          ) : (
+                            <Save className="h-3 w-3 mr-2" />
+                          )}
+                          Save
+                        </Button>
+                      </div>
+
+                      {/* Monaco Editor */}
+                      <div className="flex-1">
+                        <Editor
+                          height="100%"
+                          language={getLanguageFromPath(filePaths)}
+                          value={code}
+                          theme={editorTheme}
+                          onChange={handleEditorChange}
+                          onMount={(editor, monaco) => {
+                            setEditor(editor);
+                            setMonacoInstance(monaco);
+                          }}
+                          options={{
+                            wordWrap: "on",
+                            fontSize: 14,
+                            fontFamily: "JetBrains Mono, monospace",
+                            lineNumbers: "on",
+                            minimap: { enabled: false },
+                            scrollBeyondLastLine: false,
+                            cursorStyle: "line",
+                            automaticLayout: true,
+                            padding: { top: 16 },
+                            folding: true,
+                            bracketPairColorization: { enabled: true },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              )}
+
+              {showTab === Show.PREVIEW && <WebContainer />}
+
+              {showTab === Show.TERMINAL && <TerminalMain />}
+            </div>
+          </Card>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}
