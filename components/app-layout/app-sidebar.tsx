@@ -60,7 +60,7 @@ export function AppSidebar({
 
   const favoriteChatsQuery = useQuery(
     api.chats.getFavoriteChats,
-    isAuthenticated && userId ? { user_id: userId } : "skip",
+    isAuthenticated && userId ? { userId: userId } : "skip",
   );
 
   // Process recent chats with optimistic updates (from server-side data)

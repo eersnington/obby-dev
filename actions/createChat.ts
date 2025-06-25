@@ -69,7 +69,7 @@ export async function createChatFromMessage({
 
     // Create chat with initial message but placeholder title
     const chatId = await fetchMutation(api.chats.createChat, {
-      user_id: convexUser._id,
+      userId: convexUser._id,
       title: "New Chat", // Placeholder title, will be updated client-side
       messages: [initialUserMessage], // Start with the initial user message
       fileData,

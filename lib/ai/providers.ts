@@ -15,6 +15,7 @@ export const obbylabs = customProvider({
   languageModels: {
     "agent-chat": originalGoogle("gemini-2.5-pro-preview-06-05"),
     "fast-chat": originalGoogle("gemini-2.5-flash"),
+    "code-model": originalGoogle("gemini-2.5-flash"),
   },
 });
 
@@ -51,7 +52,7 @@ export const google = customProvider({
   fallbackProvider: originalGoogle,
 });
 
-export const registry = createProviderRegistry({
+export const obbyRegistry = createProviderRegistry({
   openai,
   anthropic,
   google,
@@ -69,13 +70,13 @@ export function getModelFromRegistry(modelId: string): LanguageModelV1 {
 
   switch (provider) {
     case "openai":
-      return registry.languageModel(resolvedId as `openai:${string}`);
+      return obbyRegistry.languageModel(resolvedId as `openai:${string}`);
     case "anthropic":
-      return registry.languageModel(resolvedId as `anthropic:${string}`);
+      return obbyRegistry.languageModel(resolvedId as `anthropic:${string}`);
     case "google":
-      return registry.languageModel(resolvedId as `google:${string}`);
+      return obbyRegistry.languageModel(resolvedId as `google:${string}`);
     case "obbylabs":
-      return registry.languageModel(resolvedId as `obbylabs:${string}`);
+      return obbyRegistry.languageModel(resolvedId as `obbylabs:${string}`);
     default:
       throw new Error(`Unsupported provider: ${provider}`);
   }

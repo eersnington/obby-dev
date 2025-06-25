@@ -44,6 +44,9 @@
       "style": {
         "noInferrableTypes": "off"
       },
+      "complexity": {
+        "noForEach": "off"
+      },
       "correctness": {
         "noUnusedImports": "warn",
         "noUnusedVariables": "warn",

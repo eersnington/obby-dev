@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { stripe } from "../app/api/stripe";
-import { workos } from "app/api/workos";
+import { stripe } from "../app/(legacy)/api/stripe";
+import { workos } from "@/app/(legacy)/api/workos";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { env } from "env";
 

@@ -22,7 +22,7 @@ export default async function AppSidebarWrapper() {
 
     // Pre-fetch only recent chats on the server
     const recentChats = await fetchQuery(api.chats.getRecentChats, {
-      user_id: convexUser._id,
+      userId: convexUser._id,
     });
 
     return (

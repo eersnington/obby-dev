@@ -1,310 +1,193 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import schema from "./schema";
-import { crud } from "convex-helpers/server/crud";
-import type { Doc } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 
-export const { create, destroy, update } = crud(schema, "chats");
-
-export const createChat = mutation({
+export const saveChat = mutation({
   args: {
-    user_id: v.id("users"),
     title: v.string(),
-    messages: v.any(),
-    fileData: v.optional(v.any()),
-    fragments: v.optional(v.any()),
-    visibility: v.optional(v.union(v.literal("private"), v.literal("public"))),
-  },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.insert("chats", {
-      user_id: args.user_id,
-      title: args.title,
-      messages: args.messages,
-      fileData: args.fileData,
-      fragments: args.fragments,
-      isFavorite: false,
-      visibility: args.visibility ?? "private", // Default visibility
-    });
-    return chat;
-  },
-});
-
-export const getChatById = query({
-  args: { id: v.id("chats") },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.get(args.id);
-    return chat;
-  },
-});
-
-export const getChatsByUserID = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_user_id", (q) => q.eq("user_id", args.user_id))
-      .collect();
-    return chats;
-  },
-});
-
-export const getChatsByVisibility = query({
-  args: { visibility: v.union(v.literal("private"), v.literal("public")) },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_visibility", (q) => q.eq("visibility", args.visibility))
-      .collect();
-    return chats;
-  },
-});
-
-export const getPublicChats = query({
-  args: {},
-  handler: async (ctx) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_visibility", (q) => q.eq("visibility", "public"))
-      .collect();
-    return chats;
-  },
-});
-
-export const getUserChatsByVisibility = query({
-  args: {
-    user_id: v.id("users"),
+    chatId: v.string(),
+    userId: v.string(),
     visibility: v.union(v.literal("private"), v.literal("public")),
   },
   handler: async (ctx, args) => {
-    const chats = await ctx.db
+    return await ctx.db.insert("chats", args);
+  },
+});
+
+export const listChatsByUserId = query({
+  args: {
+    userId: v.string(),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db
       .query("chats")
-      .withIndex("by_user_visibility", (q) =>
-        q.eq("user_id", args.user_id).eq("visibility", args.visibility),
-      )
-      .collect();
-    return chats;
-  },
-});
-
-export const getUserPrivateChats = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_user_visibility", (q) =>
-        q.eq("user_id", args.user_id).eq("visibility", "private"),
-      )
-      .collect();
-    return chats;
-  },
-});
-
-export const getUserPublicChats = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_user_visibility", (q) =>
-        q.eq("user_id", args.user_id).eq("visibility", "public"),
-      )
-      .collect();
-    return chats;
-  },
-});
-
-export const updateChatVisibility = mutation({
-  args: {
-    id: v.id("chats"),
-    visibility: v.union(v.literal("private"), v.literal("public")),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, { visibility: args.visibility });
-    return { success: true };
-  },
-});
-
-export const addMessageToChat = mutation({
-  args: {
-    id: v.id("chats"),
-    messages: v.any(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, { messages: args.messages });
-    return { success: true };
-  },
-});
-
-// Enhanced mutation for atomic message + fragment updates
-export const addMessageWithFragment = mutation({
-  args: {
-    id: v.id("chats"),
-    message: v.any(),
-    fragment: v.optional(v.any()),
-  },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.get(args.id);
-    if (!chat) {
-      throw new Error("Chat not found");
-    }
-
-    // Prepare updates
-    const currentMessages = chat.messages || [];
-    const updatedMessages = [...currentMessages, args.message];
-
-    const updates: Partial<Doc<"chats">> = { messages: updatedMessages };
-
-    // Add fragment to fragments array if provided
-    if (args.fragment) {
-      const currentFragments = chat.fragments || [];
-      updates.fragments = [...currentFragments, args.fragment];
-    }
-
-    await ctx.db.patch(args.id, updates);
-
-    return {
-      success: true,
-      messageCount: updatedMessages.length,
-      fragmentCount: updates.fragments?.length || chat.fragments?.length || 0,
-    };
-  },
-});
-
-// Real-time optimized chat query
-export const watchChat = query({
-  args: { id: v.id("chats") },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.get(args.id);
-    if (!chat) return null;
-
-    return {
-      ...chat,
-      messageCount: chat.messages?.length || 0,
-      fragmentCount: chat.fragments?.length || 0,
-      lastUpdated: chat._creationTime,
-    };
-  },
-});
-
-// Fragment-only update mutation
-export const updateChatFragments = mutation({
-  args: {
-    id: v.id("chats"),
-    fragments: v.any(),
-  },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.get(args.id);
-    if (!chat) {
-      throw new Error("Chat not found");
-    }
-
-    await ctx.db.patch(args.id, { fragments: args.fragments });
-    return { success: true, fragmentCount: args.fragments?.length || 0 };
-  },
-});
-
-// Validation query for chat access
-export const validateChatAccess = query({
-  args: {
-    id: v.id("chats"),
-    userId: v.id("users"),
-  },
-  handler: async (ctx, args) => {
-    const chat = await ctx.db.get(args.id);
-    if (!chat) return { valid: false, reason: "not_found" };
-    if (chat.user_id !== args.userId)
-      return { valid: false, reason: "unauthorized" };
-    return { valid: true, chat };
-  },
-});
-
-export const updateChatTitle = mutation({
-  args: {
-    id: v.id("chats"),
-    title: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, { title: args.title });
-    return { success: true };
-  },
-});
-
-export const getLatestChats = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_user_id", (q) => q.eq("user_id", args.user_id))
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(100);
-    return chats;
+      .paginate(args.paginationOpts);
+
+    return result;
   },
 });
 
-export const getFavoriteChats = query({
-  args: { user_id: v.id("users") },
+export const listRecentChatsByUserID = query({
+  args: { userId: v.id("users") },
   handler: async (ctx, args) => {
     const chats = await ctx.db
       .query("chats")
-      .withIndex("by_user_favorite", (q) =>
-        q.eq("user_id", args.user_id).eq("isFavorite", true),
-      )
-      .order("desc")
-      .collect();
-    return chats;
-  },
-});
-
-export const getRecentChats = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
-      .query("chats")
-      .withIndex("by_user_id", (q) => q.eq("user_id", args.user_id))
-      .filter((q) => q.neq(q.field("isFavorite"), true))
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .order("desc")
       .take(50);
     return chats;
   },
 });
 
-export const toggleChatFavorite = mutation({
-  args: {
-    id: v.id("chats"),
-    isFavorite: v.boolean(),
-  },
+export const getChatById = query({
+  args: { id: v.string() },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, { isFavorite: args.isFavorite });
-    return { success: true };
-  },
-});
-
-export const deleteChat = mutation({
-  args: {
-    id: v.id("chats"),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
-    return { success: true };
-  },
-});
-
-export const getAllUserChats = query({
-  args: { user_id: v.id("users") },
-  handler: async (ctx, args) => {
-    const chats = await ctx.db
+    return await ctx.db
       .query("chats")
-      .withIndex("by_user_id", (q) => q.eq("user_id", args.user_id))
-      .order("desc")
-      .take(100);
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .first();
+  },
+});
 
-    // Split into favorites and recents on the server side
-    const favoriteChats = chats.filter((chat) => chat.isFavorite);
-    const recentChats = chats.filter((chat) => !chat.isFavorite).slice(0, 50);
+export const deleteChatById = mutation({
+  args: { id: v.string() },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .first();
+    if (!chat) throw new Error("Chat not found");
 
-    return {
-      favoriteChats,
-      recentChats,
-      totalCount: chats.length,
-    };
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .collect();
+
+    const streams = await ctx.db
+      .query("streams")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .collect();
+
+    await Promise.all([
+      ...messages.map((message) => ctx.db.delete(message._id)),
+      ...streams.map((stream) => ctx.db.delete(stream._id)),
+      ctx.db.delete(chat._id),
+    ]);
+  },
+});
+
+export const updateChatVisibilityById = mutation({
+  args: {
+    id: v.string(),
+    visibility: v.union(v.literal("private"), v.literal("public")),
+  },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .first();
+
+    if (!chat) throw new Error("Chat not found");
+
+    return await ctx.db.patch(chat._id, {
+      visibility: args.visibility,
+    });
+  },
+});
+export const updateChatTitle = mutation({
+  args: {
+    id: v.string(),
+    newTitle: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.id))
+      .first();
+
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+
+    await ctx.db.patch(chat._id, { title: args.newTitle });
+  },
+});
+
+export const voteMessage = mutation({
+  args: {
+    chatId: v.string(),
+    messageId: v.string(),
+    type: v.union(v.literal("up"), v.literal("down")),
+  },
+  handler: async (ctx, args) => {
+    const existingVote = await ctx.db
+      .query("votes")
+      .withIndex("by_messageId", (q) => q.eq("messageId", args.messageId))
+      .first();
+
+    if (existingVote) {
+      return await ctx.db.patch(existingVote._id, {
+        isUpvoted: args.type === "up",
+      });
+    }
+
+    return await ctx.db.insert("votes", {
+      chatId: args.chatId,
+      messageId: args.messageId,
+      isUpvoted: args.type === "up",
+    });
+  },
+});
+
+export const getVotesByChatId = query({
+  args: { chatId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("votes")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.chatId))
+      .collect();
+  },
+});
+
+export const togglePinChat = mutation({
+  args: {
+    chatId: v.string(),
+  },
+  returns: v.object({ isPinned: v.boolean() }),
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.chatId))
+      .first();
+
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+
+    await ctx.db.patch(chat._id, { isPinned: !chat.isPinned });
+
+    return { isPinned: !chat.isPinned };
+  },
+});
+
+export const renameChat = mutation({
+  args: {
+    chatId: v.string(),
+    newTitle: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .withIndex("by_chatId", (q) => q.eq("chatId", args.chatId))
+      .first();
+
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+
+    await ctx.db.patch(chat._id, { title: args.newTitle });
   },
 });

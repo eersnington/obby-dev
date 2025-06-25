@@ -6,12 +6,13 @@ const userFields = schema.tables.users.validator.fields;
 
 export const { create, destroy, update } = crud(schema, "users");
 
+// Internal query: only callable from other Convex functions (not from the client)
 export const getByWorkOSId = internalQuery({
-  args: { workos_id: userFields.workos_id },
+  args: { userId: userFields.userId },
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("workos_id"), args.workos_id))
+      .filter((q) => q.eq(q.field("userId"), args.userId))
       .first();
     return user;
   },
@@ -19,11 +20,11 @@ export const getByWorkOSId = internalQuery({
 
 // Public query for server actions
 export const getByWorkOSIdQuery = query({
-  args: { workos_id: userFields.workos_id },
+  args: { workos_id: userFields.userId },
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("workos_id"), args.workos_id))
+      .filter((q) => q.eq(q.field("userId"), args.workos_id))
       .first();
     return user;
   },

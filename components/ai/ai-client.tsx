@@ -27,7 +27,7 @@ interface AIClientProps {
   initialChatData?: {
     _id: Id<"chats">;
     _creationTime: number;
-    user_id: Id<"users">;
+    userId: Id<"users">;
     title: string;
     messages: Message[];
     fileData?: unknown;

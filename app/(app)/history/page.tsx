@@ -25,7 +25,7 @@ export default async function HistoryPage() {
   }
 
   const allChats = await fetchQuery(api.chats.getLatestChats, {
-    user_id: convexUser._id,
+    userId: convexUser._id,
   });
 
   const formatDate = (timestamp: number) => {

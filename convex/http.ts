@@ -23,15 +23,15 @@ http.route({
         case "user.created": {
           await ctx.runMutation(internal.users.create, {
             email: data.email,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            workos_id: data.id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            userId: data.id,
           });
           break;
         }
         case "user.deleted": {
           const user = await ctx.runQuery(internal.users.getByWorkOSId, {
-            workos_id: data.id,
+            userId: data.id,
           });
 
           if (!user?._id) {
@@ -48,7 +48,7 @@ http.route({
         }
         case "user.updated": {
           const user = await ctx.runQuery(internal.users.getByWorkOSId, {
-            workos_id: data.id,
+            userId: data.id,
           });
 
           if (!user?._id) {
@@ -65,18 +65,20 @@ http.route({
 
           break;
         }
+
         case "organization.created": {
           await ctx.runMutation(internal.organizations.create, {
             name: data.name,
-            workos_id: data.id,
+            workosId: data.id,
           });
           break;
         }
+
         case "organization.deleted": {
           const organization = await ctx.runQuery(
             internal.organizations.getByWorkOSId,
             {
-              workos_id: data.id,
+              workosId: data.id,
             },
           );
 
@@ -93,11 +95,12 @@ http.route({
 
           break;
         }
+
         case "organization.updated": {
           const organization = await ctx.runQuery(
             internal.organizations.getByWorkOSId,
             {
-              workos_id: data.id,
+              workosId: data.id,
             },
           );
 
