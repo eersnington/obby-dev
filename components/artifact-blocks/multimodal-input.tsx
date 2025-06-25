@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 import {
   useRef,
   useEffect,
@@ -10,30 +10,28 @@ import {
   type SetStateAction,
   type ChangeEvent,
   memo,
-} from "react";
-import type { Attachment, UIMessage } from "ai";
-import type { UseChatHelpers } from "@ai-sdk/react";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { useLocalStorage, useWindowSize } from "usehooks-ts";
-import { ArrowUp, Paperclip, StopCircle, Globe } from "lucide-react";
-import { PreviewAttachment } from "./preview-attachment";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { SuggestedActions } from "./suggested-actions";
-import { Toggle } from "@/components/ui/toggle";
-
-import equal from "fast-deep-equal";
-
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+} from 'react';
+import type { Attachment, UIMessage } from 'ai';
+import type { UseChatHelpers } from '@ai-sdk/react';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { useLocalStorage, useWindowSize } from 'usehooks-ts';
+import { ArrowUp, Paperclip, StopCircle, Globe } from 'lucide-react';
+import { PreviewAttachment } from './preview-attachment';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { SuggestedActions } from './suggested-actions';
+import { Toggle } from '@/components/ui/toggle';
+import equal from 'fast-deep-equal';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 
 function PureMultiModalInput({
   chatId,
@@ -50,16 +48,16 @@ function PureMultiModalInput({
   className,
 }: {
   chatId: string;
-  input: UseChatHelpers["input"];
-  setInput: UseChatHelpers["setInput"];
-  status: UseChatHelpers["status"];
+  input: UseChatHelpers['input'];
+  setInput: UseChatHelpers['setInput'];
+  status: UseChatHelpers['status'];
   stop: () => void;
   attachments: Array<Attachment>;
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
   messages: Array<UIMessage>;
-  setMessages: UseChatHelpers["setMessages"];
-  append: UseChatHelpers["append"];
-  handleSubmit: UseChatHelpers["handleSubmit"];
+  setMessages: UseChatHelpers['setMessages'];
+  append: UseChatHelpers['append'];
+  handleSubmit: UseChatHelpers['handleSubmit'];
   className?: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -74,27 +72,27 @@ function PureMultiModalInput({
 
   const adjustHeight = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
 
   const resetHeight = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = "98px";
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = '98px';
     }
   };
 
   const [localStorageInput, setLocalStorageInput] = useLocalStorage(
-    "input",
-    "",
+    'input',
+    '',
   );
 
   useEffect(() => {
     if (textareaRef.current) {
       const domValue = textareaRef.current.value;
-      const finalValue = domValue || localStorageInput || "";
+      const finalValue = domValue || localStorageInput || '';
       setInput(finalValue);
       adjustHeight();
     }
@@ -114,7 +112,7 @@ function PureMultiModalInput({
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
-    window.history.replaceState({}, "", `/chat/${chatId}`);
+    window.history.replaceState({}, '', `/chat/${chatId}`);
 
     handleSubmit(undefined, {
       experimental_attachments: attachments,
@@ -124,7 +122,7 @@ function PureMultiModalInput({
     });
 
     setAttachments([]);
-    setLocalStorageInput("");
+    setLocalStorageInput('');
     resetHeight();
 
     if (width && width > 768) {
@@ -151,8 +149,8 @@ function PureMultiModalInput({
         });
 
         const uploadResponse = await fetch(postUrl, {
-          method: "POST",
-          headers: { "Content-Type": file.type },
+          method: 'POST',
+          headers: { 'Content-Type': file.type },
           body: file,
         });
         const { storageId } = await uploadResponse.json();
@@ -169,7 +167,7 @@ function PureMultiModalInput({
           contentType: fileData.type,
         };
       } catch {
-        toast.error("Failed to upload file, please try again");
+        toast.error('Failed to upload file, please try again');
         return undefined;
       }
     },
@@ -192,7 +190,7 @@ function PureMultiModalInput({
           ...successfullyUploadedAttachments,
         ]);
       } catch (error) {
-        console.error("Error uploading files", error);
+        console.error('Error uploading files', error);
       } finally {
         setUploadQueue([]);
       }
@@ -208,7 +206,7 @@ function PureMultiModalInput({
           <SuggestedActions
             append={append}
             chatId={chatId}
-            selectedVisibilityType={"private"}
+            selectedVisibilityType={'private'}
           />
         )}
 
@@ -234,9 +232,9 @@ function PureMultiModalInput({
             <PreviewAttachment
               key={filename}
               attachment={{
-                url: "",
+                url: '',
                 name: filename,
-                contentType: "",
+                contentType: '',
               }}
               isUploading={true}
             />
@@ -251,21 +249,21 @@ function PureMultiModalInput({
         value={input}
         onChange={handleInput}
         className={cn(
-          "min-h-[24px] max-h-[calc(75dvh)] overflow-y-auto resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700",
+          'min-h-[24px] max-h-[calc(75dvh)] overflow-y-auto resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
           className,
         )}
         rows={2}
         autoFocus
         onKeyDown={(event) => {
           if (
-            event.key === "Enter" &&
+            event.key === 'Enter' &&
             !event.shiftKey &&
             !event.nativeEvent.isComposing
           ) {
             event.preventDefault();
 
-            if (status !== "ready") {
-              toast.error("Please wait for the model to finish its response");
+            if (status !== 'ready') {
+              toast.error('Please wait for the model to finish its response');
             } else {
               submitForm();
             }
@@ -296,7 +294,7 @@ function PureMultiModalInput({
                   pressed={isWebSearchEnabled}
                   onPressedChange={setIsWebSearchEnabled}
                   aria-label="Toggle web search"
-                  disabled={status !== "ready"}
+                  disabled={status !== 'ready'}
                   className="p-[7px] h-fit dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 hover:bg-zinc-200 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-50 data-[state=on]:bg-zinc-200 data-[state=on]:text-zinc-900 data-[state=on]:dark:bg-zinc-900 data-[state=on]:dark:text-zinc-200"
                 >
                   <Globe className="w-4 h-4" />
@@ -306,8 +304,8 @@ function PureMultiModalInput({
             <TooltipContent>
               <p>
                 {isWebSearchEnabled
-                  ? "Disable web search"
-                  : "Enable web search"}
+                  ? 'Disable web search'
+                  : 'Enable web search'}
               </p>
             </TooltipContent>
           </Tooltip>
@@ -315,7 +313,7 @@ function PureMultiModalInput({
       </TooltipProvider>
 
       <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
-        {status === "submitted" || status === "streaming" ? (
+        {status === 'submitted' || status === 'streaming' ? (
           <StopButton stop={stop} setMessages={setMessages} />
         ) : (
           <SendButton
@@ -345,7 +343,7 @@ function PureAttachmentsButton({
   status,
 }: {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
-  status: UseChatHelpers["status"];
+  status: UseChatHelpers['status'];
 }) {
   return (
     <Button
@@ -355,7 +353,7 @@ function PureAttachmentsButton({
         event.preventDefault();
         fileInputRef.current?.click();
       }}
-      disabled={status !== "ready"}
+      disabled={status !== 'ready'}
       variant="ghost"
     >
       <Paperclip className="w-4 h-4" />
@@ -370,7 +368,7 @@ function PureStopButton({
   setMessages,
 }: {
   stop: () => void;
-  setMessages: UseChatHelpers["setMessages"];
+  setMessages: UseChatHelpers['setMessages'];
 }) {
   return (
     <Button
