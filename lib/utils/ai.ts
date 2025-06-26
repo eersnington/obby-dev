@@ -18,7 +18,7 @@ export function convertToUIMessages(
   messages: Array<DBMessage>,
 ): Array<UIMessage> {
   return messages.map((message) => ({
-    id: message._id,
+    id: message.messageId,
     role: message.role as UIMessage['role'],
     parts: message.parts as UIMessage['parts'],
     content: '',

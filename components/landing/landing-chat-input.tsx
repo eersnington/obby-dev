@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useRef, useState, useCallback, useEffect, useMemo } from "react";
-import { Button } from "components/ui/button";
-import { Textarea } from "components/ui/textarea";
+import type React from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import { Button } from 'components/ui/button';
+import { Textarea } from 'components/ui/textarea';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import { ArrowUp, Paperclip, X, Square } from "lucide-react";
-import { ChatPicker } from "components/ai/fragments/chat-picker";
-import { ChatSettings } from "components/ai/fragments/chat-settings";
-import { cn, isFileInArray } from "lib/utils";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import { useRouter } from "next/navigation";
-import { createChatFromMessage } from "@/actions/createChat";
-import { AuthDialog } from "components/ai/fragments/auth-dialog";
-import { AI_MODELS, type ModelInfo } from "lib/ai/models";
-import templates, { type TemplateId } from "lib/templates";
-import { useLocalStorage } from "usehooks-ts";
+} from 'components/ui/tooltip';
+import { ArrowUp, Paperclip, X, Square } from 'lucide-react';
+import { ChatPicker } from 'components/ai/fragments/chat-picker';
+import { ChatSettings } from 'components/ai/fragments/chat-settings';
+import { cn, isFileInArray } from 'lib/utils';
+import { useAuth } from '@workos-inc/authkit-nextjs/components';
+import { useRouter } from 'next/navigation';
+import { createChatFromMessage } from '@/actions/createChat';
+import { AuthDialog } from 'components/ai/fragments/auth-dialog';
+import { AI_MODELS, type ModelInfo } from 'lib/ai/models';
+import templates, { type TemplateId } from 'lib/templates';
+import { useLocalStorage } from 'usehooks-ts';
 
 type Attachment = {
   url: string;
@@ -30,20 +30,20 @@ type Attachment = {
 };
 
 export function LandingChatInput({ className }: { className?: string }) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [uploadQueue, setUploadQueue] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthDialogOpen, setAuthDialog] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [selectedTemplate, setSelectedTemplate] = useState<"auto" | TemplateId>(
-    "auto",
+  const [error, setError] = useState<string>('');
+  const [selectedTemplate, setSelectedTemplate] = useState<'auto' | TemplateId>(
+    'auto',
   );
   const [languageModel, setLanguageModel] = useLocalStorage<ModelInfo>(
-    "languageModel",
+    'languageModel',
     {
-      id: "obbylabs:fast-chat",
+      id: 'obbylabs:fast-chat',
     },
   );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,15 +54,15 @@ export function LandingChatInput({ className }: { className?: string }) {
   // Auto-resize textarea
   const adjustHeight = useCallback(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   }, []);
 
   const resetHeight = useCallback(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = "98px";
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = '98px';
     }
   }, []);
 
@@ -85,7 +85,7 @@ export function LandingChatInput({ className }: { className?: string }) {
       setTimeout(() => {
         const validFiles = files.filter(
           (file) =>
-            file.type.startsWith("image/") &&
+            file.type.startsWith('image/') &&
             !isFileInArray(
               file,
               attachments.map((a) => a.file),
@@ -104,7 +104,7 @@ export function LandingChatInput({ className }: { className?: string }) {
 
         // Reset file input
         if (event.target) {
-          event.target.value = "";
+          event.target.value = '';
         }
       }, 500);
     },
@@ -117,7 +117,7 @@ export function LandingChatInput({ className }: { className?: string }) {
       const items = Array.from(e.clipboardData.items);
 
       for (const item of items) {
-        if (item.type.indexOf("image") !== -1) {
+        if (item.type.indexOf('image') !== -1) {
           e.preventDefault();
 
           const file = item.getAsFile();
@@ -130,7 +130,7 @@ export function LandingChatInput({ className }: { className?: string }) {
           ) {
             const newAttachment = {
               url: URL.createObjectURL(file),
-              name: file.name || "pasted-image.png",
+              name: file.name || 'pasted-image.png',
               contentType: file.type,
               file,
             };
@@ -146,9 +146,9 @@ export function LandingChatInput({ className }: { className?: string }) {
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   }, []);
@@ -161,7 +161,7 @@ export function LandingChatInput({ className }: { className?: string }) {
 
       const droppedFiles = Array.from(e.dataTransfer.files).filter(
         (file) =>
-          file.type.startsWith("image/") &&
+          file.type.startsWith('image/') &&
           !isFileInArray(
             file,
             attachments.map((a) => a.file),
@@ -193,7 +193,7 @@ export function LandingChatInput({ className }: { className?: string }) {
       }
 
       setIsSubmitting(true);
-      setError("");
+      setError('');
 
       try {
         const files = attachments.map((attachment) => attachment.file);
@@ -208,16 +208,16 @@ export function LandingChatInput({ className }: { className?: string }) {
           attachments.forEach((attachment) =>
             URL.revokeObjectURL(attachment.url),
           );
-          setInput("");
+          setInput('');
           setAttachments([]);
           resetHeight();
           router.push(`/chat/${result.chatId}`);
         } else {
-          setError("Failed to create chat. Please try again.");
+          setError('Failed to create chat. Please try again.');
         }
       } catch (error) {
-        console.error("Failed to create chat:", error);
-        setError("An error occurred. Please try again.");
+        console.error('Failed to create chat:', error);
+        setError('An error occurred. Please try again.');
       } finally {
         setIsSubmitting(false);
       }
@@ -226,7 +226,7 @@ export function LandingChatInput({ className }: { className?: string }) {
   );
 
   const handleRetry = useCallback(() => {
-    setError("");
+    setError('');
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
@@ -241,7 +241,7 @@ export function LandingChatInput({ className }: { className?: string }) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       if (e.currentTarget.checkValidity()) {
         handleSubmit(e);
@@ -266,7 +266,7 @@ export function LandingChatInput({ className }: { className?: string }) {
       <div className="relative" key={`${attachment.name}-${index}`}>
         <span
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               removeAttachment(index);
             }
           }}
@@ -287,7 +287,7 @@ export function LandingChatInput({ className }: { className?: string }) {
   return (
     <>
       <AuthDialog open={isAuthDialogOpen} setOpen={setAuthDialog} />
-      <div className={cn("relative w-full", className)}>
+      <div className={cn('relative w-full', className)}>
         {/* Error display */}
         {error && (
           <div className="flex items-center p-1.5 text-sm font-medium mb-4 rounded-xl bg-red-400/10 text-red-400">
@@ -313,9 +313,9 @@ export function LandingChatInput({ className }: { className?: string }) {
           <div className="relative">
             <div
               className={cn(
-                "shadow-md rounded-2xl relative z-10 bg-accent border-2 border-accent-foreground/10",
+                'shadow-md rounded-2xl relative z-10 bg-accent border-2 border-accent-foreground/10',
                 dragActive &&
-                  "before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-dashed before:border-primary",
+                  'before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-dashed before:border-primary',
               )}
             >
               {/* Top section with model selector */}
@@ -346,7 +346,7 @@ export function LandingChatInput({ className }: { className?: string }) {
                 className="text-normal px-4 resize-none ring-0 bg-inherit w-full m-0 outline-none border-0 focus-visible:ring-0"
                 required={true}
                 placeholder="Ask Obby to build..."
-                disabled={error !== ""}
+                disabled={error !== ''}
                 value={input}
                 onChange={(e) => {
                   setInput(e.target.value);
@@ -375,7 +375,7 @@ export function LandingChatInput({ className }: { className?: string }) {
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
                         <Button
-                          disabled={error !== "" || isSubmitting}
+                          disabled={error !== '' || isSubmitting}
                           type="button"
                           variant="outline"
                           size="icon"
@@ -416,7 +416,7 @@ export function LandingChatInput({ className }: { className?: string }) {
                         <TooltipTrigger asChild>
                           <Button
                             disabled={
-                              error !== "" ||
+                              error !== '' ||
                               (!input.trim() && !attachments.length) ||
                               uploadQueue.length > 0
                             }
