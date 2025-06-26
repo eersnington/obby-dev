@@ -15,6 +15,40 @@ export default async function Page() {
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('chat-model');
 
+  // if (!modelIdFromCookie) {
+  //   return (
+  //     <>
+  //       <Chat
+  //         key={id}
+  //         id={id}
+  //         initialMessages={[]}
+  //         selectedChatModel={DEFAULT_CHAT_MODEL}
+  //         selectedVisibilityType="private"
+  //         isReadonly={false}
+  //         isChatSelected={false}
+  //         user={user}
+  //         autoResume={false}
+  //       />
+  //       <DataStreamHandler id={id} />
+  //     </>
+  //   );
+  // }
+
+  // return (<>
+  //   <Chat
+  //     key={id}
+  //     id={id}
+  //     initialMessages={[]}
+  //     selectedChatModel={modelIdFromCookie.value}
+  //     selectedVisibilityType="private"
+  //     isReadonly={false}
+  //     isChatSelected={false}
+  //     user={user}
+  //     autoResume={false}
+  //   />
+  //   <DataStreamHandler id={id} />
+  // </>);
+
   return (
     <div className="flex flex-col bg-accent/30 border-2 border-accent h-full w-full rounded-lg shadow-sm">
       <header className="flex h-16 items-center gap-4 px-6">

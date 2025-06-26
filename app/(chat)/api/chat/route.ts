@@ -29,7 +29,7 @@ import {
   type ResumableStreamContext,
 } from 'resumable-stream';
 import { after } from 'next/server';
-import { getModelFromRegistry, obbyRegistry } from '@/lib/ai/providers';
+import { obbyRegistry } from '@/lib/ai/providers';
 import { withAuth } from '@workos-inc/authkit-nextjs';
 
 export const maxDuration = 90;
