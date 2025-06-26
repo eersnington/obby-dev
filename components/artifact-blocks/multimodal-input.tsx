@@ -18,7 +18,7 @@ import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { SuggestedActions } from './suggested-actions';
+// import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -27,8 +27,10 @@ import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 import type { VisibilityType } from './visibility-selector';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import type { User } from '@workos-inc/node';
 
 function PureMultimodalInput({
+  session,
   chatId,
   input,
   setInput,
@@ -43,6 +45,7 @@ function PureMultimodalInput({
   className,
   selectedVisibilityType,
 }: {
+  session: User | null;
   chatId: string;
   input: UseChatHelpers['input'];
   setInput: UseChatHelpers['setInput'];
@@ -255,7 +258,7 @@ function PureMultimodalInput({
           </motion.div>
         )}
       </AnimatePresence>
-
+      {/* 
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
@@ -264,7 +267,7 @@ function PureMultimodalInput({
             chatId={chatId}
             selectedVisibilityType={selectedVisibilityType}
           />
-        )}
+        )} */}
 
       <input
         type="file"

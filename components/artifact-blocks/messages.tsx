@@ -1,15 +1,14 @@
 import type { UIMessage } from 'ai';
 import { PreviewMessage, ThinkingMessage } from './message';
-import { Greeting } from './greeting';
 import { memo } from 'react';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import { motion } from 'motion/react';
 import { useMessages } from '@/hooks/use-messages';
 import type { Doc } from '@/convex/_generated/dataModel';
+import { HeroSection } from '../landing/hero-section';
 
 type Vote = Doc<'votes'>;
-
 interface MessagesProps {
   chatId: string;
   status: UseChatHelpers['status'];
@@ -46,7 +45,7 @@ function PureMessages({
       ref={messagesContainerRef}
       className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 relative"
     >
-      {messages.length === 0 && <Greeting />}
+      {messages.length === 0 && <HeroSection />}
 
       {messages.map((message, index) => (
         <PreviewMessage

@@ -6,24 +6,19 @@ import {
   smoothStream,
   streamText,
 } from 'ai';
-
 import { generateTitleFromUserMessage } from '@/lib/ai/generate-title';
 import { systemPrompt } from '@/lib/ai/prompt';
 import { openai } from '@ai-sdk/openai';
-
 import {
   generateUUID,
   getTrailingMessageId,
   convertToUIMessages,
 } from '@/lib/utils';
-
 import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
-
 import { fetchQuery, fetchMutation } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
-
 import {
   createResumableStreamContext,
   type ResumableStreamContext,
@@ -31,6 +26,7 @@ import {
 import { after } from 'next/server';
 import { obbyRegistry } from '@/lib/ai/providers';
 import { withAuth } from '@workos-inc/authkit-nextjs';
+import type { GoogleGenerativeAIProviderOptions } from '@ai-sdk/google';
 
 export const maxDuration = 90;
 
@@ -174,8 +170,16 @@ export async function POST(request: Request) {
     execute: (dataStream) => {
       console.log('[api/chat POST execute] Stream execution started.');
       const result = streamText({
-        model: obbyRegistry.languageModel('obbylabs:agent-chat'),
+        model: obbyRegistry.languageModel('obbylabs:fast-chat'),
         system: systemPrompt({ selectedChatModel }),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              includeThoughts: true,
+              thinkingBudget: 256,
+            },
+          } satisfies GoogleGenerativeAIProviderOptions,
+        },
         messages: allMessages,
         maxSteps: 5,
         experimental_activeTools:
@@ -198,10 +202,20 @@ export async function POST(request: Request) {
             ? { webSearch: openai.tools.webSearchPreview() }
             : {}),
         },
-        onFinish: async ({ response }) => {
+        onFinish: async ({
+          response,
+          reasoning,
+          reasoningDetails,
+          finishReason,
+        }) => {
+          console.log('[api/chat POST onFinish] Stream finished. Reasoning:', {
+            reasoning,
+            reasoningDetails,
+            finishReason,
+          });
           console.log(
             '[api/chat POST onFinish] Stream finished. Response:',
-            JSON.stringify(response),
+            response,
           );
 
           if (user) {

@@ -31,7 +31,7 @@ export const listChatsByUserId = query({
 });
 
 export const listRecentChatsByUserID = query({
-  args: { userId: v.id('users') },
+  args: { userId: v.string() },
   handler: async (ctx, args) => {
     const chats = await ctx.db
       .query('chats')

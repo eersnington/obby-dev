@@ -204,7 +204,6 @@ export function LandingChatInput({ className }: { className?: string }) {
 
         if (result.success && result.chatId) {
           // Clean up attachment URLs
-          // biome-ignore lint/complexity/noForEach: this is simpler
           attachments.forEach((attachment) =>
             URL.revokeObjectURL(attachment.url),
           );

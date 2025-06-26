@@ -26,6 +26,7 @@ import type { VisibilityType } from './visibility-selector';
 import type { Doc } from '@/convex/_generated/dataModel';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import type { User } from '@workos-inc/node';
 
 type Document = Doc<'documents'>;
 type Vote = Doc<'votes'>;
@@ -49,6 +50,7 @@ export interface UIArtifact {
 }
 
 function PureArtifact({
+  session,
   chatId,
   input,
   setInput,
@@ -65,6 +67,7 @@ function PureArtifact({
   isReadonly,
   selectedVisibilityType,
 }: {
+  session: User | null;
   chatId: string;
   input: string;
   setInput: UseChatHelpers['setInput'];
@@ -341,6 +344,7 @@ function PureArtifact({
 
                 <form className="flex flex-row gap-2 relative items-end w-full px-4 pb-4">
                   <MultimodalInput
+                    session={session}
                     chatId={chatId}
                     input={input}
                     setInput={setInput}

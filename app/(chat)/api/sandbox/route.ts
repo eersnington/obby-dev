@@ -1,7 +1,7 @@
-import { env } from "env";
-import type { FragmentSchema } from "lib/fragment";
-import type { ExecutionResultInterpreter, ExecutionResultWeb } from "lib/types";
-import { Sandbox } from "@e2b/code-interpreter";
+import { env } from 'env';
+import type { FragmentSchema } from 'lib/fragment';
+import type { ExecutionResultInterpreter, ExecutionResultWeb } from 'lib/types';
+import { Sandbox } from '@e2b/code-interpreter';
 
 const sandboxTimeout = 5 * 60 * 1000; // 5 minute in ms
 
@@ -18,15 +18,15 @@ export async function POST(req: Request) {
     teamID: string | undefined;
   } = await req.json();
   // console.log("fragment", fragment);
-  console.log("userID", userID);
+  console.log('userID', userID);
 
   // Create an interpreter or a sandbox
   const sbx = await Sandbox.create(fragment.template, {
     apiKey: env.E2B_API_KEY,
     metadata: {
       template: fragment.template,
-      userID: userID ?? "",
-      teamID: teamID ?? "",
+      userID: userID ?? '',
+      teamID: teamID ?? '',
     },
     timeoutMs: sandboxTimeout,
   });
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   if (fragment.has_additional_dependencies) {
     await sbx.commands.run(fragment.install_dependencies_command);
     console.log(
-      `Installed dependencies: ${fragment.additional_dependencies.join(", ")} in sandbox ${sbx.sandboxId}`,
+      `Installed dependencies: ${fragment.additional_dependencies.join(', ')} in sandbox ${sbx.sandboxId}`,
     );
   }
 
@@ -56,8 +56,8 @@ export async function POST(req: Request) {
   }
 
   // Execute code or return a URL to the running sandbox
-  if (fragment.template === "code-interpreter-v1") {
-    const { logs, error, results } = await sbx.runCode(fragment.code || "");
+  if (fragment.template === 'code-interpreter-v1') {
+    const { logs, error, results } = await sbx.runCode(fragment.code || '');
 
     return new Response(
       JSON.stringify({
