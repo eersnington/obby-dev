@@ -3,20 +3,25 @@ import type {
   CoreAssistantMessage,
   CoreToolMessage,
   UIMessage,
-} from "ai";
-import type { Doc } from "@/convex/_generated/dataModel";
+} from 'ai';
+import type { Doc } from '@/convex/_generated/dataModel';
+import { ChatSDKError, type ErrorCode } from '../ai/errors';
 
-type DBMessage = Doc<"messages">;
-type DBDocument = Doc<"documents">;
+type DBMessage = Doc<'messages'>;
+type DBDocument = Doc<'documents'>;
+
+export function sanitizeText(text: string) {
+  return text.replace('<has_function_call>', '');
+}
 
 export function convertToUIMessages(
   messages: Array<DBMessage>,
 ): Array<UIMessage> {
   return messages.map((message) => ({
     id: message._id,
-    role: message.role as UIMessage["role"],
-    parts: message.parts as UIMessage["parts"],
-    content: "",
+    role: message.role as UIMessage['role'],
+    parts: message.parts as UIMessage['parts'],
+    content: '',
     createdAt: new Date(message._creationTime),
     experimental_attachments: (message.attachments as Array<Attachment>) ?? [],
   }));
@@ -25,8 +30,41 @@ export function convertToUIMessages(
 type ResponseMessageWithoutId = CoreToolMessage | CoreAssistantMessage;
 type ResponseMessage = ResponseMessageWithoutId & { id: string };
 
+export const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const { code, cause } = await response.json();
+    throw new ChatSDKError(code as ErrorCode, cause);
+  }
+
+  return response.json();
+};
+
+export async function fetchWithErrorHandlers(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+) {
+  try {
+    const response = await fetch(input, init);
+
+    if (!response.ok) {
+      const { code, cause } = await response.json();
+      throw new ChatSDKError(code as ErrorCode, cause);
+    }
+
+    return response;
+  } catch (error: unknown) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new ChatSDKError('offline:chat');
+    }
+
+    throw error;
+  }
+}
+
 export function getMostRecentUserMessage(messages: Array<UIMessage>) {
-  const userMessages = messages.filter((message) => message.role === "user");
+  const userMessages = messages.filter((message) => message.role === 'user');
   return userMessages.at(-1);
 }
 

@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "motion/react";
-import { useWindowSize } from "usehooks-ts";
-import { useBlock } from "@/hooks/use-block";
-import { getDocumentTimestampByIndex } from "@/lib/utils";
-import { LoaderCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { Doc } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useState } from 'react';
+import { motion } from 'motion/react';
+import { useWindowSize } from 'usehooks-ts';
+import { getDocumentTimestampByIndex } from '@/lib/utils';
+import { LoaderCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { Doc } from '@/convex/_generated/dataModel';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { useArtifact } from '@/hooks/use-artifact';
 
-type Document = Doc<"documents">;
+type Document = Doc<'documents'>;
 
 interface VersionFooterProps {
-  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
+  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
   documents: Array<Document> | undefined;
   currentVersionIndex: number;
 }
@@ -24,7 +24,7 @@ export const VersionFooter = ({
   documents,
   currentVersionIndex,
 }: VersionFooterProps) => {
-  const { block } = useBlock();
+  const { artifact } = useArtifact();
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const [isMutating, setIsMutating] = useState(false);
@@ -41,7 +41,7 @@ export const VersionFooter = ({
       initial={{ y: isMobile ? 200 : 77 }}
       animate={{ y: 0 }}
       exit={{ y: isMobile ? 200 : 77 }}
-      transition={{ type: "spring", stiffness: 140, damping: 20 }}
+      transition={{ type: 'spring', stiffness: 140, damping: 20 }}
     >
       <div>
         <div>You are viewing a previous version</div>
@@ -57,7 +57,7 @@ export const VersionFooter = ({
             setIsMutating(true);
             try {
               await deleteDocuments({
-                documentId: block.documentId,
+                documentId: artifact.documentId,
                 timestamp: new Date(
                   getDocumentTimestampByIndex(documents, currentVersionIndex),
                 ).getTime(),
@@ -77,7 +77,7 @@ export const VersionFooter = ({
         <Button
           variant="outline"
           onClick={() => {
-            handleVersionChange("latest");
+            handleVersionChange('latest');
           }}
         >
           Back to latest version

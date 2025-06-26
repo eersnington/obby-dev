@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   memo,
@@ -7,29 +7,29 @@ import {
   useEffect,
   useMemo,
   useRef,
-} from "react";
-import { Text, Maximize2, Image, LoaderCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useBlock } from "@/hooks/use-block";
-import type { BlockKind, UIBlock } from "./block";
-import { DocumentToolCall, DocumentToolResult } from "./document";
-import { CodeEditor } from "./code-editor";
-import { InlineDocumentSkeleton } from "./document-skeleton";
-import equal from "fast-deep-equal";
-import type { Doc, Id } from "@/convex/_generated/dataModel";
+} from 'react';
+import { Text, Maximize2, LoaderCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { useArtifact } from '@/hooks/use-artifact';
+import type { ArtifactKind, UIArtifact } from './artifact';
+import { DocumentToolCall, DocumentToolResult } from './document';
+import { CodeEditor } from './code-editor';
+import { InlineDocumentSkeleton } from './document-skeleton';
+import equal from 'fast-deep-equal';
+import type { Doc, Id } from '@/convex/_generated/dataModel';
 
-type Document = Doc<"documents">;
+type Document = Doc<'documents'>;
 
 interface ToolResult {
-  id: Id<"documents">;
+  id: Id<'documents'>;
   title: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
 }
 interface ToolArgs {
   title: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
 }
 
 interface DocumentPreviewProps {
@@ -43,11 +43,11 @@ export function DocumentPreview({
   result,
   args,
 }: DocumentPreviewProps) {
-  const { block, setBlock } = useBlock();
+  const { artifact, setArtifact } = useArtifact();
 
   const documents = useQuery(
     api.documents.getDocumentById,
-    result ? { documentId: result.id } : "skip",
+    result ? { documentId: result.id } : 'skip',
   );
 
   const isDocumentsFetching = documents === undefined;
@@ -58,8 +58,8 @@ export function DocumentPreview({
   useEffect(() => {
     const boundingBox = hitboxRef.current?.getBoundingClientRect();
 
-    if (block.documentId && boundingBox) {
-      setBlock((block) => ({
+    if (artifact.documentId && boundingBox) {
+      setArtifact((block) => ({
         ...block,
         boundingBox: {
           left: boundingBox.x,
@@ -69,9 +69,9 @@ export function DocumentPreview({
         },
       }));
     }
-  }, [block.documentId, setBlock]);
+  }, [artifact.documentId, setArtifact]);
 
-  if (block.isVisible) {
+  if (artifact.isVisible) {
     if (result) {
       return (
         <DocumentToolResult
@@ -95,40 +95,47 @@ export function DocumentPreview({
 
   if (isDocumentsFetching) {
     return (
-      <LoadingSkeleton blockKind={result?.kind ?? args?.kind ?? block.kind} />
+      <LoadingSkeleton
+        artifactKind={result?.kind ?? args?.kind ?? artifact.kind}
+      />
     );
   }
 
   const document: Document | null = previewDocument
     ? previewDocument
-    : block.status === "streaming"
+    : artifact.status === 'streaming'
       ? {
-          _id: block.documentId as Id<"documents">,
+          _id: artifact.documentId as Id<'documents'>,
           _creationTime: Date.now(),
-          documentId: block.documentId,
-          title: block.title,
-          kind: block.kind,
-          content: block.content,
-          userId: "noop" as Id<"users">,
+          documentId: artifact.documentId,
+          title: artifact.title,
+          kind: artifact.kind,
+          content: artifact.content,
+          userId: 'noop' as Id<'users'>,
         }
       : null;
 
-  if (!document || !result) return <LoadingSkeleton blockKind={block.kind} />;
+  if (!document || !result)
+    return <LoadingSkeleton artifactKind={artifact.kind} />;
 
   return (
     <div className="relative w-full cursor-pointer">
-      <HitboxLayer hitboxRef={hitboxRef} result={result} setBlock={setBlock} />
+      <HitboxLayer
+        hitboxRef={hitboxRef}
+        result={result}
+        setBlock={setArtifact}
+      />
       <DocumentHeader
         title={document.title}
         kind={document.kind}
-        isStreaming={block.status === "streaming"}
+        isStreaming={artifact.status === 'streaming'}
       />
       <DocumentContent document={document} />
     </div>
   );
 }
 
-const LoadingSkeleton = ({ blockKind }: { blockKind: BlockKind }) => (
+const LoadingSkeleton = ({ artifactKind }: { artifactKind: ArtifactKind }) => (
   <div className="w-full">
     <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-center justify-between dark:bg-muted h-[57px] dark:border-zinc-700 border-b-0">
       <div className="flex flex-row items-center gap-3">
@@ -141,7 +148,7 @@ const LoadingSkeleton = ({ blockKind }: { blockKind: BlockKind }) => (
         <Maximize2 className="w-4 h-4" />
       </div>
     </div>
-    {blockKind === "image" ? (
+    {/* {artifactKind === 'image' ? (
       <div className="overflow-y-scroll border rounded-b-2xl bg-muted border-t-0 dark:border-zinc-700">
         <div className="animate-pulse h-[257px] bg-muted-foreground/20 w-full" />
       </div>
@@ -149,7 +156,10 @@ const LoadingSkeleton = ({ blockKind }: { blockKind: BlockKind }) => (
       <div className="overflow-y-scroll border rounded-b-2xl p-8 pt-4 bg-muted border-t-0 dark:border-zinc-700">
         <InlineDocumentSkeleton />
       </div>
-    )}
+    )} */}
+    <div className="overflow-y-scroll border rounded-b-2xl p-8 pt-4 bg-muted border-t-0 dark:border-zinc-700">
+      <InlineDocumentSkeleton />
+    </div>
   </div>
 );
 
@@ -160,14 +170,16 @@ const PureHitboxLayer = ({
 }: {
   hitboxRef: React.RefObject<HTMLDivElement | null>;
   result: ToolResult;
-  setBlock: (updaterFn: UIBlock | ((currentBlock: UIBlock) => UIBlock)) => void;
+  setBlock: (
+    updaterFn: UIArtifact | ((currentBlock: UIArtifact) => UIArtifact),
+  ) => void;
 }) => {
   const handleInteraction = useCallback(
     (event: MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
       const boundingBox = event.currentTarget.getBoundingClientRect();
 
       setBlock((block) =>
-        block.status === "streaming"
+        block.status === 'streaming'
           ? { ...block, isVisible: true }
           : {
               ...block,
@@ -193,7 +205,7 @@ const PureHitboxLayer = ({
       ref={hitboxRef}
       onClick={handleInteraction}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === 'Enter' || e.key === ' ') {
           handleInteraction(e);
         }
       }}
@@ -220,7 +232,7 @@ const PureDocumentHeader = ({
   isStreaming,
 }: {
   title: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
   isStreaming: boolean;
 }) => (
   <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-start sm:items-center justify-between dark:bg-muted border-b-0 dark:border-zinc-700">
@@ -230,9 +242,10 @@ const PureDocumentHeader = ({
           <div className="animate-spin">
             <LoaderCircle className="w-4 h-4" />
           </div>
-        ) : kind === "image" ? (
-          <Image className="w-4 h-4" />
         ) : (
+          // : kind === 'image' ? (
+          //   <Image className="w-4 h-4" />
+          // )
           <Text className="w-4 h-4" />
         )}
       </div>
@@ -250,27 +263,27 @@ const DocumentHeader = memo(PureDocumentHeader, (prevProps, nextProps) => {
 });
 
 const DocumentContent = ({ document }: { document: Document }) => {
-  const { block } = useBlock();
+  const { artifact } = useArtifact();
 
   const containerClassName = cn(
-    "h-[257px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700",
+    'h-[257px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
     {
-      "p-0": document.kind === "code",
+      'p-0': document.kind === 'code',
     },
   );
 
   const commonProps = {
-    content: document.content ?? "",
+    content: document.content ?? '',
     isCurrentVersion: true,
     currentVersionIndex: 0,
-    status: block.status,
+    status: artifact.status,
     saveContent: () => {},
     suggestions: [],
   };
 
   return (
     <div className={containerClassName}>
-      {document.kind === "code" ? (
+      {document.kind === 'code' ? (
         <div className="flex flex-1 relative w-full">
           <div className="absolute inset-0">
             <CodeEditor {...commonProps} onSaveContent={() => {}} />

@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import type { VisibilityType } from "@/components/artifact-blocks/visibility-selector";
+import { useMemo } from 'react';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import type { VisibilityType } from '@/components/artifact-blocks/visibility-selector';
 
 export function useChatVisibility({
   chatId,
-  initialVisibility,
+  initialVisibilityType,
 }: {
   chatId: string;
-  initialVisibility: VisibilityType;
+  initialVisibilityType: VisibilityType;
 }) {
   const chat = useQuery(api.chats.getChatById, { id: chatId });
   const updateVisibility = useMutation(api.chats.updateChatVisibilityById);
 
   const visibilityType = useMemo(() => {
-    return chat?.visibility ?? initialVisibility;
-  }, [chat, initialVisibility]);
+    return chat?.visibility ?? initialVisibilityType;
+  }, [chat, initialVisibilityType]);
 
   const setVisibilityType = async (updatedVisibilityType: VisibilityType) => {
     await updateVisibility({

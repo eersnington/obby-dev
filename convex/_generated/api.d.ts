@@ -19,7 +19,9 @@ import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as messages from "../messages.js";
 import type * as organizations from "../organizations.js";
+import type * as streams from "../streams.js";
 import type * as stripe from "../stripe.js";
+import type * as suggestions from "../suggestions.js";
 import type * as users from "../users.js";
 import type * as workos from "../workos.js";
 
@@ -38,7 +40,9 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   messages: typeof messages;
   organizations: typeof organizations;
+  streams: typeof streams;
   stripe: typeof stripe;
+  suggestions: typeof suggestions;
   users: typeof users;
   workos: typeof workos;
 }>;

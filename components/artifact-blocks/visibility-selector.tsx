@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { type ReactNode, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Check, ChevronDown, LockOpen, Lock } from "lucide-react";
-import { toast } from "sonner";
-import { useChatVisibility } from "@/hooks/use-chat-visibility";
-import { Button } from "@/components/ui/button";
+import { type ReactNode, useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { Check, ChevronDown, LockOpen, Lock } from 'lucide-react';
+import { toast } from 'sonner';
+import { useChatVisibility } from '@/hooks/use-chat-visibility';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-export type VisibilityType = "private" | "public";
+export type VisibilityType = 'private' | 'public';
 
 const visibilities: Array<{
   id: VisibilityType;
@@ -22,15 +22,15 @@ const visibilities: Array<{
   icon: ReactNode;
 }> = [
   {
-    id: "private",
-    label: "Private",
-    description: "Only you can access this chat",
+    id: 'private',
+    label: 'Private',
+    description: 'Only you can access this chat',
     icon: <Lock className="w-4 h-4" />,
   },
   {
-    id: "public",
-    label: "Public",
-    description: "Anyone with the link can access this chat",
+    id: 'public',
+    label: 'Public',
+    description: 'Anyone with the link can access this chat',
     icon: <LockOpen className="w-4 h-4" />,
   },
 ];
@@ -49,7 +49,7 @@ export function VisibilitySelector({
 
   const { visibilityType, setVisibilityType } = useChatVisibility({
     chatId,
-    initialVisibility: selectedVisibilityType,
+    initialVisibilityType: selectedVisibilityType,
   });
 
   const selectedVisibility = useMemo(
@@ -62,7 +62,7 @@ export function VisibilitySelector({
       <DropdownMenuTrigger
         asChild
         className={cn(
-          "w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+          'w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
           className,
         )}
       >
@@ -78,7 +78,7 @@ export function VisibilitySelector({
 
       <DropdownMenuContent align="start" className="min-w-[300px]">
         {visibilities.map((visibility) => {
-          const isPublicOption = visibility.id === "public";
+          const isPublicOption = visibility.id === 'public';
           const isDisabled = isPublicOption && !isChatSelected;
           return (
             <DropdownMenuItem
@@ -93,17 +93,17 @@ export function VisibilitySelector({
                   navigator.clipboard
                     .writeText(url)
                     .then(() => {
-                      toast("Link copied to clipboard");
+                      toast('Link copied to clipboard');
                     })
                     .catch((err) => {
-                      console.error("Failed to copy link: ", err);
-                      toast.error("Failed to copy link");
+                      console.error('Failed to copy link: ', err);
+                      toast.error('Failed to copy link');
                     });
                 }
               }}
               className={cn(
-                "gap-4 group/item flex flex-row justify-between items-center",
-                isDisabled && "opacity-50 cursor-not-allowed",
+                'gap-4 group/item flex flex-row justify-between items-center',
+                isDisabled && 'opacity-50 cursor-not-allowed',
               )}
               disabled={isDisabled}
               data-active={visibility.id === visibilityType}

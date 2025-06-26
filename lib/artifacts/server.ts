@@ -1,23 +1,23 @@
-import type { DataStreamWriter } from "ai";
-import { fetchMutation } from "convex/nextjs";
-import type { Doc } from "@/convex/_generated/dataModel";
-import { api } from "@/convex/_generated/api";
-import { codeDocumentHandler } from "@/components/artifact-blocks/code/server";
-import type { BlockKind } from "@/components/artifact-blocks/block";
+import type { DataStreamWriter } from 'ai';
+import { fetchMutation } from 'convex/nextjs';
+import type { Doc } from '@/convex/_generated/dataModel';
+import { api } from '@/convex/_generated/api';
+import { codeDocumentHandler } from '@/components/artifact-blocks/code/server';
+import type { ArtifactKind } from '@/components/artifact-blocks/artifact';
 
 type Document = {
   title: string;
   content: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
   documentId: string;
-  userId: Doc<"users">["userId"];
+  userId: Doc<'users'>['userId'];
   chatId?: string;
 };
 
 export interface SaveDocumentProps {
   id: string;
   title: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
   content: string;
   userId: string;
   chatId?: string;
@@ -27,7 +27,7 @@ export interface CreateDocumentCallbackProps {
   id: string;
   title: string;
   dataStream: DataStreamWriter;
-  user: Doc<"users">["userId"];
+  user: Doc<'users'>['userId'];
   chatId?: string;
 }
 
@@ -35,17 +35,17 @@ export interface UpdateDocumentCallbackProps {
   document: Document;
   description: string;
   dataStream: DataStreamWriter;
-  user: Doc<"users">["userId"];
+  user: Doc<'users'>['userId'];
   chatId?: string;
 }
 
-export interface DocumentHandler<T = BlockKind> {
+export interface DocumentHandler<T = ArtifactKind> {
   kind: T;
   onCreateDocument: (args: CreateDocumentCallbackProps) => Promise<void>;
   onUpdateDocument: (args: UpdateDocumentCallbackProps) => Promise<void>;
 }
 
-export function createDocumentHandler<T extends BlockKind>(config: {
+export function createDocumentHandler<T extends ArtifactKind>(config: {
   kind: T;
   onCreateDocument: (params: CreateDocumentCallbackProps) => Promise<string>;
   onUpdateDocument: (params: UpdateDocumentCallbackProps) => Promise<string>;
@@ -106,4 +106,4 @@ export const documentHandlersByBlockKind: Array<DocumentHandler> = [
   codeDocumentHandler,
 ];
 
-export const blockKinds = ["code"] as const;
+export const artifactKinds = ['code'] as const;

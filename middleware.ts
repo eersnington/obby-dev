@@ -1,5 +1,5 @@
-import { authkit } from "@workos-inc/authkit-nextjs";
-import { NextResponse, type NextRequest } from "next/server";
+import { authkit } from '@workos-inc/authkit-nextjs';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // Protected routes are determined via the use of the withAuth method,
 // specifically whether the ensureSignedIn option is used.
@@ -17,9 +17,9 @@ export default async function middleware(request: NextRequest) {
   });
 
   // rewriting path of nerds who try to access the /chat page without any chat id
-  if (request.url.endsWith("/chat")) {
-    console.log("No session on protected path");
-    return NextResponse.rewrite(new URL("/", request.url), {
+  if (request.nextUrl.pathname === '/chat') {
+    console.log('No session on protected path');
+    return NextResponse.rewrite(new URL('/', request.url), {
       headers: headers,
     });
   }
@@ -34,13 +34,7 @@ export default async function middleware(request: NextRequest) {
 // Match against pages that require authentication
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
   ],
 };

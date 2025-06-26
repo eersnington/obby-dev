@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
-import { memo, useEffect, useRef } from "react";
-
-import { basicSetup } from "codemirror";
-import { EditorView } from "@codemirror/view";
-import { EditorState, Transaction } from "@codemirror/state";
-import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
-import type { Doc } from "@/convex/_generated/dataModel";
+import { memo, useEffect, useRef } from 'react';
+import { basicSetup } from 'codemirror';
+import { EditorView } from '@codemirror/view';
+import { EditorState, Transaction } from '@codemirror/state';
+import { python } from '@codemirror/lang-python';
+import { oneDark } from '@codemirror/theme-one-dark';
+import type { Doc } from '@/convex/_generated/dataModel';
 
 type Suggestion = {
   originalText: string;
   suggestedText: string;
   description: string;
   isResolved: boolean;
-  userId: Doc<"users">["_id"];
+  userId: Doc<'users'>['userId'];
   documentId: string;
   suggestionId: string;
 };
@@ -22,7 +21,7 @@ type Suggestion = {
 type EditorProps = {
   content: string;
   onSaveContent: (updatedContent: string, debounce: boolean) => void;
-  status: "streaming" | "idle";
+  status: 'streaming' | 'idle';
   isCurrentVersion: boolean;
   currentVersionIndex: number;
   suggestions: Array<Suggestion>;
@@ -32,7 +31,6 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<EditorView | null>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (containerRef.current && !editorRef.current) {
       const startState = EditorState.create({
@@ -52,6 +50,7 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
         editorRef.current = null;
       }
     };
+    // NOTE: we only want to run this effect once
   }, []);
 
   useEffect(() => {
@@ -85,7 +84,7 @@ function PureCodeEditor({ content, onSaveContent, status }: EditorProps) {
     if (editorRef.current && content) {
       const currentContent = editorRef.current.state.doc.toString();
 
-      if (status === "streaming" || currentContent !== content) {
+      if (status === 'streaming' || currentContent !== content) {
         const transaction = editorRef.current.state.update({
           changes: {
             from: 0,
@@ -113,7 +112,7 @@ function areEqual(prevProps: EditorProps, nextProps: EditorProps) {
   if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex)
     return false;
   if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) return false;
-  if (prevProps.status === "streaming" && nextProps.status === "streaming")
+  if (prevProps.status === 'streaming' && nextProps.status === 'streaming')
     return false;
   if (prevProps.content !== nextProps.content) return false;
 

@@ -1,43 +1,45 @@
+import type { Attachment, UIMessage } from 'ai';
+import { formatDistance } from 'date-fns';
+import { AnimatePresence, motion } from 'motion/react';
 import {
   type Dispatch,
   memo,
   type SetStateAction,
   useCallback,
   useEffect,
-  useState,
   useRef,
-} from "react";
-import type { Attachment, UIMessage } from "ai";
-import type { UseChatHelpers } from "@ai-sdk/react";
-import { formatDistance } from "date-fns";
-import { AnimatePresence, motion } from "motion/react";
-import { useDebounceCallback, useWindowSize } from "usehooks-ts";
-import { useBlock } from "@/hooks/use-block";
-import { codeBlock } from "./code/client";
-import { MultiModalInput } from "./multimodal-input";
-import { Toolbar } from "./toolbar";
-import { VersionFooter } from "./version-footer";
-import { BlockActions } from "./block-actions";
-import { BlockCloseButton } from "./block-close-button";
-import { BlockMessages } from "./block-messages";
-import { useSidebar } from "@/components/ui/sidebar";
-import equal from "fast-deep-equal";
-import type { Doc } from "@/convex/_generated/dataModel";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+  useState,
+} from 'react';
+import { useDebounceCallback, useWindowSize } from 'usehooks-ts';
+import { MultimodalInput } from './multimodal-input';
+import { Toolbar } from './toolbar';
+import { VersionFooter } from './version-footer';
+import { ArtifactActions } from './artifact-actions';
+import { ArtifactCloseButton } from './artifact-close-button';
+import { ArtifactMessages } from './artifact-messages';
+import { useSidebar } from '../ui/sidebar';
+import { useArtifact } from '@/hooks/use-artifact';
+import { codeArtifact } from './code/client';
+import equal from 'fast-deep-equal';
+import type { UseChatHelpers } from '@ai-sdk/react';
+import type { VisibilityType } from './visibility-selector';
+import type { Doc } from '@/convex/_generated/dataModel';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
-type Document = Doc<"documents">;
+type Document = Doc<'documents'>;
+type Vote = Doc<'votes'>;
 
-export const blockDefinitions = [codeBlock];
-export type BlockKind = (typeof blockDefinitions)[number]["kind"];
+export const artifactDefinitions = [codeArtifact];
+export type ArtifactKind = (typeof artifactDefinitions)[number]['kind'];
 
-export interface UIBlock {
+export interface UIArtifact {
   title: string;
   documentId: string;
-  kind: BlockKind;
+  kind: ArtifactKind;
   content: string;
   isVisible: boolean;
-  status: "streaming" | "idle";
+  status: 'streaming' | 'idle';
   boundingBox: {
     top: number;
     left: number;
@@ -46,7 +48,7 @@ export interface UIBlock {
   };
 }
 
-function PureBlock({
+function PureArtifact({
   chatId,
   input,
   setInput,
@@ -61,34 +63,35 @@ function PureBlock({
   reload,
   votes,
   isReadonly,
+  selectedVisibilityType,
 }: {
   chatId: string;
   input: string;
-  setInput: UseChatHelpers["setInput"];
-  status: UseChatHelpers["status"];
-  stop: UseChatHelpers["stop"];
+  setInput: UseChatHelpers['setInput'];
+  status: UseChatHelpers['status'];
+  stop: UseChatHelpers['stop'];
   attachments: Array<Attachment>;
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
   messages: Array<UIMessage>;
-  setMessages: UseChatHelpers["setMessages"];
-  votes: Array<Doc<"votes">> | undefined;
-  append: UseChatHelpers["append"];
-  handleSubmit: UseChatHelpers["handleSubmit"];
-  reload: UseChatHelpers["reload"];
+  setMessages: UseChatHelpers['setMessages'];
+  votes: Array<Doc<'votes'>> | undefined;
+  append: UseChatHelpers['append'];
+  handleSubmit: UseChatHelpers['handleSubmit'];
+  reload: UseChatHelpers['reload'];
   isReadonly: boolean;
+  selectedVisibilityType: VisibilityType;
 }) {
-  const { block, setBlock, metadata, setMetadata } = useBlock();
-
+  const { artifact, setArtifact, metadata, setMetadata } = useArtifact();
   const documents = useQuery(
     api.documents.getDocumentVersions,
-    block.documentId !== "init" && block.status !== "streaming"
-      ? { documentId: block.documentId }
-      : "skip",
+    artifact.documentId !== 'init' && artifact.status !== 'streaming'
+      ? { documentId: artifact.documentId }
+      : 'skip',
   );
 
-  const [mode, setMode] = useState<"edit" | "diff">("edit");
+  const [mode, setMode] = useState<'edit' | 'diff'>('edit');
   const [document, setDocument] = useState<Document | null>(null);
-  const [localCurrentVersionIndex, setLocalCurrentVersionIndex] = useState(-1);
+  const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
   const [isContentDirty, setIsContentDirty] = useState(false);
   const [isToolbarVisible, setIsToolbarVisible] = useState(false);
 
@@ -100,11 +103,14 @@ function PureBlock({
   const justFinishedStreaming = useRef(false);
 
   useEffect(() => {
-    if (previousStatusRef.current === "streaming" && block.status === "idle") {
+    if (
+      previousStatusRef.current === 'streaming' &&
+      artifact.status === 'idle'
+    ) {
       justFinishedStreaming.current = true;
     }
-    previousStatusRef.current = block.status;
-  }, [block.status]);
+    previousStatusRef.current = artifact.status;
+  }, [artifact.status]);
 
   useEffect(() => {
     if (justFinishedStreaming.current) {
@@ -113,11 +119,11 @@ function PureBlock({
         const mostRecentDocument = documents[0];
         if (mostRecentDocument) {
           setDocument(mostRecentDocument);
-          setLocalCurrentVersionIndex(documents.length - 1);
+          setCurrentVersionIndex(documents.length - 1);
         }
       }
-      if (block.status !== "idle") {
-        setBlock((currentBlock) => ({ ...currentBlock, status: "idle" }));
+      if (artifact.status !== 'idle') {
+        setArtifact((currentBlock) => ({ ...currentBlock, status: 'idle' }));
       }
       return;
     }
@@ -127,21 +133,21 @@ function PureBlock({
 
       if (mostRecentDocument) {
         setDocument(mostRecentDocument);
-        setLocalCurrentVersionIndex(documents.length - 1);
+        setCurrentVersionIndex(documents.length - 1);
 
-        setBlock((currentBlock) => ({
+        setArtifact((currentBlock) => ({
           ...currentBlock,
-          status: "idle",
-          content: mostRecentDocument.content ?? "",
+          status: 'idle',
+          content: mostRecentDocument.content ?? '',
         }));
       }
     } else {
     }
-  }, [documents, setBlock, block.status]);
+  }, [documents, setArtifact, artifact.status]);
 
   const handleContentChange = useCallback(
     (updatedContent: string) => {
-      if (!block) return;
+      if (!artifact) return;
 
       if (documents && documents.length > 0) {
         const currentDocument = documents[0];
@@ -159,13 +165,13 @@ function PureBlock({
           };
 
           setDocument(optimisticDocument);
-          setBlock((currentBlock) => ({
+          setArtifact((currentBlock) => ({
             ...currentBlock,
             content: updatedContent,
           }));
 
           updateDocument({
-            documentId: block.documentId,
+            documentId: artifact.documentId,
             content: updatedContent,
             userId: currentDocument.userId,
           })
@@ -174,17 +180,17 @@ function PureBlock({
             })
             .catch((error) => {
               setDocument(currentDocument);
-              setBlock((currentBlock) => ({
+              setArtifact((currentBlock) => ({
                 ...currentBlock,
-                content: currentDocument.content ?? "",
+                content: currentDocument.content ?? '',
               }));
-              console.error("Failed to update document:", error);
+              console.error('Failed to update document:', error);
             });
         }
-      } else if (block.documentId !== "init") {
+      } else if (artifact.documentId !== 'init') {
       }
     },
-    [block, documents, updateDocument, setBlock],
+    [artifact, documents, updateDocument, setArtifact],
   );
 
   const debouncedHandleContentChange = useDebounceCallback(
@@ -208,66 +214,66 @@ function PureBlock({
   );
 
   function getDocumentContentById(index: number) {
-    if (!documents) return "";
-    if (!documents[index]) return "";
-    return documents[index].content ?? "";
+    if (!documents) return '';
+    if (!documents[index]) return '';
+    return documents[index].content ?? '';
   }
 
-  const handleVersionChange = (type: "next" | "prev" | "toggle" | "latest") => {
+  const handleVersionChange = (type: 'next' | 'prev' | 'toggle' | 'latest') => {
     if (!documents) return;
 
-    if (type === "latest") {
-      setLocalCurrentVersionIndex(documents.length - 1);
-      setMode("edit");
+    if (type === 'latest') {
+      setCurrentVersionIndex(documents.length - 1);
+      setMode('edit');
     }
 
-    if (type === "toggle") {
-      setMode((mode) => (mode === "edit" ? "diff" : "edit"));
+    if (type === 'toggle') {
+      setMode((mode) => (mode === 'edit' ? 'diff' : 'edit'));
     }
 
-    if (type === "prev") {
-      if (localCurrentVersionIndex > 0) {
-        setLocalCurrentVersionIndex((index) => index - 1);
+    if (type === 'prev') {
+      if (currentVersionIndex > 0) {
+        setCurrentVersionIndex((index) => index - 1);
       }
-    } else if (type === "next") {
-      if (localCurrentVersionIndex < documents.length - 1) {
-        setLocalCurrentVersionIndex((index) => index + 1);
+    } else if (type === 'next') {
+      if (currentVersionIndex < documents.length - 1) {
+        setCurrentVersionIndex((index) => index + 1);
       }
     }
   };
 
   const isCurrentVersion =
     documents && documents.length > 0
-      ? localCurrentVersionIndex === documents.length - 1
+      ? currentVersionIndex === documents.length - 1
       : true;
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const isMobile = windowWidth ? windowWidth < 768 : false;
 
-  const blockDefinition = blockDefinitions.find(
-    (definition) => definition.kind === block.kind,
+  const artifactDefinition = artifactDefinitions.find(
+    (definition) => definition.kind === artifact.kind,
   );
 
-  if (!blockDefinition) {
-    throw new Error("Block definition not found");
+  if (!artifactDefinition) {
+    throw new Error('Block definition not found');
   }
 
   useEffect(() => {
-    if (block.documentId !== "init") {
-      if (blockDefinition.initialize) {
-        blockDefinition.initialize({
-          documentId: block.documentId,
+    if (artifact.documentId !== 'init') {
+      if (artifactDefinition.initialize) {
+        artifactDefinition.initialize({
+          documentId: artifact.documentId,
           setMetadata,
         });
       }
     }
-  }, [block.documentId, blockDefinition, setMetadata]);
+  }, [artifact.documentId, artifactDefinition, setMetadata]);
 
   return (
     <AnimatePresence>
-      {block.isVisible && (
+      {artifact.isVisible && (
         <motion.div
-          data-testid="block"
+          data-testid="artifact"
           className="flex flex-row h-dvh w-dvw fixed top-0 left-0 z-50 bg-transparent"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
@@ -290,7 +296,7 @@ function PureBlock({
 
           {!isMobile && (
             <motion.div
-              className="relative w-[400px] bg-muted/50 h-dvh shrink-0"
+              className="relative w-[400px] bg-muted dark:bg-background h-dvh shrink-0"
               initial={{ opacity: 0, x: 10, scale: 1 }}
               animate={{
                 opacity: 1,
@@ -298,7 +304,7 @@ function PureBlock({
                 scale: 1,
                 transition: {
                   delay: 0.2,
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 200,
                   damping: 30,
                 },
@@ -321,8 +327,8 @@ function PureBlock({
                 )}
               </AnimatePresence>
 
-              <div className="flex flex-col h-full justify-between items-center gap-4">
-                <BlockMessages
+              <div className="flex flex-col h-full justify-between items-center">
+                <ArtifactMessages
                   chatId={chatId}
                   status={status}
                   votes={votes}
@@ -330,11 +336,11 @@ function PureBlock({
                   setMessages={setMessages}
                   reload={reload}
                   isReadonly={isReadonly}
-                  blockStatus={block.status}
+                  artifactStatus={artifact.status}
                 />
 
                 <form className="flex flex-row gap-2 relative items-end w-full px-4 pb-4">
-                  <MultiModalInput
+                  <MultimodalInput
                     chatId={chatId}
                     input={input}
                     setInput={setInput}
@@ -347,6 +353,7 @@ function PureBlock({
                     append={append}
                     className="bg-background dark:bg-muted"
                     setMessages={setMessages}
+                    selectedVisibilityType={selectedVisibilityType}
                   />
                 </form>
               </div>
@@ -354,23 +361,23 @@ function PureBlock({
           )}
 
           <motion.div
-            className="fixed dark:bg-muted bg-background h-dvh flex flex-col overflow-y-scroll"
+            className="fixed dark:bg-muted bg-background h-dvh flex flex-col overflow-y-scroll md:border-l dark:border-zinc-700 border-zinc-200"
             initial={
               isMobile
                 ? {
                     opacity: 1,
-                    x: block.boundingBox.left,
-                    y: block.boundingBox.top,
-                    height: block.boundingBox.height,
-                    width: block.boundingBox.width,
+                    x: artifact.boundingBox.left,
+                    y: artifact.boundingBox.top,
+                    height: artifact.boundingBox.height,
+                    width: artifact.boundingBox.width,
                     borderRadius: 50,
                   }
                 : {
                     opacity: 1,
-                    x: block.boundingBox.left,
-                    y: block.boundingBox.top,
-                    height: block.boundingBox.height,
-                    width: block.boundingBox.width,
+                    x: artifact.boundingBox.left,
+                    y: artifact.boundingBox.top,
+                    height: artifact.boundingBox.height,
+                    width: artifact.boundingBox.width,
                     borderRadius: 50,
                   }
             }
@@ -381,11 +388,11 @@ function PureBlock({
                     x: 0,
                     y: 0,
                     height: windowHeight,
-                    width: windowWidth ? windowWidth : "calc(100dvw)",
+                    width: windowWidth ? windowWidth : 'calc(100dvw)',
                     borderRadius: 0,
                     transition: {
                       delay: 0,
-                      type: "spring",
+                      type: 'spring',
                       stiffness: 200,
                       damping: 30,
                       duration: 5000,
@@ -398,11 +405,11 @@ function PureBlock({
                     height: windowHeight,
                     width: windowWidth
                       ? windowWidth - 400
-                      : "calc(100dvw-400px)",
+                      : 'calc(100dvw-400px)',
                     borderRadius: 0,
                     transition: {
                       delay: 0,
-                      type: "spring",
+                      type: 'spring',
                       stiffness: 200,
                       damping: 30,
                       duration: 5000,
@@ -414,7 +421,7 @@ function PureBlock({
               scale: 0.5,
               transition: {
                 delay: 0.1,
-                type: "spring",
+                type: 'spring',
                 stiffness: 600,
                 damping: 30,
               },
@@ -422,10 +429,10 @@ function PureBlock({
           >
             <div className="p-2 flex flex-row justify-between items-start">
               <div className="flex flex-row gap-4 items-start">
-                <BlockCloseButton />
+                <ArtifactCloseButton />
 
                 <div className="flex flex-col">
-                  <div className="font-medium">{block.title}</div>
+                  <div className="font-medium">{artifact.title}</div>
 
                   {isContentDirty ? (
                     <div className="text-sm text-muted-foreground">
@@ -447,9 +454,9 @@ function PureBlock({
                 </div>
               </div>
 
-              <BlockActions
-                block={block}
-                currentVersionIndex={localCurrentVersionIndex}
+              <ArtifactActions
+                artifact={artifact}
+                currentVersionIndex={currentVersionIndex}
                 handleVersionChange={handleVersionChange}
                 isCurrentVersion={isCurrentVersion}
                 mode={mode}
@@ -459,22 +466,22 @@ function PureBlock({
             </div>
 
             <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
-              <blockDefinition.content
-                title={block.title}
+              <artifactDefinition.content
+                title={artifact.title}
                 content={
                   isCurrentVersion
-                    ? block.content
-                    : getDocumentContentById(localCurrentVersionIndex)
+                    ? artifact.content
+                    : getDocumentContentById(currentVersionIndex)
                 }
                 mode={mode}
-                status={block.status}
-                currentVersionIndex={localCurrentVersionIndex}
+                status={artifact.status}
+                currentVersionIndex={currentVersionIndex}
                 suggestions={[]}
                 onSaveContent={saveContent}
                 isInline={false}
                 isCurrentVersion={isCurrentVersion}
                 getDocumentContentById={getDocumentContentById}
-                isLoading={isDocumentsFetching && !block.content}
+                isLoading={isDocumentsFetching && !artifact.content}
                 metadata={metadata}
                 setMetadata={setMetadata}
               />
@@ -488,7 +495,7 @@ function PureBlock({
                     status={status}
                     stop={stop}
                     setMessages={setMessages}
-                    blockKind={block.kind}
+                    artifactKind={artifact.kind}
                   />
                 )}
               </AnimatePresence>
@@ -497,7 +504,7 @@ function PureBlock({
             <AnimatePresence>
               {!isCurrentVersion && (
                 <VersionFooter
-                  currentVersionIndex={localCurrentVersionIndex}
+                  currentVersionIndex={currentVersionIndex}
                   documents={documents}
                   handleVersionChange={handleVersionChange}
                 />
@@ -510,12 +517,13 @@ function PureBlock({
   );
 }
 
-export const Block = memo(PureBlock, (prevProps, nextProps) => {
+export const Artifact = memo(PureArtifact, (prevProps, nextProps) => {
   if (prevProps.status !== nextProps.status) return false;
   if (!equal(prevProps.votes, nextProps.votes)) return false;
   if (prevProps.input !== nextProps.input) return false;
-  if (prevProps.messages.length !== nextProps.messages.length) return false;
-  if (!equal(prevProps.messages, nextProps.messages)) return false;
+  if (!equal(prevProps.messages, nextProps.messages.length)) return false;
+  if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType)
+    return false;
 
   return true;
 });

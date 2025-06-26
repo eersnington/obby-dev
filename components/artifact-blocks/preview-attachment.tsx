@@ -1,5 +1,6 @@
-import type { Attachment } from "ai";
-import { LoaderCircle } from "lucide-react";
+import type { Attachment } from 'ai';
+
+import { Loader } from 'lucide-react';
 
 export const PreviewAttachment = ({
   attachment,
@@ -11,16 +12,16 @@ export const PreviewAttachment = ({
   const { name, url, contentType } = attachment;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div data-testid="input-attachment-preview" className="flex flex-col gap-2">
       <div className="w-20 h-16 aspect-video bg-muted rounded-md relative flex flex-col items-center justify-center">
         {contentType ? (
-          contentType.startsWith("image") ? (
-            // NOTE: If you want to use Next.js's Image component, you need to ensure the URL is from a valid source.
-            // Also have enough bank to pay for Image Optimization lmao.
+          contentType.startsWith('image') ? (
+            // NOTE: it is recommended to use next/image for images
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               key={url}
               src={url}
-              alt={name ?? "An image attachment"}
+              alt={name ?? 'An image attachment'}
               className="rounded-md size-full object-cover"
             />
           ) : (
@@ -31,8 +32,11 @@ export const PreviewAttachment = ({
         )}
 
         {isUploading && (
-          <div className="animate-spin absolute text-zinc-500">
-            <LoaderCircle className="w-4 h-4" />
+          <div
+            data-testid="input-attachment-loader"
+            className="animate-spin absolute text-zinc-500"
+          >
+            <Loader />
           </div>
         )}
       </div>

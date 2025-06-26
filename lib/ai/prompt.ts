@@ -1,5 +1,5 @@
-import type { BlockKind } from "@/components/artifact-blocks/block";
-import { type Templates, templatesToPrompt } from "../templates";
+import type { ArtifactKind } from '@/components/artifact-blocks/artifact';
+import { type Templates, templatesToPrompt } from '../templates';
 
 export function toPrompt(templates: Templates) {
   return `## Core Identity
@@ -402,7 +402,7 @@ Do not update document right after creating it. Wait for user feedback or reques
 `;
 
 export const regularPrompt =
-  "You are a friendly assistant! Keep your responses concise and helpful.";
+  'You are a friendly assistant! Keep your responses concise and helpful.';
 
 export const chatMemoryPrompt = `
 You have tools to manage a knowledge base:
@@ -418,7 +418,7 @@ If the tool returns relevant content, base your answer *only* on that content. I
 export const systemPrompt = ({
   selectedChatModel,
 }: { selectedChatModel: string }) => {
-  if (selectedChatModel === "chat-model-reasoning") {
+  if (selectedChatModel === 'chat-model-reasoning') {
     return `${regularPrompt}\n\nYou should use <think> tags to outline your reasoning step-by-step before providing the final answer.`;
   }
   return `${regularPrompt}\n\n${blocksPrompt}\n\n${chatMemoryPrompt}`;
@@ -479,24 +479,12 @@ You are a spreadsheet creation assistant. Create a spreadsheet in CSV format bas
 
 export const updateDocumentPrompt = (
   currentContent: string | null,
-  type: BlockKind,
+  type: ArtifactKind,
 ) =>
-  type === "text"
+  type === 'code'
     ? `\
-Improve the following contents of the document based on the given prompt.
-
-${currentContent}
-`
-    : type === "code"
-      ? `\
 Improve the following code snippet based on the given prompt.
 
 ${currentContent}
 `
-      : type === "sheet"
-        ? `\
-Improve the following spreadsheet based on the given prompt.
-
-${currentContent}
-`
-        : "";
+    : '';

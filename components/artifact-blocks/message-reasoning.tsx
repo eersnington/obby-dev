@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ChevronDown, LoaderCircle } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { Markdown } from "./markdown";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Markdown } from './markdown';
+import { ChevronDown, Loader } from 'lucide-react';
 
 interface MessageReasoningProps {
   isLoading: boolean;
@@ -24,35 +24,35 @@ export function MessageReasoning({
       marginBottom: 0,
     },
     expanded: {
-      height: "auto",
+      height: 'auto',
       opacity: 1,
-      marginTop: "1rem",
-      marginBottom: "0.5rem",
+      marginTop: '1rem',
+      marginBottom: '0.5rem',
     },
   };
 
   return (
     <div className="flex flex-col">
       {isLoading ? (
-        <div className="flex flex-row gap-2 items-center text-sm text-muted-foreground">
-          <div>Reasoning</div>
+        <div className="flex flex-row gap-2 items-center">
+          <div className="font-medium">Reasoning</div>
           <div className="animate-spin">
-            <LoaderCircle className="w-4 h-4" />
+            <Loader />
           </div>
         </div>
       ) : (
-        <div className="flex flex-row gap-2 items-center text-sm text-muted-foreground">
-          <div>Reasoned for a few seconds</div>
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-          <div
+        <div className="flex flex-row gap-2 items-center">
+          <div className="font-medium">Reasoned for a few seconds</div>
+          <button
             data-testid="message-reasoning-toggle"
+            type="button"
             className="cursor-pointer"
             onClick={() => {
               setIsExpanded(!isExpanded);
             }}
           >
-            <ChevronDown className="w-4 h-4" />
-          </div>
+            <ChevronDown />
+          </button>
         </div>
       )}
 
@@ -65,8 +65,8 @@ export function MessageReasoning({
             animate="expanded"
             exit="collapsed"
             variants={variants}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
             className="pl-4 text-zinc-600 dark:text-zinc-400 border-l flex flex-col gap-4"
           >
             <Markdown>{reasoning}</Markdown>

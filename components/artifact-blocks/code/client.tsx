@@ -1,13 +1,13 @@
-import { Copy, Logs, MessageCircle, Play, Redo, Undo } from "lucide-react";
-import { toast } from "sonner";
+import { Copy, Logs, MessageCircle, Play, Redo, Undo } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Console,
   type ConsoleOutput,
   type ConsoleOutputContent,
-} from "@/components/artifact-blocks/console";
-import { Block } from "../block";
-import { CodeEditor } from "@/components/artifact-blocks/code-editor";
-import { generateUUID } from "@/lib/utils";
+} from '../console';
+import { Artifact } from '../create-artifact';
+import { CodeEditor } from '../code-editor';
+import { generateUUID } from '@/lib/utils';
 
 const OUTPUT_HANDLERS = {
   matplotlib: `
@@ -44,10 +44,10 @@ const OUTPUT_HANDLERS = {
 };
 
 function detectRequiredHandlers(code: string): string[] {
-  const handlers: string[] = ["basic"];
+  const handlers: string[] = ['basic'];
 
-  if (code.includes("matplotlib") || code.includes("plt.")) {
-    handlers.push("matplotlib");
+  if (code.includes('matplotlib') || code.includes('plt.')) {
+    handlers.push('matplotlib');
   }
 
   return handlers;
@@ -57,27 +57,27 @@ interface Metadata {
   outputs: Array<ConsoleOutput>;
 }
 
-export const codeBlock = new Block<"code", Metadata>({
-  kind: "code",
+export const codeArtifact = new Artifact<'code', Metadata>({
+  kind: 'code',
   description:
-    "Useful for code generation; Code execution is only available for python code.",
+    'Useful for code generation; Code execution is only available for python code.',
   initialize: async ({ setMetadata }) => {
     setMetadata({
       outputs: [],
     });
   },
-  onStreamPart: ({ streamPart, setBlock }) => {
-    if (streamPart.type === "code-delta") {
-      setBlock((draftBlock) => ({
-        ...draftBlock,
+  onStreamPart: ({ streamPart, setArtifact }) => {
+    if (streamPart.type === 'code-delta') {
+      setArtifact((draftArtifact) => ({
+        ...draftArtifact,
         content: streamPart.content as string,
         isVisible:
-          draftBlock.status === "streaming" &&
-          draftBlock.content.length > 300 &&
-          draftBlock.content.length < 310
+          draftArtifact.status === 'streaming' &&
+          draftArtifact.content.length > 300 &&
+          draftArtifact.content.length < 310
             ? true
-            : draftBlock.isVisible,
-        status: "streaming",
+            : draftArtifact.isVisible,
+        status: 'streaming',
       }));
     }
   },
@@ -104,9 +104,9 @@ export const codeBlock = new Block<"code", Metadata>({
   },
   actions: [
     {
-      icon: <Play className="w" />,
-      label: "Run",
-      description: "Execute code",
+      icon: <Play size={18} />,
+      label: 'Run',
+      description: 'Execute code',
       onClick: async ({ content, setMetadata }) => {
         const runId = generateUUID();
         const outputContent: Array<ConsoleOutputContent> = [];
@@ -118,7 +118,7 @@ export const codeBlock = new Block<"code", Metadata>({
             {
               id: runId,
               contents: [],
-              status: "in_progress",
+              status: 'in_progress',
             },
           ],
         }));
@@ -126,15 +126,15 @@ export const codeBlock = new Block<"code", Metadata>({
         try {
           // @ts-expect-error - loadPyodide is not defined
           const currentPyodideInstance = await globalThis.loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/",
+            indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.23.4/full/',
           });
 
           currentPyodideInstance.setStdout({
             batched: (output: string) => {
               outputContent.push({
-                type: output.startsWith("data:image/png;base64")
-                  ? "image"
-                  : "text",
+                type: output.startsWith('data:image/png;base64')
+                  ? 'image'
+                  : 'text',
                 value: output,
               });
             },
@@ -148,8 +148,8 @@ export const codeBlock = new Block<"code", Metadata>({
                   ...metadata.outputs.filter((output) => output.id !== runId),
                   {
                     id: runId,
-                    contents: [{ type: "text", value: message }],
-                    status: "loading_packages",
+                    contents: [{ type: 'text', value: message }],
+                    status: 'loading_packages',
                   },
                 ],
               }));
@@ -163,9 +163,9 @@ export const codeBlock = new Block<"code", Metadata>({
                 OUTPUT_HANDLERS[handler as keyof typeof OUTPUT_HANDLERS],
               );
 
-              if (handler === "matplotlib") {
+              if (handler === 'matplotlib') {
                 await currentPyodideInstance.runPythonAsync(
-                  "setup_matplotlib_output()",
+                  'setup_matplotlib_output()',
                 );
               }
             }
@@ -180,23 +180,19 @@ export const codeBlock = new Block<"code", Metadata>({
               {
                 id: runId,
                 contents: outputContent,
-                status: "completed",
+                status: 'completed',
               },
             ],
           }));
         } catch (error: any) {
-          console.error("Code execution error:", error);
           setMetadata((metadata) => ({
             ...metadata,
             outputs: [
               ...metadata.outputs.filter((output) => output.id !== runId),
               {
                 id: runId,
-                contents: [
-                  ...outputContent,
-                  { type: "text", value: `Error: ${error.message}` },
-                ],
-                status: "failed",
+                contents: [{ type: 'text', value: error.message }],
+                status: 'failed',
               },
             ],
           }));
@@ -204,10 +200,10 @@ export const codeBlock = new Block<"code", Metadata>({
       },
     },
     {
-      icon: <Undo className="w-4 h-4" />,
-      description: "View Previous version",
+      icon: <Undo size={18} />,
+      description: 'View Previous version',
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange("prev");
+        handleVersionChange('prev');
       },
       isDisabled: ({ currentVersionIndex }) => {
         if (currentVersionIndex === 0) {
@@ -218,10 +214,10 @@ export const codeBlock = new Block<"code", Metadata>({
       },
     },
     {
-      icon: <Redo className="w-4 h-4" />,
-      description: "View Next version",
+      icon: <Redo size={18} />,
+      description: 'View Next version',
       onClick: ({ handleVersionChange }) => {
-        handleVersionChange("next");
+        handleVersionChange('next');
       },
       isDisabled: ({ isCurrentVersion }) => {
         if (isCurrentVersion) {
@@ -232,32 +228,32 @@ export const codeBlock = new Block<"code", Metadata>({
       },
     },
     {
-      icon: <Copy className="w-4 h-4" />,
-      description: "Copy code to clipboard",
+      icon: <Copy size={18} />,
+      description: 'Copy code to clipboard',
       onClick: ({ content }) => {
         navigator.clipboard.writeText(content);
-        toast.success("Copied to clipboard");
+        toast.success('Copied to clipboard!');
       },
     },
   ],
   toolbar: [
     {
-      icon: <MessageCircle className="w-4 h-4" />,
-      description: "Add comments",
+      icon: <MessageCircle />,
+      description: 'Add comments',
       onClick: ({ appendMessage }) => {
         appendMessage({
-          role: "user",
-          content: "Add comments to the code snippet for understanding",
+          role: 'user',
+          content: 'Add comments to the code snippet for understanding',
         });
       },
     },
     {
-      icon: <Logs className="w-4 h-4" />,
-      description: "Add logs",
+      icon: <Logs />,
+      description: 'Add logs',
       onClick: ({ appendMessage }) => {
         appendMessage({
-          role: "user",
-          content: "Add logs to the code snippet for debugging",
+          role: 'user',
+          content: 'Add logs to the code snippet for debugging',
         });
       },
     },

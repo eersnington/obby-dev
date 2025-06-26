@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   type Dispatch,
@@ -6,19 +6,19 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
-import type { UIMessage } from "ai";
-import type { UseChatHelpers } from "@ai-sdk/react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+} from 'react';
+import type { UIMessage } from 'ai';
+import type { UseChatHelpers } from '@ai-sdk/react';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 export type MessageEditorProps = {
   message: UIMessage;
-  setMode: Dispatch<SetStateAction<"view" | "edit">>;
-  setMessages: UseChatHelpers["setMessages"];
-  reload: UseChatHelpers["reload"];
+  setMode: Dispatch<SetStateAction<'view' | 'edit'>>;
+  setMessages: UseChatHelpers['setMessages'];
+  reload: UseChatHelpers['reload'];
 };
 
 export function MessageEditor({
@@ -27,6 +27,9 @@ export function MessageEditor({
   setMessages,
   reload,
 }: MessageEditorProps) {
+  console.log('Rendering MessageEditor for message:', message.id);
+  console.log('Current message content:', message);
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [draftContent, setDraftContent] = useState<string>(message.content);
@@ -43,7 +46,7 @@ export function MessageEditor({
 
   const adjustHeight = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
@@ -68,7 +71,7 @@ export function MessageEditor({
           variant="ghost"
           className="h-fit py-2 px-3"
           onClick={() => {
-            setMode("view");
+            setMode('view');
           }}
         >
           Cancel
@@ -91,7 +94,7 @@ export function MessageEditor({
                 const updatedMessage: UIMessage = {
                   ...message,
                   content: draftContent,
-                  parts: [{ type: "text", text: draftContent }],
+                  parts: [{ type: 'text', text: draftContent }],
                 };
 
                 return [...messages.slice(0, index), updatedMessage];
@@ -100,11 +103,11 @@ export function MessageEditor({
               return messages;
             });
 
-            setMode("view");
+            setMode('view');
             reload();
           }}
         >
-          {isSubmitting ? "Sending..." : "Send"}
+          {isSubmitting ? 'Sending...' : 'Send'}
         </Button>
       </div>
     </div>

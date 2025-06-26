@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { memo } from "react";
-import type { Message } from "ai";
-import { toast } from "sonner";
-import { useCopyToClipboard } from "usehooks-ts";
-import { Copy, ThumbsDown, ThumbsUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { memo } from 'react';
+import type { Message } from 'ai';
+import { toast } from 'sonner';
+import { useCopyToClipboard } from 'usehooks-ts';
+import { Copy, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import equal from "fast-deep-equal";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+} from '@/components/ui/tooltip';
+import equal from 'fast-deep-equal';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 type Vote = {
   chatId: string;
@@ -37,7 +37,7 @@ export function PureMessageActions({
   const voteMessage = useMutation(api.chats.voteMessage);
 
   if (isLoading) return null;
-  if (message.role === "user") return null;
+  if (message.role === 'user') return null;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -49,7 +49,7 @@ export function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 await copyToClipboard(message.content as string);
-                toast.success("Copied to clipboard");
+                toast.success('Copied to clipboard');
               }}
             >
               <Copy className="w-4 h-4" />
@@ -66,11 +66,11 @@ export function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 toast.promise(
-                  voteMessage({ chatId, messageId: message.id, type: "up" }),
+                  voteMessage({ chatId, messageId: message.id, type: 'up' }),
                   {
-                    loading: "Upvoting...",
-                    success: "Response upvoted",
-                    error: "Failed to upvote response",
+                    loading: 'Upvoting...',
+                    success: 'Response upvoted',
+                    error: 'Failed to upvote response',
                   },
                 );
               }}
@@ -89,11 +89,11 @@ export function PureMessageActions({
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
                 toast.promise(
-                  voteMessage({ chatId, messageId: message.id, type: "down" }),
+                  voteMessage({ chatId, messageId: message.id, type: 'down' }),
                   {
-                    loading: "Downvoting...",
-                    success: "Response downvoted",
-                    error: "Failed to downvote response",
+                    loading: 'Downvoting...',
+                    success: 'Response downvoted',
+                    error: 'Failed to downvote response',
                   },
                 );
               }}

@@ -1,30 +1,30 @@
-import { memo } from "react";
-import { File, LoaderCircle, MessageCircle, Pencil } from "lucide-react";
-import { toast } from "sonner";
-import { useBlock } from "@/hooks/use-block";
-import type { BlockKind } from "./block";
+import { memo } from 'react';
+import { File, LoaderCircle, MessageCircle, Pencil } from 'lucide-react';
+import { toast } from 'sonner';
+import type { ArtifactKind } from './artifact';
+import { useArtifact } from '@/hooks/use-artifact';
 
 const getActionText = (
-  type: "create" | "update" | "request-suggestions",
-  tense: "present" | "past",
+  type: 'create' | 'update' | 'request-suggestions',
+  tense: 'present' | 'past',
 ) => {
   switch (type) {
-    case "create":
-      return tense === "present" ? "Creating" : "Created";
-    case "update":
-      return tense === "present" ? "Updating" : "Updated";
-    case "request-suggestions":
-      return tense === "present"
-        ? "Adding suggestions"
-        : "Added suggestions to";
+    case 'create':
+      return tense === 'present' ? 'Creating' : 'Created';
+    case 'update':
+      return tense === 'present' ? 'Updating' : 'Updated';
+    case 'request-suggestions':
+      return tense === 'present'
+        ? 'Adding suggestions'
+        : 'Added suggestions to';
     default:
       return null;
   }
 };
 
 interface DocumentToolResultProps {
-  type: "create" | "update" | "request-suggestions";
-  result: { id: string; title: string; kind: BlockKind };
+  type: 'create' | 'update' | 'request-suggestions';
+  result: { id: string; title: string; kind: ArtifactKind };
   isReadonly: boolean;
 }
 
@@ -33,7 +33,7 @@ function PureDocumentToolResult({
   result,
   isReadonly,
 }: DocumentToolResultProps) {
-  const { setBlock } = useBlock();
+  const { setArtifact } = useArtifact();
 
   return (
     <button
@@ -42,7 +42,7 @@ function PureDocumentToolResult({
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
-            "Viewing files in shared chats is currently not supported.",
+            'Viewing files in shared chats is currently not supported.',
           );
           return;
         }
@@ -56,28 +56,28 @@ function PureDocumentToolResult({
           height: rect.height,
         };
 
-        setBlock({
+        setArtifact({
           documentId: result.id,
           kind: result.kind,
-          content: "",
+          content: '',
           title: result.title,
           isVisible: true,
-          status: "idle",
+          status: 'idle',
           boundingBox,
         });
       }}
     >
       <div className="text-muted-foreground mt-1">
-        {type === "create" ? (
+        {type === 'create' ? (
           <File className="w-4 h-4" />
-        ) : type === "update" ? (
+        ) : type === 'update' ? (
           <Pencil className="w-4 h-4" />
-        ) : type === "request-suggestions" ? (
+        ) : type === 'request-suggestions' ? (
           <MessageCircle className="w-4 h-4" />
         ) : null}
       </div>
       <div className="text-left">
-        {`${getActionText(type, "past")} "${result.title}"`}
+        {`${getActionText(type, 'past')} "${result.title}"`}
       </div>
     </button>
   );
@@ -86,7 +86,7 @@ function PureDocumentToolResult({
 export const DocumentToolResult = memo(PureDocumentToolResult, () => true);
 
 interface DocumentToolCallProps {
-  type: "create" | "update" | "request-suggestions";
+  type: 'create' | 'update' | 'request-suggestions';
   args: { title: string };
   isReadonly: boolean;
 }
@@ -96,7 +96,7 @@ function PureDocumentToolCall({
   args,
   isReadonly,
 }: DocumentToolCallProps) {
-  const { setBlock } = useBlock();
+  const { setArtifact } = useArtifact();
 
   return (
     <button
@@ -105,7 +105,7 @@ function PureDocumentToolCall({
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
-            "Viewing files in shared chats is currently not supported.",
+            'Viewing files in shared chats is currently not supported.',
           );
           return;
         }
@@ -119,8 +119,8 @@ function PureDocumentToolCall({
           height: rect.height,
         };
 
-        setBlock((currentBlock) => ({
-          ...currentBlock,
+        setArtifact((currentArtifact) => ({
+          ...currentArtifact,
           isVisible: true,
           boundingBox,
         }));
@@ -128,17 +128,17 @@ function PureDocumentToolCall({
     >
       <div className="flex flex-row gap-3 items-start">
         <div className="text-zinc-500 mt-1">
-          {type === "create" ? (
+          {type === 'create' ? (
             <File className="w-4 h-4" />
-          ) : type === "update" ? (
+          ) : type === 'update' ? (
             <Pencil className="w-4 h-4" />
-          ) : type === "request-suggestions" ? (
+          ) : type === 'request-suggestions' ? (
             <MessageCircle className="w-4 h-4" />
           ) : null}
         </div>
 
         <div className="text-left">
-          {`${getActionText(type, "present")} ${args.title ? `"${args.title}"` : ""}`}
+          {`${getActionText(type, 'present')} ${args.title ? `"${args.title}"` : ''}`}
         </div>
       </div>
 

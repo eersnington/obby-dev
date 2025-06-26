@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import { AuthDialog } from "./fragments/auth-dialog";
-import { Chat } from "./fragments/chat";
-import { ChatInput } from "./fragments/chat-input";
-import { ChatPicker } from "./fragments/chat-picker";
-import { ChatSettings } from "./fragments/chat-settings";
-import { Preview } from "./fragments/preview";
-import { ChatManager, useChatContext } from "./chat-manager";
-import { useAIChat } from "hooks/use-ai-chat";
-import { type Message, toMessageImage } from "lib/ai/messages";
-import { AI_MODELS, type ModelInfo } from "lib/ai/models";
-import type { FragmentSchema } from "lib/fragment";
-import templates, { type TemplateId } from "lib/templates";
-import type { ExecutionResult } from "lib/types";
-import type { DeepPartial } from "ai";
-import type { Id } from "@/convex/_generated/dataModel";
+import { AuthDialog } from './fragments/auth-dialog';
+import { Chat } from './fragments/chat';
+import { ChatInput } from './fragments/chat-input';
+import { ChatPicker } from './fragments/chat-picker';
+import { ChatSettings } from './fragments/chat-settings';
+import { Preview } from './fragments/preview';
+import { ChatManager, useChatContext } from './chat-manager';
+import { useAIChat } from 'hooks/use-ai-chat';
+import { type Message, toMessageImage } from 'lib/ai/messages';
+import { AI_MODELS, type ModelInfo } from 'lib/ai/models';
+import type { FragmentSchema } from 'lib/fragment';
+import templates, { type TemplateId } from 'lib/templates';
+import type { ExecutionResult } from 'lib/types';
+import type { DeepPartial } from 'ai';
+import type { Id } from '@/convex/_generated/dataModel';
 
-import { type SetStateAction, useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { generateTitleFromUserMessage } from "@/actions/generateTitle";
+import { type SetStateAction, useEffect, useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { generateTitleAction as generateTitleFromUserMessage } from '@/actions/generateTitle';
 
 interface AIClientProps {
-  chatId?: Id<"chats">;
+  chatId?: Id<'chats'>;
   initialChatData?: {
-    _id: Id<"chats">;
+    _id: Id<'chats'>;
     _creationTime: number;
-    userId: Id<"users">;
+    userId: Id<'users'>;
     title: string;
     messages: Message[];
     fileData?: unknown;
     fragments?: DeepPartial<FragmentSchema>[];
-    visibility: "private" | "public";
+    visibility: 'private' | 'public';
   };
   userID: string;
 }
@@ -41,24 +41,24 @@ function AIClientInner({
   chatId,
   userID,
 }: {
-  chatId?: Id<"chats">;
+  chatId?: Id<'chats'>;
   userID: string;
 }) {
-  const [chatInput, setChatInput] = useLocalStorage("chat", "");
+  const [chatInput, setChatInput] = useLocalStorage('chat', '');
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<"auto" | TemplateId>(
-    "auto",
+  const [selectedTemplate, setSelectedTemplate] = useState<'auto' | TemplateId>(
+    'auto',
   );
   const [languageModel, setLanguageModel] = useLocalStorage<ModelInfo>(
-    "languageModel",
+    'languageModel',
     {
-      id: "obbylabs:fast-chat",
+      id: 'obbylabs:fast-chat',
     },
   );
 
   const [result, setResult] = useState<ExecutionResult>();
   const [fragment, setFragment] = useState<DeepPartial<FragmentSchema>>();
-  const [currentTab, setCurrentTab] = useState<"code" | "fragment">("code");
+  const [currentTab, setCurrentTab] = useState<'code' | 'fragment'>('code');
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isAuthDialogOpen, setAuthDialog] = useState(false);
 
@@ -80,15 +80,15 @@ function AIClientInner({
   } = useAIChat({
     languageModel,
     onFragmentGenerated: async (fragment) => {
-      console.log("fragment", fragment);
+      console.log('fragment', fragment);
       setIsPreviewLoading(true);
 
       // Create assistant message with fragment
       const assistantMessage: Message = {
-        role: "assistant" as const,
+        role: 'assistant' as const,
         content: [
-          { type: "text" as const, text: fragment.commentary || "" },
-          { type: "code" as const, text: fragment.code || "" },
+          { type: 'text' as const, text: fragment.commentary || '' },
+          { type: 'code' as const, text: fragment.code || '' },
         ],
         object: fragment,
       };
@@ -98,14 +98,14 @@ function AIClientInner({
         try {
           await addMessageWithFragment(assistantMessage, fragment);
         } catch (error) {
-          console.error("Failed to save message with fragment:", error);
+          console.error('Failed to save message with fragment:', error);
         }
       }
 
       // Continue with sandbox creation
       try {
-        const response = await fetch("/api/sandbox", {
-          method: "POST",
+        const response = await fetch('/api/sandbox', {
+          method: 'POST',
           body: JSON.stringify({
             fragment,
             userID: userID,
@@ -113,24 +113,24 @@ function AIClientInner({
         });
 
         if (!response.ok) {
-          console.error("Sandbox creation failed:", response.status);
+          console.error('Sandbox creation failed:', response.status);
           setCurrentPreview({ fragment, result: undefined });
-          setCurrentTab("fragment");
+          setCurrentTab('fragment');
           setIsPreviewLoading(false);
           return;
         }
 
         const result = await response.json();
-        console.log("result", result);
+        console.log('result', result);
 
         setResult(result);
         setCurrentPreview({ fragment, result });
-        setCurrentTab("fragment");
+        setCurrentTab('fragment');
         setIsPreviewLoading(false);
       } catch (error) {
-        console.error("Error creating sandbox:", error);
+        console.error('Error creating sandbox:', error);
         setCurrentPreview({ fragment, result: undefined });
-        setCurrentTab("fragment");
+        setCurrentTab('fragment');
         setIsPreviewLoading(false);
       }
     },
@@ -147,19 +147,19 @@ function AIClientInner({
   useEffect(() => {
     if (
       chatId &&
-      chatData?.title === "New Chat" &&
+      chatData?.title === 'New Chat' &&
       effectiveMessages.length > 0
     ) {
       const firstMessage = effectiveMessages[0];
-      if (firstMessage.role === "user" && firstMessage.content) {
-        const textContent = firstMessage.content.find((c) => c.type === "text");
+      if (firstMessage.role === 'user' && firstMessage.content) {
+        const textContent = firstMessage.content.find((c) => c.type === 'text');
         if (textContent?.text) {
           generateTitleFromUserMessage({ message: textContent.text })
             .then((title) => {
               updateChatTitleMutation({ id: chatId, title });
             })
             .catch((error) => {
-              console.error("Failed to generate title:", error);
+              console.error('Failed to generate title:', error);
             });
         }
       }
@@ -182,17 +182,17 @@ function AIClientInner({
       stop();
     }
 
-    const content: Message["content"] = [{ type: "text", text: chatInput }];
+    const content: Message['content'] = [{ type: 'text', text: chatInput }];
     const images = await toMessageImage(files);
 
     if (images.length > 0) {
       for (const image of images) {
-        content.push({ type: "image", image });
+        content.push({ type: 'image', image });
       }
     }
 
     const newUserMessage: Message = {
-      role: "user" as const,
+      role: 'user' as const,
       content,
     };
 
@@ -201,7 +201,7 @@ function AIClientInner({
       try {
         await addMessageWithFragment(newUserMessage);
       } catch (error) {
-        console.error("Failed to save user message:", error);
+        console.error('Failed to save user message:', error);
       }
     }
 
@@ -211,9 +211,9 @@ function AIClientInner({
       submitMessages(updatedMessages, userID);
     }
 
-    setChatInput("");
+    setChatInput('');
     setFiles([]);
-    setCurrentTab("code");
+    setCurrentTab('code');
   }
 
   function handleRetry() {
@@ -247,7 +247,7 @@ function AIClientInner({
       <AuthDialog open={isAuthDialogOpen} setOpen={setAuthDialog} />
       <div className="h-full grid w-full md:grid-cols-2">
         <div
-          className={`flex flex-col w-full max-h-full max-w-[800px] mx-auto px-4 overflow-auto ${fragment ? "col-span-1" : "col-span-2"}`}
+          className={`flex flex-col w-full max-h-full max-w-[800px] mx-auto px-4 overflow-auto ${fragment ? 'col-span-1' : 'col-span-2'}`}
         >
           <Chat
             messages={effectiveMessages}

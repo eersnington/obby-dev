@@ -1,5 +1,7 @@
 'use client';
 
+import type { Attachment, UIMessage } from 'ai';
+import cx from 'classnames';
 import type React from 'react';
 import {
   useRef,
@@ -11,29 +13,22 @@ import {
   type ChangeEvent,
   memo,
 } from 'react';
-import type { Attachment, UIMessage } from 'ai';
-import type { UseChatHelpers } from '@ai-sdk/react';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
-import { ArrowUp, Paperclip, StopCircle, Globe } from 'lucide-react';
 import { PreviewAttachment } from './preview-attachment';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
 import { SuggestedActions } from './suggested-actions';
-import { Toggle } from '@/components/ui/toggle';
 import equal from 'fast-deep-equal';
+import type { UseChatHelpers } from '@ai-sdk/react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ArrowDown, ArrowUp, Paperclip, StopCircle } from 'lucide-react';
+import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
+import type { VisibilityType } from './visibility-selector';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-
-function PureMultiModalInput({
+function PureMultimodalInput({
   chatId,
   input,
   setInput,
@@ -46,6 +41,7 @@ function PureMultiModalInput({
   append,
   handleSubmit,
   className,
+  selectedVisibilityType,
 }: {
   chatId: string;
   input: UseChatHelpers['input'];
@@ -59,16 +55,16 @@ function PureMultiModalInput({
   append: UseChatHelpers['append'];
   handleSubmit: UseChatHelpers['handleSubmit'];
   className?: string;
+  selectedVisibilityType: VisibilityType;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
-  const [isWebSearchEnabled, setIsWebSearchEnabled] = useState(false);
 
   useEffect(() => {
     if (textareaRef.current) {
       adjustHeight();
     }
-  }, [input, status]);
+  }, []);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -92,10 +88,12 @@ function PureMultiModalInput({
   useEffect(() => {
     if (textareaRef.current) {
       const domValue = textareaRef.current.value;
+      // Prefer DOM value over localStorage to handle hydration
       const finalValue = domValue || localStorageInput || '';
       setInput(finalValue);
       adjustHeight();
     }
+    // Only run once after hydration
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,9 +114,6 @@ function PureMultiModalInput({
 
     handleSubmit(undefined, {
       experimental_attachments: attachments,
-      data: {
-        useWebSearch: isWebSearchEnabled,
-      },
     });
 
     setAttachments([]);
@@ -135,7 +130,6 @@ function PureMultiModalInput({
     setLocalStorageInput,
     width,
     chatId,
-    isWebSearchEnabled,
   ]);
 
   const generateAttachmentUrl = useMutation(api.files.generateAttachmentUrl);
@@ -174,39 +168,101 @@ function PureMultiModalInput({
     [generateAttachmentUrl, getAttachmentUrl],
   );
 
+  // const uploadFile = async (file: File) => {
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+
+  //   try {
+  //     const response = await fetch('/api/files/upload', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const { url, pathname, contentType } = data;
+
+  //       return {
+  //         url,
+  //         name: pathname,
+  //         contentType: contentType,
+  //       };
+  //     }
+  //     const { error } = await response.json();
+  //     toast.error(error);
+  //   } catch (error) {
+  //     toast.error('Failed to upload file, please try again!');
+  //   }
+  // };
+
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files || []);
+
       setUploadQueue(files.map((file) => file.name));
+
       try {
         const uploadPromises = files.map((file) => uploadFile(file));
         const uploadedAttachments = await Promise.all(uploadPromises);
         const successfullyUploadedAttachments = uploadedAttachments.filter(
           (attachment) => attachment !== undefined,
-        ) as Attachment[];
+        );
 
         setAttachments((currentAttachments) => [
           ...currentAttachments,
           ...successfullyUploadedAttachments,
         ]);
       } catch (error) {
-        console.error('Error uploading files', error);
+        console.error('Error uploading files!', error);
       } finally {
         setUploadQueue([]);
       }
     },
-    [setAttachments, uploadFile],
+    [setAttachments],
   );
+
+  const { isAtBottom, scrollToBottom } = useScrollToBottom();
+
+  useEffect(() => {
+    if (status === 'submitted') {
+      scrollToBottom();
+    }
+  }, [status, scrollToBottom]);
 
   return (
     <div className="relative w-full flex flex-col gap-4">
+      <AnimatePresence>
+        {!isAtBottom && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            className="absolute left-1/2 bottom-28 -translate-x-1/2 z-50"
+          >
+            <Button
+              data-testid="scroll-to-bottom-button"
+              className="rounded-full"
+              size="icon"
+              variant="outline"
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToBottom();
+              }}
+            >
+              <ArrowDown />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <SuggestedActions
             append={append}
             chatId={chatId}
-            selectedVisibilityType={'private'}
+            selectedVisibilityType={selectedVisibilityType}
           />
         )}
 
@@ -245,11 +301,11 @@ function PureMultiModalInput({
       <Textarea
         data-testid="multimodal-input"
         ref={textareaRef}
-        placeholder="Ask anything..."
+        placeholder="Send a message..."
         value={input}
         onChange={handleInput}
-        className={cn(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-y-auto resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
+        className={cx(
+          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
           className,
         )}
         rows={2}
@@ -263,7 +319,7 @@ function PureMultiModalInput({
             event.preventDefault();
 
             if (status !== 'ready') {
-              toast.error('Please wait for the model to finish its response');
+              toast.error('Please wait for the model to finish its response!');
             } else {
               submitForm();
             }
@@ -271,49 +327,12 @@ function PureMultiModalInput({
         }}
       />
 
-      <TooltipProvider delayDuration={0}>
-        <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <AttachmentsButton
-                  fileInputRef={fileInputRef}
-                  status={status}
-                />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Add image</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>
-                <Toggle
-                  size="sm"
-                  pressed={isWebSearchEnabled}
-                  onPressedChange={setIsWebSearchEnabled}
-                  aria-label="Toggle web search"
-                  disabled={status !== 'ready'}
-                  className="p-[7px] h-fit dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 hover:bg-zinc-200 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-50 data-[state=on]:bg-zinc-200 data-[state=on]:text-zinc-900 data-[state=on]:dark:bg-zinc-900 data-[state=on]:dark:text-zinc-200"
-                >
-                  <Globe className="w-4 h-4" />
-                </Toggle>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
-                {isWebSearchEnabled
-                  ? 'Disable web search'
-                  : 'Enable web search'}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      </TooltipProvider>
+      <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
+        <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+      </div>
 
       <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
-        {status === 'submitted' || status === 'streaming' ? (
+        {status === 'submitted' ? (
           <StopButton stop={stop} setMessages={setMessages} />
         ) : (
           <SendButton
@@ -327,12 +346,14 @@ function PureMultiModalInput({
   );
 }
 
-export const MultiModalInput = memo(
-  PureMultiModalInput,
+export const MultimodalInput = memo(
+  PureMultimodalInput,
   (prevProps, nextProps) => {
     if (prevProps.input !== nextProps.input) return false;
     if (prevProps.status !== nextProps.status) return false;
     if (!equal(prevProps.attachments, nextProps.attachments)) return false;
+    if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType)
+      return false;
 
     return true;
   },
@@ -342,7 +363,7 @@ function PureAttachmentsButton({
   fileInputRef,
   status,
 }: {
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  fileInputRef: React.MutableRefObject<HTMLInputElement | null>;
   status: UseChatHelpers['status'];
 }) {
   return (
@@ -356,7 +377,7 @@ function PureAttachmentsButton({
       disabled={status !== 'ready'}
       variant="ghost"
     >
-      <Paperclip className="w-4 h-4" />
+      <Paperclip size={14} />
     </Button>
   );
 }
@@ -380,7 +401,7 @@ function PureStopButton({
         setMessages((messages) => messages);
       }}
     >
-      <StopCircle className="w-4 h-4" />
+      <StopCircle size={14} />
     </Button>
   );
 }
@@ -406,7 +427,7 @@ function PureSendButton({
       }}
       disabled={input.length === 0 || uploadQueue.length > 0}
     >
-      <ArrowUp className="w-4 h-4" />
+      <ArrowUp size={14} />
     </Button>
   );
 }
