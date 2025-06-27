@@ -29,10 +29,18 @@ export function generatePrefixedUUID(prefix: string): string {
 }
 
 /**
+ * experimental_generateMessageId in streamText takes in a function by reference
+ * this is used to pass within streamText to gen a prefixed UUID
+ */
+export function generateMessageUUID(): string {
+  return `message_${generateUUID()}`;
+}
+
+/**
  * Generate a UUID and remove hyphens for compact representation
  */
 export function generateCompactUUID(): string {
-  return generateUUID().replace(/-/g, "");
+  return generateUUID().replace(/-/g, '');
 }
 
 /**
@@ -40,10 +48,10 @@ export function generateCompactUUID(): string {
  */
 export function parseUUID(uuid: string) {
   if (!isValidUUID(uuid)) {
-    throw new Error("Invalid UUID format");
+    throw new Error('Invalid UUID format');
   }
 
-  const clean = uuid.replace(/-/g, "");
+  const clean = uuid.replace(/-/g, '');
   return {
     timeLow: clean.slice(0, 8),
     timeMid: clean.slice(8, 12),
@@ -62,7 +70,7 @@ export function parseUUID(uuid: string) {
  */
 export function generateTimestampedUUID(): string {
   const timestamp = Date.now().toString(36);
-  const uuid = generateUUID().replace(/-/g, "").slice(0, 20);
+  const uuid = generateUUID().replace(/-/g, '').slice(0, 20);
   return `${timestamp}-${uuid}`;
 }
 
