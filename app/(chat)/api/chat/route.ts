@@ -10,9 +10,10 @@ import { generateTitleFromUserMessage } from '@/lib/ai/generate-title';
 import { systemPrompt } from '@/lib/ai/prompt';
 import { openai } from '@ai-sdk/openai';
 import {
-  generateUUID,
   getTrailingMessageId,
   convertToUIMessages,
+  generatePrefixedUUID,
+  generateMessageUUID,
 } from '@/lib/utils';
 import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
@@ -162,7 +163,7 @@ export async function POST(request: Request) {
     allMessages,
   );
 
-  const streamId = generateUUID();
+  const streamId = generatePrefixedUUID('stream');
   await fetchMutation(api.streams.createStreamId, { streamId, chatId: id });
   console.log('[api/chat POST] Stream ID created and saved:', streamId);
 
@@ -192,7 +193,7 @@ export async function POST(request: Request) {
                 ...(data?.useWebSearch ? ['webSearch' as const] : []),
               ],
         experimental_transform: smoothStream({ chunking: 'word' }),
-        experimental_generateMessageId: generateUUID,
+        experimental_generateMessageId: generateMessageUUID,
         experimental_telemetry: { isEnabled: true, functionId: 'stream-text' },
         tools: {
           createDocument: createDocument({ user, dataStream, chatId: id }),
