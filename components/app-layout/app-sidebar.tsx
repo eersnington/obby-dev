@@ -46,7 +46,7 @@ export const AppSidebar = ({
   }
 
   return (
-    <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]! border-none">
+    <Sidebar className="border-none">
       <SidebarHeader className="bg-background">
         <Button
           asChild
