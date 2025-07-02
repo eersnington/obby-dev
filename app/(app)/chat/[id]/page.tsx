@@ -9,6 +9,7 @@ import { DataStreamHandler } from '@/components/ai/data-stream-handler';
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import { withAuth } from '@workos-inc/authkit-nextjs';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export default async function ChatPage(props: {
   params: Promise<{ id: string }>;
@@ -47,32 +48,36 @@ export default async function ChatPage(props: {
   if (!chatModelFromCookie) {
     return (
       <>
-        <Chat
-          id={chat.chatId}
-          initialMessages={convertToUIMessages(messagesFromDb)}
-          initialChatModel={'obbylabs:agent-chat'}
-          initialVisibilityType={chat.visibility}
-          isReadonly={user?.id !== chat.userId}
-          session={user}
-          autoResume={true}
-        />
-        <DataStreamHandler id={id} />
+        <SidebarProvider>
+          <Chat
+            id={chat.chatId}
+            initialMessages={convertToUIMessages(messagesFromDb)}
+            initialChatModel={'obbylabs:agent-chat'}
+            initialVisibilityType={chat.visibility}
+            isReadonly={user?.id !== chat.userId}
+            session={user}
+            autoResume={true}
+          />
+          <DataStreamHandler id={id} />
+        </SidebarProvider>
       </>
     );
   }
 
   return (
     <>
-      <Chat
-        id={chat.chatId}
-        initialMessages={convertToUIMessages(messagesFromDb)}
-        initialChatModel={chatModelFromCookie.value}
-        initialVisibilityType={chat.visibility}
-        isReadonly={user?.id !== chat.userId}
-        session={user}
-        autoResume={true}
-      />
-      <DataStreamHandler id={chat.chatId} />
+      <SidebarProvider>
+        <Chat
+          id={chat.chatId}
+          initialMessages={convertToUIMessages(messagesFromDb)}
+          initialChatModel={chatModelFromCookie.value}
+          initialVisibilityType={chat.visibility}
+          isReadonly={user?.id !== chat.userId}
+          session={user}
+          autoResume={true}
+        />
+        <DataStreamHandler id={chat.chatId} />
+      </SidebarProvider>
     </>
   );
 }

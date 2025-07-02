@@ -1,27 +1,25 @@
-import { refreshSession, withAuth } from "@workos-inc/authkit-nextjs";
-import { redirect } from "next/navigation";
-import { workos } from "../../(legacy)/api/workos";
-import type { NextRequest } from "next/server";
+import { refreshSession, withAuth } from '@workos-inc/authkit-nextjs';
+import { redirect } from 'next/navigation';
+import { workos } from '../../(legacy)/api/workos';
+import type { NextRequest } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
   let session = await withAuth();
 
   if (!session) {
-    return redirect("/pricing");
+    return redirect('/pricing');
   }
-
-  console.log("Session:", session.user);
 
   // If this is a new user who just subscribed, their role won't have been updated
   // so we need to refresh the session to get the updated role
   if (session && !session.role) {
-    console.log("Refreshing session to get updated role...");
+    console.log('Refreshing session to get updated role...');
     // Get the user's organization memberships so we can extract the org ID
     const oms = await workos.userManagement.listOrganizationMemberships({
       userId: session.user?.id,
     });
 
-    console.log("Organization memberships:", oms);
+    console.log('Organization memberships:', oms);
 
     if (oms.data.length > 0) {
       session = await refreshSession({
@@ -33,12 +31,12 @@ export const GET = async (request: NextRequest) => {
 
   if (session?.organizationId) {
     // Create a new audit log entry
-    console.log("Creating audit log entry for user login...");
+    console.log('Creating audit log entry for user login...');
     await workos.auditLogs.createEvent(session.organizationId, {
-      action: "user.logged_in",
+      action: 'user.logged_in',
       occurredAt: new Date(),
       actor: {
-        type: "user",
+        type: 'user',
         id: session.user?.id,
         name: `${session.user?.firstName} ${session.user?.lastName}`,
         metadata: {
@@ -47,16 +45,16 @@ export const GET = async (request: NextRequest) => {
       },
       targets: [
         {
-          type: "user",
+          type: 'user',
           id: session.user?.id,
           name: `${session.user?.firstName} ${session.user?.lastName}`,
         },
       ],
       context: {
         location:
-          request.headers.get("x-forwarded-for") ||
-          request.headers.get("x-real-ip") ||
-          "unknown",
+          request.headers.get('x-forwarded-for') ||
+          request.headers.get('x-real-ip') ||
+          'unknown',
       },
       metadata: {},
     });
@@ -64,10 +62,15 @@ export const GET = async (request: NextRequest) => {
 
   const role = session?.role;
 
-  console.log("User session:", session);
-  console.log("User role:", role);
+  console.log('User session:', {
+    userId: session?.user?.id,
+    userEmail: session?.user?.email,
+    organizationId: session?.organizationId,
+    sessionId: session?.sessionId,
+    role,
+  });
 
-  return redirect("/");
+  return redirect('/');
 
   // Redirect based on the user's role
   // switch (role) {
