@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "components/ui/avatar";
-import { Button } from "components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+import { Button } from 'components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,14 +10,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "components/ui/dropdown-menu";
+} from 'components/ui/dropdown-menu';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import Link from "next/link";
+} from 'components/ui/tooltip';
+import Link from 'next/link';
 import {
   UserIcon,
   Settings,
@@ -27,13 +27,20 @@ import {
   Monitor,
   Sun,
   Moon,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
-import type { User } from "@workos-inc/node";
-import authkitSignOut from "actions/signOut";
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
-import { Skeleton } from "../ui/skeleton";
+  Eye,
+  EyeOff,
+} from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import type { User } from '@workos-inc/node';
+import authkitSignOut from 'actions/signOut';
+import {
+  setEmailBlurPreference,
+  getEmailBlurPreference,
+} from 'actions/setEmailBlurPreference';
+import { blurEmail } from 'lib/utils/email';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { Skeleton } from '../ui/skeleton';
 
 export function UserNav({
   user,
@@ -44,13 +51,28 @@ export function UserNav({
   const [open, setOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [emailBlurred, setEmailBlurred] = useState(false);
 
-  const _isDashboard = pathname.startsWith("/dashboard");
+  const _isDashboard = pathname.startsWith('/dashboard');
 
   // Ensure component is mounted to avoid hydration issues
   useEffect(() => {
     setMounted(true);
+    // Load email blur preference
+    getEmailBlurPreference().then(setEmailBlurred);
   }, []);
+
+  const toggleEmailBlur = async () => {
+    const newBlurState = !emailBlurred;
+    setEmailBlurred(newBlurState);
+
+    try {
+      await setEmailBlurPreference(newBlurState);
+    } catch (error) {
+      // Revert on error
+      setEmailBlurred(!newBlurState);
+    }
+  };
 
   const handleSignOutClick = async () => {
     await authkitSignOut();
@@ -62,9 +84,9 @@ export function UserNav({
   const resetDays = 4;
 
   const themeOptions = [
-    { value: "system", label: "System", icon: Monitor },
-    { value: "light", label: "Light", icon: Sun },
-    { value: "dark", label: "Dark", icon: Moon },
+    { value: 'system', label: 'System', icon: Monitor },
+    { value: 'light', label: 'Light', icon: Sun },
+    { value: 'dark', label: 'Dark', icon: Moon },
   ];
 
   if (!mounted) {
@@ -80,7 +102,7 @@ export function UserNav({
         >
           <Avatar className="size-7">
             <AvatarImage
-              src={(user.profilePictureUrl as string) || "/placeholder.svg"}
+              src={(user.profilePictureUrl as string) || '/placeholder.svg'}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
               {user.firstName?.[0] || <UserIcon className="size-4" />}
@@ -90,7 +112,9 @@ export function UserNav({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72 rounded-lg" align="end" forceMount>
         <DropdownMenuLabel className="font-normal py-3">
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          <p className="text-sm text-muted-foreground">
+            {emailBlurred ? blurEmail(user.email) : user.email}
+          </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="px-2 py-3">
@@ -166,15 +190,15 @@ export function UserNav({
                             onClick={() => setTheme(option.value)}
                             className={`relative flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 ${
                               isActive
-                                ? "bg-background shadow-sm"
-                                : "hover:bg-background/50"
+                                ? 'bg-background shadow-sm'
+                                : 'hover:bg-background/50'
                             }`}
                           >
                             <Icon
                               className={`size-4 transition-colors duration-200 ${
                                 isActive
-                                  ? "text-foreground"
-                                  : "text-muted-foreground"
+                                  ? 'text-foreground'
+                                  : 'text-muted-foreground'
                               }`}
                             />
                           </button>
@@ -184,6 +208,29 @@ export function UserNav({
                     );
                   })}
                 </div>
+              </TooltipProvider>
+            </div>
+            <div className="flex items-center justify-between px-2 py-1">
+              <span className="text-sm">Email Privacy</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={toggleEmailBlur}
+                      className="flex items-center justify-center w-7 h-7 rounded-full bg-muted hover:bg-background/50 transition-all duration-200"
+                    >
+                      {emailBlurred ? (
+                        <EyeOff className="size-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="size-4 text-muted-foreground" />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {emailBlurred ? 'Show email' : 'Hide email'}
+                  </TooltipContent>
+                </Tooltip>
               </TooltipProvider>
             </div>
           </div>
