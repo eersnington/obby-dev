@@ -1,24 +1,27 @@
-"use client";
+'use client';
 
-import { useParams } from "next/navigation";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
-import { UserNav } from "../layout/user-nav";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import { Logo } from "../logo";
-import Link from "next/link";
-import FeedbackModal from "../app-layout/feedback-dialog";
+import { useParams } from 'next/navigation';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
+import { UserNav } from '../layout/user-nav';
+import { useAuth } from '@workos-inc/authkit-nextjs/components';
+import { Logo } from '../logo';
+import Link from 'next/link';
+import FeedbackModal from '../app-layout/feedback-dialog';
+import { useChatStore } from '@/stores/chat-store';
+import { motion } from 'motion/react';
 
 export function DynamicChatHeader() {
   const params = useParams();
-  const chatId = params?.id as Id<"chats"> | undefined;
+  const { currentChatId } = useChatStore();
+  const chatId = (params?.id as Id<'chats'>) || (currentChatId as Id<'chats'>);
   const { user, loading } = useAuth();
 
   // Load chat data if chatId is available
   const chatData = useQuery(
     api.chats.getChatById,
-    chatId ? { id: chatId } : "skip",
+    chatId ? { id: chatId } : 'skip',
   );
 
   if (loading) {
@@ -48,9 +51,14 @@ export function DynamicChatHeader() {
           {chatData && (
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">/</span>
-              <h1 className="font-medium text-foreground text-sm tracking-tight">
+              <motion.h1
+                initial={{ width: 0 }}
+                animate={{ width: 'auto' }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="font-medium text-foreground text-sm tracking-tight overflow-hidden whitespace-nowrap"
+              >
                 {chatData.title}
-              </h1>
+              </motion.h1>
             </div>
           )}
         </div>

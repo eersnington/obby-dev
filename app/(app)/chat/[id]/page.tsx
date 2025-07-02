@@ -1,15 +1,17 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 import { convertToUIMessages } from '@/lib/utils';
 
-import { Chat } from '@/components/artifact-blocks/chat';
 import { DataStreamHandler } from '@/components/ai/data-stream-handler';
 
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import { withAuth } from '@workos-inc/authkit-nextjs';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { getOSFromUA } from '@/lib/utils/os-utils';
+import { UnifiedChatLayout } from '@/components/chat/unified-chat-layout';
+import { ChatContainer } from '@/components/chat/chat-container';
+import { ChatPageInitializer } from '@/components/chat/chat-page-initializer';
 
 export default async function ChatPage(props: {
   params: Promise<{ id: string }>;
@@ -17,12 +19,14 @@ export default async function ChatPage(props: {
   const params = await props.params;
   const { id } = params;
 
-  const [workOsUser, chat] = await Promise.all([
+  const [headersRes, workOsUser, chat] = await Promise.all([
+    headers(),
     withAuth(),
     fetchQuery(api.chats.getChatById, { id }),
   ]);
 
   const { user } = workOsUser;
+  const os = getOSFromUA(headersRes.get('user-agent'));
 
   if (!chat) {
     notFound();
@@ -44,40 +48,21 @@ export default async function ChatPage(props: {
 
   const cookieStore = await cookies();
   const chatModelFromCookie = cookieStore.get('chat-model');
-
-  if (!chatModelFromCookie) {
-    return (
-      <>
-        <SidebarProvider>
-          <Chat
-            id={chat.chatId}
-            initialMessages={convertToUIMessages(messagesFromDb)}
-            initialChatModel={'obbylabs:agent-chat'}
-            initialVisibilityType={chat.visibility}
-            isReadonly={user?.id !== chat.userId}
-            session={user}
-            autoResume={true}
-          />
-          <DataStreamHandler id={id} />
-        </SidebarProvider>
-      </>
-    );
-  }
+  const chatModel = chatModelFromCookie?.value || 'obbylabs:agent-chat';
 
   return (
-    <>
-      <SidebarProvider>
-        <Chat
-          id={chat.chatId}
-          initialMessages={convertToUIMessages(messagesFromDb)}
-          initialChatModel={chatModelFromCookie.value}
-          initialVisibilityType={chat.visibility}
-          isReadonly={user?.id !== chat.userId}
-          session={user}
-          autoResume={true}
-        />
-        <DataStreamHandler id={chat.chatId} />
-      </SidebarProvider>
-    </>
+    <UnifiedChatLayout user={user} os={os}>
+      <ChatPageInitializer chatId={id} />
+      <ChatContainer
+        id={chat.chatId}
+        initialMessages={convertToUIMessages(messagesFromDb)}
+        initialChatModel={chatModel}
+        initialVisibilityType={chat.visibility}
+        isReadonly={user?.id !== chat.userId}
+        session={user}
+        autoResume={true}
+      />
+      <DataStreamHandler id={chat.chatId} />
+    </UnifiedChatLayout>
   );
 }

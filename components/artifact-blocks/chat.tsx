@@ -3,17 +3,18 @@
 import type { Attachment, UIMessage } from 'ai';
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetchWithErrorHandlers, generateUUID } from '@/lib/utils';
 import { Artifact } from './artifact';
 import { MultimodalInput } from './multimodal-input';
 import { Messages } from './messages';
 import type { VisibilityType } from './visibility-selector';
 import { useArtifactSelector } from '@/hooks/use-artifact';
-// import { getChatHistoryPaginationKey } from './sidebar-history';
 import { toast } from './toast';
 import { useChatVisibility } from '@/hooks/use-chat-visibility';
 import { useAutoResume } from '@/hooks/use-auto-resume';
 import { ChatSDKError } from '@/lib/ai/errors';
+import { useChatStore } from '@/stores/chat-store';
 
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -37,6 +38,8 @@ export function Chat({
   autoResume: boolean;
 }) {
   const votes = useQuery(api.chats.getVotesByChatId, { chatId: id }) || [];
+  const router = useRouter();
+  const { isChatActive, startChat } = useChatStore();
 
   const { visibilityType } = useChatVisibility({
     chatId: id,
@@ -46,7 +49,7 @@ export function Chat({
   const {
     messages,
     setMessages,
-    handleSubmit,
+    handleSubmit: originalHandleSubmit,
     input,
     setInput,
     status,
@@ -69,8 +72,6 @@ export function Chat({
       selectedVisibilityType: visibilityType,
     }),
     onFinish: () => {
-      //   mutate(unstable_serialize(getChatHistoryPaginationKey));
-      // Could add Convex mutation here if needed
       console.log('[Chat.tsx] onFinish - data:', JSON.stringify(data));
     },
     onError: (error) => {
@@ -85,6 +86,16 @@ export function Chat({
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
+
+  const handleSubmit = (
+    event?: { preventDefault?: (() => void) | undefined } | undefined,
+    options?: any,
+  ) => {
+    if (!isChatActive && messages.length === 0) {
+      startChat(id);
+    }
+    originalHandleSubmit(event, options);
+  };
 
   useAutoResume({
     autoResume,
