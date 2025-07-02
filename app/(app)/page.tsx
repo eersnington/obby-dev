@@ -1,5 +1,5 @@
 import { cookies, headers } from 'next/headers';
-import { generatePrefixedUUID } from '@/lib/utils';
+import { generateUUID } from '@/lib/utils';
 import { DataStreamHandler } from '@/components/ai/data-stream-handler';
 import { SidebarToggle } from 'components/app-layout/sidebar-toggle';
 import { LowProfileFooter } from '@/components/landing/low-profile-footer';
@@ -16,7 +16,7 @@ export default async function Page() {
   const { user } = authUser;
 
   const os = getOSFromUA(headersRes.get('user-agent'));
-  const id = generatePrefixedUUID('chat');
+  const id = generateUUID();
 
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('chat-model');
