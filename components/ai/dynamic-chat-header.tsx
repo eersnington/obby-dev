@@ -14,11 +14,16 @@ import { motion } from 'motion/react';
 
 export function DynamicChatHeader() {
   const params = useParams();
-  const { currentChatId } = useChatStore();
+  const { currentChatId, resetChat } = useChatStore();
   const chatId = (params?.id as Id<'chats'>) || (currentChatId as Id<'chats'>);
   const { user, loading } = useAuth();
 
-  // Load chat data if chatId is available
+  const handleLogoClick = () => {
+    // doing this to ensure that the chat state is reset when navigating back to the home page
+    resetChat();
+  };
+
+  // load chat data if chatId is available
   const chatData = useQuery(
     api.chats.getChatById,
     chatId ? { id: chatId } : 'skip',
@@ -45,7 +50,7 @@ export function DynamicChatHeader() {
     <header className="bg-background flex w-full items-center border-none">
       <div className="flex w-full justify-between pt-2">
         <div className="justify-center flex items-center gap-4">
-          <Link href="/">
+          <Link href="/" onClick={handleLogoClick}>
             <Logo />
           </Link>
           {chatData && (

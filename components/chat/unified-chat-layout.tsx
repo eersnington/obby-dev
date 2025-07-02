@@ -8,21 +8,31 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { SidebarToggle } from '@/components/app-layout/sidebar-toggle';
 import { LowProfileFooter } from '@/components/landing/low-profile-footer';
 import type { User } from '@workos-inc/node';
-import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 interface UnifiedChatLayoutProps {
   children: React.ReactNode;
   user: User | null;
   os: string | null;
+  isLandingPage?: boolean;
 }
 
 export function UnifiedChatLayout({
   children,
   user,
   os,
+  isLandingPage = false,
 }: UnifiedChatLayoutProps) {
-  const { isChatActive } = useChatStore();
+  const { isChatActive, resetChat } = useChatStore();
+
+  useEffect(() => {
+    if (isLandingPage) {
+      // reset the chat state when navigating to the landing page
+      // this ensures that the chat state is cleared when navigating back to the home page
+      // the buttons in the header will handle resetting the chat state when clicked
+      resetChat();
+    }
+  }, [isLandingPage, resetChat]);
 
   return (
     <SidebarProvider className="flex flex-col">
