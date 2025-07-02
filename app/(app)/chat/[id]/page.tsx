@@ -3,8 +3,6 @@ import { notFound } from 'next/navigation';
 
 import { convertToUIMessages } from '@/lib/utils';
 
-import { DataStreamHandler } from '@/components/ai/data-stream-handler';
-
 import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import { withAuth } from '@workos-inc/authkit-nextjs';
@@ -62,7 +60,6 @@ export default async function ChatPage(props: {
         session={user}
         autoResume={true}
       />
-      <DataStreamHandler id={chat.chatId} />
     </UnifiedChatLayout>
   );
 }

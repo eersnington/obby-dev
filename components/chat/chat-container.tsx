@@ -6,6 +6,7 @@ import { Chat } from '@/components/artifact-blocks/chat';
 import type { UIMessage } from 'ai';
 import type { User } from '@workos-inc/node';
 import type { VisibilityType } from '../artifact-blocks/visibility-selector';
+import { DataStreamHandler } from '../ai/data-stream-handler';
 
 interface ChatContainerProps {
   id: string;
@@ -38,14 +39,17 @@ export function ChatContainer({
   }, [hasMessages, isChatActive, startChat, id]);
 
   return (
-    <Chat
-      id={id}
-      initialMessages={initialMessages}
-      initialChatModel={initialChatModel}
-      initialVisibilityType={initialVisibilityType}
-      isReadonly={isReadonly}
-      session={session}
-      autoResume={autoResume}
-    />
+    <>
+      <Chat
+        id={id}
+        initialMessages={initialMessages}
+        initialChatModel={initialChatModel}
+        initialVisibilityType={initialVisibilityType}
+        isReadonly={isReadonly}
+        session={session}
+        autoResume={autoResume}
+      />
+      <DataStreamHandler id={id} />
+    </>
   );
 }

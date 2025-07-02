@@ -1,6 +1,5 @@
 import { cookies, headers } from 'next/headers';
 import { generateUUID } from '@/lib/utils';
-import { DataStreamHandler } from '@/components/ai/data-stream-handler';
 import { withAuth } from '@workos-inc/authkit-nextjs';
 import { getOSFromUA } from '@/lib/utils/os-utils';
 import { UnifiedChatLayout } from '@/components/chat/unified-chat-layout';
@@ -30,7 +29,6 @@ export default async function Page() {
         session={user}
         autoResume={false}
       />
-      <DataStreamHandler id={id} />
     </UnifiedChatLayout>
   );
 }
