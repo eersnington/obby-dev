@@ -34,28 +34,33 @@ export function UnifiedChatLayout({
     }
   }, [isLandingPage, resetChat]);
 
+  if (isChatActive) {
+    return (
+      <div className="h-screen flex flex-col">
+        <SidebarProvider className="flex flex-col">
+          <DynamicChatHeader />
+          <div className="flex-1 overflow-hidden w-full">{children}</div>
+        </SidebarProvider>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider className="flex flex-col">
-      {isChatActive ? <DynamicChatHeader /> : <ClientHeader user={user} />}
+      <ClientHeader user={user} />
       <div className="flex flex-1">
-        {!isChatActive && <AppSidebar user={user} os={os} />}
-        <SidebarInset className={isChatActive ? 'p-0' : 'p-2'}>
-          <div
-            className={`flex flex-col h-full w-full ${!isChatActive ? 'bg-accent/30 border-2 border-accent rounded-lg shadow-sm' : ''}`}
-          >
-            {!isChatActive && (
-              <header className="flex h-16 items-center gap-4 px-6">
-                {user && <SidebarToggle />}
-              </header>
-            )}
-            <main className={`flex-1 ${!isChatActive ? 'p-6' : ''}`}>
-              <div className={!isChatActive ? 'space-y-6' : ''}>
-                <div className={!isChatActive ? 'max-w-3xl mx-auto' : ''}>
-                  {children}
-                </div>
+        <AppSidebar user={user} os={os} />
+        <SidebarInset className="p-2">
+          <div className="flex flex-col bg-accent/30 border-2 border-accent h-full w-full rounded-lg shadow-sm">
+            <header className="flex h-16 items-center gap-4 px-6">
+              {user && <SidebarToggle />}
+            </header>
+            <main className="flex-1 p-6">
+              <div className="space-y-6">
+                <div className="max-w-3xl mx-auto">{children}</div>
               </div>
             </main>
-            {!isChatActive && <LowProfileFooter />}
+            <LowProfileFooter />
           </div>
         </SidebarInset>
       </div>

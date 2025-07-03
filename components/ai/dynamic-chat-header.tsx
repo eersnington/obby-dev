@@ -31,8 +31,8 @@ export function DynamicChatHeader() {
 
   if (loading) {
     return (
-      <header className="bg-background flex w-full items-center border-none">
-        <div className="flex w-full justify-between pt-2">
+      <header className="bg-background flex-shrink-0 w-full items-center px-4 py-3">
+        <div className="flex w-full justify-between">
           <div className="justify-center flex items-center">
             <Link href="/">
               <Logo />
@@ -47,8 +47,8 @@ export function DynamicChatHeader() {
   }
 
   return (
-    <header className="bg-background flex w-full items-center border-none">
-      <div className="flex w-full justify-between pt-2">
+    <header className="bg-background flex-shrink-0 w-full items-center px-4 py-3">
+      <div className="flex w-full justify-between">
         <div className="justify-center flex items-center gap-4">
           <Link href="/" onClick={handleLogoClick}>
             <Logo />
