@@ -45,7 +45,7 @@ export default defineSchema({
   documents: defineTable({
     title: v.string(),
     content: v.string(),
-    kind: v.union(v.literal('code')),
+    kind: v.union(v.literal('code'), v.literal('fragment')),
     documentId: v.string(),
     userId: v.string(),
     chatId: v.optional(v.string()),

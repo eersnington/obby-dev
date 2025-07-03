@@ -20,6 +20,7 @@ import { ArtifactMessages } from './artifact-messages';
 import { useSidebar } from '../ui/sidebar';
 import { useArtifact } from '@/hooks/use-artifact';
 import { codeArtifact } from './code/client';
+import { fragmentArtifact } from './fragment/client';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import type { VisibilityType } from './visibility-selector';
@@ -31,7 +32,7 @@ import type { User } from '@workos-inc/node';
 type Document = Doc<'documents'>;
 type Vote = Doc<'votes'>;
 
-export const artifactDefinitions = [codeArtifact];
+export const artifactDefinitions = [codeArtifact, fragmentArtifact];
 export type ArtifactKind = (typeof artifactDefinitions)[number]['kind'];
 
 export interface UIArtifact {

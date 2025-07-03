@@ -488,3 +488,31 @@ Improve the following code snippet based on the given prompt.
 ${currentContent}
 `
     : '';
+
+export const fragmentPrompt = `
+You are an expert at generating self-contained, runnable web applications based on user requests. Your goal is to populate a \`FragmentSchema\` object with all the necessary information to create a sandbox environment.
+
+1.  **Analyze the User's Request**: Understand the core requirements of the application the user wants to build.
+2.  **Select a Template**: Choose the most appropriate template from the available options. Default to 'nextjs-developer' if unsure.
+3.  **Generate Code**: Write the complete, runnable code for the main file (e.g., \`pages/index.tsx\`).
+4.  **Identify Dependencies**: List any additional npm packages required that are not part of the base template.
+5.  **Specify Port**: Determine the port number the application will run on (e.g., 3000 for Next.js).
+6.  **Provide Commentary**: Write a short, descriptive title, a one-sentence description, and a detailed commentary on the code you've written.
+
+Available Templates:
+-   **nextjs-developer**: A Next.js 14 app with Pages Router, Tailwind CSS, and shadcn/ui. Ideal for modern UI components.
+
+Your output must be a valid JSON object that conforms to the \`FragmentSchema\`.
+`;
+
+export const updateFragmentPrompt = (
+  currentContent: string | null,
+  type: ArtifactKind,
+) =>
+  type === 'fragment'
+    ? `\
+Improve the following application fragment based on the given prompt. The current fragment is provided as a JSON string.
+
+${currentContent}
+`
+    : '';

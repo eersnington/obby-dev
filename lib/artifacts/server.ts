@@ -3,6 +3,7 @@ import { fetchMutation } from 'convex/nextjs';
 import type { Doc } from '@/convex/_generated/dataModel';
 import { api } from '@/convex/_generated/api';
 import { codeDocumentHandler } from '@/components/artifact-blocks/code/server';
+import { fragmentDocumentHandler } from '@/components/artifact-blocks/fragment/server';
 import type { ArtifactKind } from '@/components/artifact-blocks/artifact';
 
 type Document = {
@@ -104,6 +105,7 @@ export function createDocumentHandler<T extends ArtifactKind>(config: {
  */
 export const documentHandlersByBlockKind: Array<DocumentHandler> = [
   codeDocumentHandler,
+  fragmentDocumentHandler,
 ];
 
-export const artifactKinds = ['code'] as const;
+export const artifactKinds = ['code', 'fragment'] as const;

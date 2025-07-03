@@ -45,7 +45,6 @@ export async function POST(req: Request) {
 
   // Copy code to fs
   if (fragment.code && Array.isArray(fragment.code)) {
-    // biome-ignore lint/complexity/noForEach: this is valid and preferred
     fragment.code.forEach(async (file) => {
       await sbx.files.write(file.file_path, file.file_content);
       console.log(`Copied file to ${file.file_path} in ${sbx.sandboxId}`);

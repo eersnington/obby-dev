@@ -79,7 +79,7 @@
         "noUselessElse": "off" // Stylistic opinion
       },
       "suspicious": {
-        "noExplicitAny": "warn" // We trust Vercelians to use any only when necessary
+        "noExplicitAny": "off" // We trust Vercelians to use any only when necessary
       },
       "nursery": {
         "noStaticElementInteractions": "warn",

@@ -22,6 +22,7 @@ export type DataStreamDelta = {
   type:
     | 'text-delta'
     | 'code-delta'
+    | 'fragment-delta'
     | 'image-delta'
     | 'title'
     | 'id'
