@@ -8,6 +8,7 @@ import {
 import { Artifact } from '../create-artifact';
 import { CodeEditor } from '../code-editor';
 import { generateUUID } from '@/lib/utils';
+import { useChatStore } from '@/stores/chat-store';
 
 const OUTPUT_HANDLERS = {
   matplotlib: `
@@ -68,13 +69,16 @@ export const codeArtifact = new Artifact<'code', Metadata>({
   },
   onStreamPart: ({ streamPart, setArtifact }) => {
     if (streamPart.type === 'code-delta') {
+      // checking chat state to see if we should auto-open artifacts
+      const { isChatActive } = useChatStore.getState();
+
       setArtifact((draftArtifact) => ({
         ...draftArtifact,
         content: streamPart.content as string,
         isVisible:
           draftArtifact.status === 'streaming' &&
-          draftArtifact.content.length > 300 &&
-          draftArtifact.content.length < 310
+          draftArtifact.content.length > 50 &&
+          isChatActive
             ? true
             : draftArtifact.isVisible,
         status: 'streaming',
