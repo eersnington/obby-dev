@@ -1,3 +1,5 @@
+'use client';
+
 interface CodeBlockProps {
   node: any;
   inline: boolean;
