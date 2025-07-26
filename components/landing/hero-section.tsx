@@ -1,30 +1,30 @@
-import Image from "next/image";
-import { AnnouncementBadge } from "./announcement-badge";
+import Image from 'next/image';
+import { AnnouncementBadge } from './announcement-badge';
 
 export function HeroSection() {
   return (
-    <div className="text-center space-y-6 mb-12 px-4">
+    <div className="mb-12 space-y-6 px-4 text-center">
       <AnnouncementBadge />
       <div className="space-y-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight">
+        <h1 className="font-bold text-3xl tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
           <span className="block sm:inline">Build something with</span>
-          <span className="inline-flex items-center justify-center gap-1 sm:gap-2 mt-2 sm:mt-0 sm:ml-3">
+          <span className="mt-2 inline-flex items-center justify-center gap-1 sm:mt-0 sm:ml-3 sm:gap-2">
             <Image
-              src="/logos/obby/obby-logo-min.webp"
-              className="inline-block"
               alt="Obby Logo"
-              width={40}
+              className="inline-block"
               height={40}
               sizes="(max-width: 640px) 40px, (max-width: 768px) 48px, (max-width: 1024px) 56px, 64px"
+              src="/logos/obby/obby-logo-min.webp"
               style={{
-                width: "clamp(40px, 8vw, 64px)",
-                height: "clamp(40px, 8vw, 64px)",
+                width: 'clamp(40px, 8vw, 64px)',
+                height: 'clamp(40px, 8vw, 64px)',
               }}
+              width={40}
             />
             <span>Obby</span>
           </span>
         </h1>
-        <p className="text-lg sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
+        <p className="mx-auto max-w-2xl px-4 text-lg text-muted-foreground leading-relaxed sm:text-lg lg:text-xl">
           Open source v0 alternative. Create beautiful React components by
           simply describing what you want to build.
         </p>

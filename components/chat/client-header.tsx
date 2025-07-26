@@ -19,40 +19,40 @@ export function ClientHeader({ user: serverUser }: ClientHeaderProps) {
   const user = clientUser || serverUser;
 
   return (
-    <header className="bg-background sticky top-0 z-50 flex w-full items-center border-none">
+    <header className="sticky top-0 z-50 flex w-full items-center border-none bg-background">
       <div className="flex w-full justify-between pt-2">
-        <div className="justify-center flex items-center">
+        <div className="flex items-center justify-center">
           <Link href="/">
             <Logo />
           </Link>
         </div>
         <div className="pr-9">
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             {loading ? (
               <Skeleton className="size-7 rounded-full" />
-            ) : !user ? (
+            ) : user ? (
               <>
                 <Link
-                  prefetch
-                  href="/pricing"
                   className="text-sm hover:underline"
-                >
-                  Pricing
-                </Link>
-                <ClientSignUpButton />
-                <ClientSignInButton />
-              </>
-            ) : (
-              <>
-                <Link
-                  prefetch
                   href="/pricing"
-                  className="text-sm hover:underline"
+                  prefetch
                 >
                   Pricing
                 </Link>
                 <FeedbackModal />
                 <UserNav user={user} />
+              </>
+            ) : (
+              <>
+                <Link
+                  className="text-sm hover:underline"
+                  href="/pricing"
+                  prefetch
+                >
+                  Pricing
+                </Link>
+                <ClientSignUpButton />
+                <ClientSignInButton />
               </>
             )}
           </div>

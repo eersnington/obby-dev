@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev:next": "next dev",
-    "dev:convex": "npx convex dev",
-    "dev": "concurrently \"pnpm run dev:next\" \"pnpm run dev:convex\"",
+    "dev:convex": "bunx convex dev",
+    "dev": "concurrently \"bun run dev:next\" \"bun run dev:convex\"",
     "build": "next build",
     "start": "next start",
     "lint": "biome format --write . && biome lint .",
@@ -86,7 +86,7 @@
     "lucide-react": "^0.511.0",
     "motion": "^12.18.1",
     "nanoid": "^5.1.5",
-    "next": "15.3.3",
+    "next": "15.4.2-canary.15",
     "next-themes": "^0.4.6",
     "nextjs-toploader": "^3.6.15",
     "prettier": "^3.5.3",
@@ -113,7 +113,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/lodash": "^4.17.17",
     "@types/node": "^20",
@@ -123,7 +123,8 @@
     "chalk": "^5.3.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ultracite": "5.0.49"
   },
   "description": "An open source alternative to v0.dev",
   "keywords": [
@@ -136,6 +137,5 @@
   ],
   "author": "eersnington",
   "license": "MIT",
-  "homepage": "https://obby.dev",
-  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
+  "homepage": "https://obby.dev"
 }

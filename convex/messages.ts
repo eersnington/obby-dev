@@ -70,7 +70,9 @@ export const saveMessages = mutation({
         .query('messages')
         .withIndex('by_messageId', (q) => q.eq('messageId', msg.messageId))
         .first();
-      if (existing) existingMessages.push(existing);
+      if (existing) {
+        existingMessages.push(existing);
+      }
     }
 
     const messagesToInsert = args.messages.filter(

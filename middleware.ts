@@ -20,14 +20,14 @@ export default async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === '/chat') {
     console.log('No session on protected path');
     return NextResponse.rewrite(new URL('/', request.url), {
-      headers: headers,
+      headers,
     });
   }
 
   // Headers from the authkit response need to be included in every non-redirect
   // response to ensure that `withAuth` works as expected
   return NextResponse.next({
-    headers: headers,
+    headers,
   });
 }
 

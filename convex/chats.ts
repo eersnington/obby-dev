@@ -59,7 +59,9 @@ export const deleteChatById = mutation({
       .query('chats')
       .withIndex('by_chatId', (q) => q.eq('chatId', args.id))
       .first();
-    if (!chat) throw new Error('Chat not found');
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
 
     const messages = await ctx.db
       .query('messages')
@@ -90,7 +92,9 @@ export const updateChatVisibilityById = mutation({
       .withIndex('by_chatId', (q) => q.eq('chatId', args.id))
       .first();
 
-    if (!chat) throw new Error('Chat not found');
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
 
     return await ctx.db.patch(chat._id, {
       visibility: args.visibility,

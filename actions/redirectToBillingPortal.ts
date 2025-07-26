@@ -1,10 +1,10 @@
-"use server";
+'use server';
 
-import { redirect } from "next/navigation";
-import { stripe } from "../app/(legacy)/api/stripe";
-import { workos } from "@/app/(legacy)/api/workos";
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { env } from "env";
+import { redirect } from 'next/navigation';
+import { stripe } from '../app/(legacy)/api/stripe';
+import { workos } from '@/app/(legacy)/api/workos';
+import { withAuth } from '@workos-inc/authkit-nextjs';
+import { env } from 'env';
 
 export default async function redirectToBillingPortal(path: string) {
   const { organizationId } = await withAuth();
@@ -14,7 +14,7 @@ export default async function redirectToBillingPortal(path: string) {
     {
       headers: {
         Authorization: `Bearer ${env.WORKOS_API_KEY}`,
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     },
   );

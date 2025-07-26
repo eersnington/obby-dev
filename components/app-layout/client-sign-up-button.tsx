@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Button } from "components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "components/ui/avatar";
-import Link from "next/link";
-import { cn } from "lib/utils";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import signOut from "@/actions/signOut";
+import { Button } from 'components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
+import Link from 'next/link';
+import { cn } from 'lib/utils';
+import { useAuth } from '@workos-inc/authkit-nextjs/components';
+import signOut from '@/actions/signOut';
 
 export function ClientSignUpButton({ large }: { large?: boolean }) {
   const { user, loading } = useAuth();
@@ -13,9 +13,9 @@ export function ClientSignUpButton({ large }: { large?: boolean }) {
   if (loading) {
     return (
       <Button
+        className={cn(large ? 'h-10' : 'h-8', 'justify-center')}
         disabled
         variant="outline"
-        className={cn(large ? "h-10" : "h-8", "justify-center")}
       >
         Loading...
       </Button>
@@ -24,16 +24,16 @@ export function ClientSignUpButton({ large }: { large?: boolean }) {
 
   if (user) {
     return (
-      <div className="flex gap-3 items-center">
+      <div className="flex items-center gap-3">
         <form action={signOut}>
-          <Button type="submit" className={cn(large ? "h-10" : "h-8")}>
+          <Button className={cn(large ? 'h-10' : 'h-8')} type="submit">
             Sign Out
           </Button>
         </form>
         <a href="/dashboard">
-          <Avatar className={large ? "h-10 w-10" : "h-8 w-8"}>
+          <Avatar className={large ? 'h-10 w-10' : 'h-8 w-8'}>
             <AvatarImage src={user.profilePictureUrl as string} />
-            <AvatarFallback>{user.firstName?.[0] || ""}</AvatarFallback>
+            <AvatarFallback>{user.firstName?.[0] || ''}</AvatarFallback>
           </Avatar>
         </a>
       </div>
@@ -43,8 +43,8 @@ export function ClientSignUpButton({ large }: { large?: boolean }) {
   return (
     <Button
       asChild
+      className={cn(large ? 'h-10' : 'h-8', 'justify-center')}
       variant="outline"
-      className={cn(large ? "h-10" : "h-8", "justify-center")}
     >
       <Link href="/register">Sign Up</Link>
     </Button>

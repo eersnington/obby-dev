@@ -26,7 +26,7 @@
  * const longKey = generateArrayKey(5, 5); // "5_a4f2x"
  */
 export function generateArrayKey(index: number, length = 3): string {
-  let randomSuffix = "";
+  let randomSuffix = '';
   for (let i = 0; i < length; i++) {
     // Generate random number and convert to base36 (0-9, a-z)
     randomSuffix += Math.floor(Math.random() * 36).toString(36);

@@ -34,10 +34,10 @@ export const requestSuggestions = ({
     }),
     execute: async ({ documentId }) => {
       const document = await fetchQuery(api.documents.getDocumentById, {
-        documentId: documentId,
+        documentId,
       });
 
-      if (!document || !document.content) {
+      if (!(document && document.content)) {
         return {
           error: 'Document not found',
         };
@@ -65,7 +65,7 @@ export const requestSuggestions = ({
           description: element.description,
           isResolved: false,
           userId: user.id,
-          documentId: documentId,
+          documentId,
           suggestionId: generateUUID(),
         };
 
@@ -87,7 +87,7 @@ export const requestSuggestions = ({
       }
 
       return {
-        documentId: documentId,
+        documentId,
         title: document.title,
         kind: document.kind,
         message: 'Suggestions have been added to the document',

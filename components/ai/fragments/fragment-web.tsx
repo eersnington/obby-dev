@@ -1,14 +1,14 @@
-import CopyButton from "components/copy-button";
-import { Button } from "components/ui/button";
+import CopyButton from 'components/copy-button';
+import { Button } from 'components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import type { ExecutionResultWeb } from "lib/types";
-import { RotateCw } from "lucide-react";
-import { useState } from "react";
+} from 'components/ui/tooltip';
+import type { ExecutionResultWeb } from 'lib/types';
+import { RotateCw } from 'lucide-react';
+import { useState } from 'react';
 
 export function FragmentWeb({ result }: { result: ExecutionResultWeb }) {
   const [iframeKey, setIframeKey] = useState(0);
@@ -19,24 +19,24 @@ export function FragmentWeb({ result }: { result: ExecutionResultWeb }) {
   }
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex h-full w-full flex-col">
       <iframe
-        title="Embedded Web Content"
-        key={iframeKey}
         className="h-full w-full"
-        sandbox="allow-forms allow-scripts allow-same-origin"
+        key={iframeKey}
         loading="lazy"
+        sandbox="allow-forms allow-scripts allow-same-origin"
         src={result.url}
+        title="Embedded Web Content"
       />
-      <div className="p-2 border-t">
-        <div className="flex items-center bg-muted dark:bg-white/10 rounded-2xl">
+      <div className="border-t p-2">
+        <div className="flex items-center rounded-2xl bg-muted dark:bg-white/10">
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <Button
-                  variant="link"
                   className="text-muted-foreground"
                   onClick={refreshIframe}
+                  variant="link"
                 >
                   <RotateCw className="h-4 w-4" />
                 </Button>
@@ -44,7 +44,7 @@ export function FragmentWeb({ result }: { result: ExecutionResultWeb }) {
               <TooltipContent>Refresh</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <span className="text-muted-foreground text-xs flex-1 text-ellipsis overflow-hidden whitespace-nowrap">
+          <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground text-xs">
             {result.url}
           </span>
           <TooltipProvider>

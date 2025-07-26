@@ -1,10 +1,10 @@
-import type { Message } from "lib/ai/messages";
-import type { FragmentSchema } from "lib/fragment";
-import type { ExecutionResult } from "lib/types";
-import type { DeepPartial } from "ai";
-import { LoaderIcon, Terminal } from "lucide-react";
-import { useEffect } from "react";
-import { generateArrayKey } from "lib/utils/array-utils";
+import type { Message } from 'lib/ai/messages';
+import type { FragmentSchema } from 'lib/fragment';
+import type { ExecutionResult } from 'lib/types';
+import type { DeepPartial } from 'ai';
+import { LoaderIcon, Terminal } from 'lucide-react';
+import { useEffect } from 'react';
+import { generateArrayKey } from 'lib/utils/array-utils';
 
 export function Chat({
   messages,
@@ -20,7 +20,7 @@ export function Chat({
 }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: change only when there's new msg
   useEffect(() => {
-    const chatContainer = document.getElementById("chat-container");
+    const chatContainer = document.getElementById('chat-container');
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -28,55 +28,55 @@ export function Chat({
 
   return (
     <div
+      className="my-4 flex max-h-full flex-col gap-2 overflow-y-auto pb-12"
       id="chat-container"
-      className="flex flex-col pb-12 gap-2 overflow-y-auto max-h-full my-4"
     >
       {messages.map((message: Message, index: number) => (
         <div
-          className={`flex flex-col px-4 shadow-sm whitespace-pre-wrap ${message.role !== "user" ? "bg-accent dark:bg-white/5 border text-accent-foreground dark:text-muted-foreground py-4 rounded-2xl gap-4 w-full" : "bg-gradient-to-b from-black/5 to-black/10 dark:from-black/30 dark:to-black/50 py-2 rounded-xl gap-2 w-fit"} font-serif`}
+          className={`flex flex-col whitespace-pre-wrap px-4 shadow-sm ${message.role !== 'user' ? 'w-full gap-4 rounded-2xl border bg-accent py-4 text-accent-foreground dark:bg-white/5 dark:text-muted-foreground' : 'w-fit gap-2 rounded-xl bg-gradient-to-b from-black/5 to-black/10 py-2 dark:from-black/30 dark:to-black/50'} font-serif`}
           key={generateArrayKey(index)}
         >
           {message.content.map((content, id) => {
-            if (content.type === "text") {
+            if (content.type === 'text') {
               return content.text;
             }
-            if (content.type === "image") {
+            if (content.type === 'image') {
               return (
                 <img
+                  alt="fragment"
+                  className="mr-2 mb-2 inline-block h-12 w-12 rounded-lg bg-white object-cover"
                   key={generateArrayKey(id)}
                   src={content.image}
-                  alt="fragment"
-                  className="mr-2 inline-block w-12 h-12 object-cover rounded-lg bg-white mb-2"
                 />
               );
             }
           })}
           {message.object && (
             <div
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setCurrentPreview({
-                    fragment: message.object,
-                    result: message.result,
-                  });
-                }
-              }}
+              className="flex w-full select-none items-center rounded-xl border py-2 pl-2 hover:cursor-pointer hover:bg-white md:w-max dark:hover:bg-white/5"
               onClick={() =>
                 setCurrentPreview({
                   fragment: message.object,
                   result: message.result,
                 })
               }
-              className="py-2 pl-2 w-full md:w-max flex items-center border rounded-xl select-none hover:bg-white dark:hover:bg-white/5 hover:cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  setCurrentPreview({
+                    fragment: message.object,
+                    result: message.result,
+                  });
+                }
+              }}
             >
-              <div className="rounded-[0.5rem] w-10 h-10 bg-black/5 dark:bg-white/5 self-stretch flex items-center justify-center">
-                <Terminal strokeWidth={2} className="text-[#b300ff]" />
+              <div className="flex h-10 w-10 items-center justify-center self-stretch rounded-[0.5rem] bg-black/5 dark:bg-white/5">
+                <Terminal className="text-[#b300ff]" strokeWidth={2} />
               </div>
-              <div className="pl-2 pr-4 flex flex-col">
-                <span className="font-bold font-sans text-sm text-primary">
+              <div className="flex flex-col pr-4 pl-2">
+                <span className="font-bold font-sans text-primary text-sm">
                   {message.object.title}
                 </span>
-                <span className="font-sans text-sm text-muted-foreground">
+                <span className="font-sans text-muted-foreground text-sm">
                   Click to see fragment
                 </span>
               </div>
@@ -85,8 +85,8 @@ export function Chat({
         </div>
       ))}
       {isLoading && (
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <LoaderIcon strokeWidth={2} className="animate-spin w-4 h-4" />
+        <div className="flex items-center gap-1 text-muted-foreground text-sm">
+          <LoaderIcon className="h-4 w-4 animate-spin" strokeWidth={2} />
           <span>Generating...</span>
         </div>
       )}

@@ -3,24 +3,24 @@ import { motion } from 'motion/react';
 export const Greeting = () => {
   return (
     <div
+      className="mx-auto flex size-full max-w-3xl flex-col justify-center px-8 md:mt-20"
       key="overview"
-      className="max-w-3xl mx-auto md:mt-20 px-8 size-full flex flex-col justify-center"
     >
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
+        className="font-semibold text-2xl"
         exit={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 10 }}
         transition={{ delay: 0.5 }}
-        className="text-2xl font-semibold"
       >
         Hello there!
       </motion.div>
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 10 }}
-        transition={{ delay: 0.6 }}
         className="text-2xl text-zinc-500"
+        exit={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 10 }}
+        transition={{ delay: 0.6 }}
       >
         How can I help you today?
       </motion.div>

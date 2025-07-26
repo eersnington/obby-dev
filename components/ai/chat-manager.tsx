@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { createContext, useContext, type ReactNode } from "react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
-import type { Message } from "lib/ai/messages";
-import type { DeepPartial } from "ai";
-import type { FragmentSchema } from "lib/fragment";
+import { createContext, useContext, type ReactNode } from 'react';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
+import type { Message } from 'lib/ai/messages';
+import type { DeepPartial } from 'ai';
+import type { FragmentSchema } from 'lib/fragment';
 
 interface ChatData {
-  _id: Id<"chats">;
+  _id: Id<'chats'>;
   _creationTime: number;
-  userId: Id<"users">;
+  userId: Id<'users'>;
   title: string;
   messages: Message[];
   fileData?: unknown;
   fragments?: DeepPartial<FragmentSchema>[];
-  visibility: "private" | "public";
+  visibility: 'private' | 'public';
   messageCount?: number;
   fragmentCount?: number;
   lastUpdated?: number;
@@ -38,13 +38,13 @@ const ChatContext = createContext<ChatContextValue | null>(null);
 export function useChatContext() {
   const context = useContext(ChatContext);
   if (!context) {
-    throw new Error("useChatContext must be used within ChatManager");
+    throw new Error('useChatContext must be used within ChatManager');
   }
   return context;
 }
 
 interface ChatManagerProps {
-  chatId?: Id<"chats">;
+  chatId?: Id<'chats'>;
   initialChatData?: ChatData;
   children: ReactNode;
 }
@@ -63,7 +63,7 @@ export function ChatManager({
   // Real-time chat data from Convex
   const chatData = useQuery(
     api.chats.watchChat,
-    chatId ? { id: chatId } : "skip",
+    chatId ? { id: chatId } : 'skip',
   );
 
   // Use real-time data from Convex, fallback to initial data
@@ -72,7 +72,7 @@ export function ChatManager({
 
   const updateChatMessages = async (messages: Message[]) => {
     if (!chatId) {
-      console.warn("No chatId provided to updateChatMessages");
+      console.warn('No chatId provided to updateChatMessages');
       return;
     }
 
@@ -82,7 +82,7 @@ export function ChatManager({
         messages,
       });
     } catch (error) {
-      console.error("Failed to update chat messages:", error);
+      console.error('Failed to update chat messages:', error);
       throw error;
     }
   };
@@ -92,7 +92,7 @@ export function ChatManager({
     fragment?: DeepPartial<FragmentSchema>,
   ) => {
     if (!chatId) {
-      console.warn("No chatId provided to addMessageWithFragment");
+      console.warn('No chatId provided to addMessageWithFragment');
       return;
     }
 
@@ -103,7 +103,7 @@ export function ChatManager({
         fragment,
       });
     } catch (error) {
-      console.error("Failed to add message with fragment:", error);
+      console.error('Failed to add message with fragment:', error);
       throw error;
     }
   };

@@ -410,14 +410,16 @@ You have tools to manage a knowledge base:
 - \`getInformation\`: Use this tool proactively to answer questions that might relate to information the user previously shared (e.g., preferences, personal details, past instructions).
 
 **Before answering such questions from general knowledge, check the knowledge base using \`getInformation\`.**
-**Do not wait for the user to explicitly say \"look at memory\" or similar.**
+**Do not wait for the user to explicitly say "look at memory" or similar.**
 
-If the tool returns relevant content, base your answer *only* on that content. If it returns \"No relevant information found...\", then state that you don't have that specific information stored.
+If the tool returns relevant content, base your answer *only* on that content. If it returns "No relevant information found...", then state that you don't have that specific information stored.
 `;
 
 export const systemPrompt = ({
   selectedChatModel,
-}: { selectedChatModel: string }) => {
+}: {
+  selectedChatModel: string;
+}) => {
   if (selectedChatModel === 'chat-model-reasoning') {
     return `${regularPrompt}\n\nYou should use <think> tags to outline your reasoning step-by-step before providing the final answer.`;
   }

@@ -10,14 +10,14 @@ export async function SignInButton({ large }: { large?: boolean }) {
 
   if (user) {
     return (
-      <div className="flex gap-3 items-center">
+      <div className="flex items-center gap-3">
         <form
           action={async () => {
             'use server';
             await signOut();
           }}
         >
-          <Button type="submit" className={cn(large ? 'h-10' : 'h-8')}>
+          <Button className={cn(large ? 'h-10' : 'h-8')} type="submit">
             Sign Out
           </Button>
         </form>
@@ -34,8 +34,8 @@ export async function SignInButton({ large }: { large?: boolean }) {
   return (
     <Button
       asChild
-      variant={'default'}
       className={cn(large ? 'h-10' : 'h-8', 'justify-center')}
+      variant={'default'}
     >
       <Link href={authorizationUrl}>{'Sign In'}</Link>
     </Button>

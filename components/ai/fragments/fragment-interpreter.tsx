@@ -1,8 +1,8 @@
-import { generateArrayKey } from "@/lib/utils/array-utils";
-import { Alert, AlertTitle, AlertDescription } from "components/ui/alert";
-import type { ExecutionResultInterpreter } from "lib/types";
-import { Terminal } from "lucide-react";
-import Image from "next/image";
+import { generateArrayKey } from '@/lib/utils/array-utils';
+import { Alert, AlertTitle, AlertDescription } from 'components/ui/alert';
+import type { ExecutionResultInterpreter } from 'lib/types';
+import { Terminal } from 'lucide-react';
+import Image from 'next/image';
 
 function LogsOutput({
   stdout,
@@ -14,18 +14,18 @@ function LogsOutput({
   if (stdout.length === 0 && stderr.length === 0) return null;
 
   return (
-    <div className="w-full h-32 max-h-32 overflow-y-auto flex flex-col items-start justify-start space-y-1 p-4">
+    <div className="flex h-32 max-h-32 w-full flex-col items-start justify-start space-y-1 overflow-y-auto p-4">
       {stdout &&
         stdout.length > 0 &&
         stdout.map((out: string, index: number) => (
-          <pre key={generateArrayKey(index)} className="text-xs">
+          <pre className="text-xs" key={generateArrayKey(index)}>
             {out}
           </pre>
         ))}
       {stderr &&
         stderr.length > 0 &&
         stderr.map((err: string, index: number) => (
-          <pre key={generateArrayKey(index)} className="text-xs text-red-500">
+          <pre className="text-red-500 text-xs" key={generateArrayKey(index)}>
             {err}
           </pre>
         ))}
@@ -50,7 +50,7 @@ export function FragmentInterpreter({
           <AlertTitle>
             {name}: {value}
           </AlertTitle>
-          <AlertDescription className="font-mono whitespace-pre-wrap">
+          <AlertDescription className="whitespace-pre-wrap font-mono">
             {traceback}
           </AlertDescription>
         </Alert>
@@ -64,23 +64,23 @@ export function FragmentInterpreter({
   if (cellResults.length > 0) {
     const imgInBase64 = cellResults[0].png;
     return (
-      <div className="flex flex-col h-full">
-        <div className="w-full flex-1 p-4 flex items-start justify-center border-b">
+      <div className="flex h-full flex-col">
+        <div className="flex w-full flex-1 items-start justify-center border-b p-4">
           <Image
-            src={`data:image/png;base64,${imgInBase64}`}
             alt="result"
-            width={600}
             height={400}
+            src={`data:image/png;base64,${imgInBase64}`}
+            width={600}
           />
         </div>
-        <LogsOutput stdout={stdout} stderr={stderr} />
+        <LogsOutput stderr={stderr} stdout={stdout} />
       </div>
     );
   }
 
   // No cell results, but there is stdout or stderr
   if (stdout.length > 0 || stderr.length > 0) {
-    return <LogsOutput stdout={stdout} stderr={stderr} />;
+    return <LogsOutput stderr={stderr} stdout={stdout} />;
   }
 
   return <span>No output or logs</span>;

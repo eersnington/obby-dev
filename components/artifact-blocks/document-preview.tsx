@@ -75,9 +75,9 @@ export function DocumentPreview({
     if (result) {
       return (
         <DocumentToolResult
-          type="create"
-          result={{ id: result.id, title: result.title, kind: result.kind }}
           isReadonly={isReadonly}
+          result={{ id: result.id, title: result.title, kind: result.kind }}
+          type="create"
         />
       );
     }
@@ -85,9 +85,9 @@ export function DocumentPreview({
     if (args) {
       return (
         <DocumentToolCall
-          type="create"
           args={{ title: args.title }}
           isReadonly={isReadonly}
+          type="create"
         />
       );
     }
@@ -115,7 +115,7 @@ export function DocumentPreview({
         }
       : null;
 
-  if (!document || !result)
+  if (!(document && result))
     return <LoadingSkeleton artifactKind={artifact.kind} />;
 
   return (
@@ -126,9 +126,9 @@ export function DocumentPreview({
         setBlock={setArtifact}
       />
       <DocumentHeader
-        title={document.title}
-        kind={document.kind}
         isStreaming={artifact.status === 'streaming'}
+        kind={document.kind}
+        title={document.title}
       />
       <DocumentContent document={document} />
     </div>
@@ -137,15 +137,15 @@ export function DocumentPreview({
 
 const LoadingSkeleton = ({ artifactKind }: { artifactKind: ArtifactKind }) => (
   <div className="w-full">
-    <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-center justify-between dark:bg-muted h-[57px] dark:border-zinc-700 border-b-0">
+    <div className="flex h-[57px] flex-row items-center justify-between gap-2 rounded-t-2xl border border-b-0 p-4 dark:border-zinc-700 dark:bg-muted">
       <div className="flex flex-row items-center gap-3">
         <div className="text-muted-foreground">
-          <div className="animate-pulse rounded-md size-4 bg-muted-foreground/20" />
+          <div className="size-4 animate-pulse rounded-md bg-muted-foreground/20" />
         </div>
-        <div className="animate-pulse rounded-lg h-4 bg-muted-foreground/20 w-24" />
+        <div className="h-4 w-24 animate-pulse rounded-lg bg-muted-foreground/20" />
       </div>
       <div>
-        <Maximize2 className="w-4 h-4" />
+        <Maximize2 className="h-4 w-4" />
       </div>
     </div>
     {/* {artifactKind === 'image' ? (
@@ -157,7 +157,7 @@ const LoadingSkeleton = ({ artifactKind }: { artifactKind: ArtifactKind }) => (
         <InlineDocumentSkeleton />
       </div>
     )} */}
-    <div className="overflow-y-scroll border rounded-b-2xl p-8 pt-4 bg-muted border-t-0 dark:border-zinc-700">
+    <div className="overflow-y-scroll rounded-b-2xl border border-t-0 bg-muted p-8 pt-4 dark:border-zinc-700">
       <InlineDocumentSkeleton />
     </div>
   </div>
@@ -201,20 +201,20 @@ const PureHitboxLayer = ({
 
   return (
     <div
-      className="size-full absolute top-0 left-0 rounded-xl z-10"
-      ref={hitboxRef}
+      aria-hidden="true"
+      className="absolute top-0 left-0 z-10 size-full rounded-xl"
       onClick={handleInteraction}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           handleInteraction(e);
         }
       }}
+      ref={hitboxRef}
       role="presentation"
-      aria-hidden="true"
     >
-      <div className="w-full p-4 flex justify-end items-center">
-        <div className="absolute right-[9px] top-[13px] p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100">
-          <Maximize2 className="w-4 h-4" />
+      <div className="flex w-full items-center justify-end p-4">
+        <div className="absolute top-[13px] right-[9px] rounded-md p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700">
+          <Maximize2 className="h-4 w-4" />
         </div>
       </div>
     </div>
@@ -235,21 +235,21 @@ const PureDocumentHeader = ({
   kind: ArtifactKind;
   isStreaming: boolean;
 }) => (
-  <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-start sm:items-center justify-between dark:bg-muted border-b-0 dark:border-zinc-700">
-    <div className="flex flex-row items-start sm:items-center gap-3">
+  <div className="flex flex-row items-start justify-between gap-2 rounded-t-2xl border border-b-0 p-4 sm:items-center dark:border-zinc-700 dark:bg-muted">
+    <div className="flex flex-row items-start gap-3 sm:items-center">
       <div className="text-muted-foreground">
         {isStreaming ? (
           <div className="animate-spin">
-            <LoaderCircle className="w-4 h-4" />
+            <LoaderCircle className="h-4 w-4" />
           </div>
         ) : (
           // : kind === 'image' ? (
           //   <Image className="w-4 h-4" />
           // )
-          <Text className="w-4 h-4" />
+          <Text className="h-4 w-4" />
         )}
       </div>
-      <div className="-translate-y-1 sm:translate-y-0 font-medium">{title}</div>
+      <div className="-translate-y-1 font-medium sm:translate-y-0">{title}</div>
     </div>
     <div className="w-8" />
   </div>
@@ -266,7 +266,7 @@ const DocumentContent = ({ document }: { document: Document }) => {
   const { artifact } = useArtifact();
 
   const containerClassName = cn(
-    'h-[257px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
+    'h-[257px] overflow-y-scroll rounded-b-2xl border border-t-0 dark:border-zinc-700 dark:bg-muted',
     {
       'p-0': document.kind === 'code',
     },
@@ -284,7 +284,7 @@ const DocumentContent = ({ document }: { document: Document }) => {
   return (
     <div className={containerClassName}>
       {document.kind === 'code' ? (
-        <div className="flex flex-1 relative w-full">
+        <div className="relative flex w-full flex-1">
           <div className="absolute inset-0">
             <CodeEditor {...commonProps} onSaveContent={() => {}} />
           </div>

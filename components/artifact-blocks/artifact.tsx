@@ -156,7 +156,7 @@ function PureArtifact({
       if (documents && documents.length > 0) {
         const currentDocument = documents[0];
 
-        if (!currentDocument || !currentDocument.content) {
+        if (!(currentDocument && currentDocument.content)) {
           setIsContentDirty(false);
           return;
         }
@@ -239,10 +239,8 @@ function PureArtifact({
       if (currentVersionIndex > 0) {
         setCurrentVersionIndex((index) => index - 1);
       }
-    } else if (type === 'next') {
-      if (currentVersionIndex < documents.length - 1) {
-        setCurrentVersionIndex((index) => index + 1);
-      }
+    } else if (type === 'next' && currentVersionIndex < documents.length - 1) {
+      setCurrentVersionIndex((index) => index + 1);
     }
   };
 
@@ -263,13 +261,11 @@ function PureArtifact({
   }
 
   useEffect(() => {
-    if (artifact.documentId !== 'init') {
-      if (artifactDefinition.initialize) {
-        artifactDefinition.initialize({
-          documentId: artifact.documentId,
-          setMetadata,
-        });
-      }
+    if (artifact.documentId !== 'init' && artifactDefinition.initialize) {
+      artifactDefinition.initialize({
+        documentId: artifact.documentId,
+        setMetadata,
+      });
     }
   }, [artifact.documentId, artifactDefinition, setMetadata]);
 
@@ -277,21 +273,21 @@ function PureArtifact({
     <AnimatePresence>
       {artifact.isVisible && (
         <motion.div
-          data-testid="artifact"
-          className="flex flex-row h-dvh w-dvw fixed top-0 left-0 z-50 bg-transparent"
-          initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
+          className="fixed top-0 left-0 z-50 flex h-dvh w-dvw flex-row bg-transparent"
+          data-testid="artifact"
           exit={{ opacity: 0, transition: { delay: 0.4 } }}
+          initial={{ opacity: 1 }}
         >
           {!isMobile && (
             <motion.div
-              className="fixed bg-background h-dvh"
-              initial={{
+              animate={{ width: windowWidth, right: 0 }}
+              className="fixed h-dvh bg-background"
+              exit={{
                 width: isSidebarOpen ? windowWidth - 256 : windowWidth,
                 right: 0,
               }}
-              animate={{ width: windowWidth, right: 0 }}
-              exit={{
+              initial={{
                 width: isSidebarOpen ? windowWidth - 256 : windowWidth,
                 right: 0,
               }}
@@ -300,8 +296,6 @@ function PureArtifact({
 
           {!isMobile && (
             <motion.div
-              className="relative w-[400px] bg-muted dark:bg-background h-dvh shrink-0"
-              initial={{ opacity: 0, x: 10, scale: 1 }}
               animate={{
                 opacity: 1,
                 x: 0,
@@ -313,52 +307,54 @@ function PureArtifact({
                   damping: 30,
                 },
               }}
+              className="relative h-dvh w-[400px] shrink-0 bg-muted dark:bg-background"
               exit={{
                 opacity: 0,
                 x: 0,
                 scale: 1,
                 transition: { duration: 0 },
               }}
+              initial={{ opacity: 0, x: 10, scale: 1 }}
             >
               <AnimatePresence>
                 {!isCurrentVersion && (
                   <motion.div
-                    className="left-0 absolute h-dvh w-[400px] top-0 bg-zinc-900/50 z-50"
-                    initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
+                    className="absolute top-0 left-0 z-50 h-dvh w-[400px] bg-zinc-900/50"
                     exit={{ opacity: 0 }}
+                    initial={{ opacity: 0 }}
                   />
                 )}
               </AnimatePresence>
 
-              <div className="flex flex-col h-full justify-between items-center">
+              <div className="flex h-full flex-col items-center justify-between">
                 <ArtifactMessages
+                  artifactStatus={artifact.status}
                   chatId={chatId}
+                  isReadonly={isReadonly}
+                  messages={messages}
+                  reload={reload}
+                  setMessages={setMessages}
                   status={status}
                   votes={votes}
-                  messages={messages}
-                  setMessages={setMessages}
-                  reload={reload}
-                  isReadonly={isReadonly}
-                  artifactStatus={artifact.status}
                 />
 
-                <form className="flex flex-row gap-2 relative items-end w-full px-4 pb-4">
+                <form className="relative flex w-full flex-row items-end gap-2 px-4 pb-4">
                   <MultimodalInput
-                    session={session}
+                    append={append}
+                    attachments={attachments}
                     chatId={chatId}
-                    input={input}
-                    setInput={setInput}
+                    className="bg-background dark:bg-muted"
                     handleSubmit={handleSubmit}
+                    input={input}
+                    messages={messages}
+                    selectedVisibilityType={selectedVisibilityType}
+                    session={session}
+                    setAttachments={setAttachments}
+                    setInput={setInput}
+                    setMessages={setMessages}
                     status={status}
                     stop={stop}
-                    attachments={attachments}
-                    setAttachments={setAttachments}
-                    messages={messages}
-                    append={append}
-                    className="bg-background dark:bg-muted"
-                    setMessages={setMessages}
-                    selectedVisibilityType={selectedVisibilityType}
                   />
                 </form>
               </div>
@@ -366,26 +362,6 @@ function PureArtifact({
           )}
 
           <motion.div
-            className="fixed dark:bg-muted bg-background h-dvh flex flex-col overflow-y-scroll md:border-l dark:border-zinc-700 border-zinc-200"
-            initial={
-              isMobile
-                ? {
-                    opacity: 1,
-                    x: artifact.boundingBox.left,
-                    y: artifact.boundingBox.top,
-                    height: artifact.boundingBox.height,
-                    width: artifact.boundingBox.width,
-                    borderRadius: 50,
-                  }
-                : {
-                    opacity: 1,
-                    x: artifact.boundingBox.left,
-                    y: artifact.boundingBox.top,
-                    height: artifact.boundingBox.height,
-                    width: artifact.boundingBox.width,
-                    borderRadius: 50,
-                  }
-            }
             animate={
               isMobile
                 ? {
@@ -421,6 +397,7 @@ function PureArtifact({
                     },
                   }
             }
+            className="fixed flex h-dvh flex-col overflow-y-scroll border-zinc-200 bg-background md:border-l dark:border-zinc-700 dark:bg-muted"
             exit={{
               opacity: 0,
               scale: 0.5,
@@ -431,20 +408,39 @@ function PureArtifact({
                 damping: 30,
               },
             }}
+            initial={
+              isMobile
+                ? {
+                    opacity: 1,
+                    x: artifact.boundingBox.left,
+                    y: artifact.boundingBox.top,
+                    height: artifact.boundingBox.height,
+                    width: artifact.boundingBox.width,
+                    borderRadius: 50,
+                  }
+                : {
+                    opacity: 1,
+                    x: artifact.boundingBox.left,
+                    y: artifact.boundingBox.top,
+                    height: artifact.boundingBox.height,
+                    width: artifact.boundingBox.width,
+                    borderRadius: 50,
+                  }
+            }
           >
-            <div className="p-2 flex flex-row justify-between items-start">
-              <div className="flex flex-row gap-4 items-start">
+            <div className="flex flex-row items-start justify-between p-2">
+              <div className="flex flex-row items-start gap-4">
                 <ArtifactCloseButton />
 
                 <div className="flex flex-col">
                   <div className="font-medium">{artifact.title}</div>
 
                   {isContentDirty ? (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       Saving changes...
                     </div>
                   ) : document ? (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       {`Updated ${formatDistance(
                         new Date(document._creationTime),
                         new Date(),
@@ -454,7 +450,7 @@ function PureArtifact({
                       )}`}
                     </div>
                   ) : (
-                    <div className="w-32 h-3 mt-2 bg-muted-foreground/20 rounded-md animate-pulse" />
+                    <div className="mt-2 h-3 w-32 animate-pulse rounded-md bg-muted-foreground/20" />
                   )}
                 </div>
               </div>
@@ -464,43 +460,43 @@ function PureArtifact({
                 currentVersionIndex={currentVersionIndex}
                 handleVersionChange={handleVersionChange}
                 isCurrentVersion={isCurrentVersion}
-                mode={mode}
                 metadata={metadata}
+                mode={mode}
                 setMetadata={setMetadata}
               />
             </div>
 
-            <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
+            <div className="!max-w-full h-full items-center overflow-y-scroll bg-background dark:bg-muted">
               <artifactDefinition.content
-                title={artifact.title}
                 content={
                   isCurrentVersion
                     ? artifact.content
                     : getDocumentContentById(currentVersionIndex)
                 }
-                mode={mode}
-                status={artifact.status}
                 currentVersionIndex={currentVersionIndex}
-                suggestions={[]}
-                onSaveContent={saveContent}
-                isInline={false}
-                isCurrentVersion={isCurrentVersion}
                 getDocumentContentById={getDocumentContentById}
+                isCurrentVersion={isCurrentVersion}
+                isInline={false}
                 isLoading={isDocumentsFetching && !artifact.content}
                 metadata={metadata}
+                mode={mode}
+                onSaveContent={saveContent}
                 setMetadata={setMetadata}
+                status={artifact.status}
+                suggestions={[]}
+                title={artifact.title}
               />
 
               <AnimatePresence>
                 {isCurrentVersion && (
                   <Toolbar
+                    append={append}
+                    artifactKind={artifact.kind}
                     isToolbarVisible={isToolbarVisible}
                     setIsToolbarVisible={setIsToolbarVisible}
-                    append={append}
+                    setMessages={setMessages}
                     status={status}
                     stop={stop}
-                    setMessages={setMessages}
-                    artifactKind={artifact.kind}
                   />
                 )}
               </AnimatePresence>

@@ -42,27 +42,27 @@ function PureMessages({
 
   return (
     <div
+      className="relative flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pt-4"
       ref={messagesContainerRef}
-      className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 relative"
     >
       {messages.length === 0 && <HeroSection />}
 
       {messages.map((message, index) => (
         <PreviewMessage
-          key={message.id}
           chatId={chatId}
-          message={message}
           isLoading={status === 'streaming' && messages.length - 1 === index}
+          isReadonly={isReadonly}
+          key={message.id}
+          message={message}
+          reload={reload}
+          requiresScrollPadding={
+            hasSentMessage && index === messages.length - 1
+          }
+          setMessages={setMessages}
           vote={
             votes
               ? votes.find((vote) => vote.messageId === message.id)
               : undefined
-          }
-          setMessages={setMessages}
-          reload={reload}
-          isReadonly={isReadonly}
-          requiresScrollPadding={
-            hasSentMessage && index === messages.length - 1
           }
         />
       ))}
@@ -72,10 +72,10 @@ function PureMessages({
         messages[messages.length - 1].role === 'user' && <ThinkingMessage />}
 
       <motion.div
-        ref={messagesEndRef}
-        className="shrink-0 min-w-[24px] min-h-[24px]"
-        onViewportLeave={onViewportLeave}
+        className="min-h-[24px] min-w-[24px] shrink-0"
         onViewportEnter={onViewportEnter}
+        onViewportLeave={onViewportLeave}
+        ref={messagesEndRef}
       />
     </div>
   );

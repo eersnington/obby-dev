@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
-import { Button } from "components/ui/button";
+import { useState } from 'react';
+import { Button } from 'components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -13,20 +13,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "components/ui/dialog";
-import { Textarea } from "components/ui/textarea";
-import { Frown, Meh, Smile } from "lucide-react";
+} from 'components/ui/dialog';
+import { Textarea } from 'components/ui/textarea';
+import { Frown, Meh, Smile } from 'lucide-react';
 
 export default function FeedbackModal() {
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle feedback submission here
-    console.log("Feedback:", feedback);
-    console.log("Reaction:", selectedReaction);
-    setFeedback("");
+    console.log('Feedback:', feedback);
+    console.log('Reaction:', selectedReaction);
+    setFeedback('');
     setSelectedReaction(null);
   };
 
@@ -34,8 +34,8 @@ export default function FeedbackModal() {
     <Dialog>
       <DialogTrigger asChild>
         <Button
+          className="h-8 justify-center border-border/50 bg-background/50 hover:bg-accent/50"
           variant="outline"
-          className="h-8 justify-center bg-background/50 border-border/50 hover:bg-accent/50"
         >
           {/* <MessageSquare className="size-4" /> */}
           Feedback
@@ -54,59 +54,59 @@ export default function FeedbackModal() {
 
           <div className="py-4">
             <Textarea
-              placeholder="Your feedback"
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
               className="min-h-[120px] resize-none"
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Your feedback"
               required
+              value={feedback}
             />
           </div>
 
-          <DialogFooter className="flex-col sm:flex-row gap-2 justify-between">
+          <DialogFooter className="flex-col justify-between gap-2 sm:flex-row">
             <div className="flex gap-2">
               <Button
-                type="button"
-                variant={selectedReaction === "sad" ? "default" : "outline"}
-                size="icon"
                 onClick={() =>
-                  setSelectedReaction(selectedReaction === "sad" ? null : "sad")
+                  setSelectedReaction(selectedReaction === 'sad' ? null : 'sad')
                 }
+                size="icon"
+                type="button"
+                variant={selectedReaction === 'sad' ? 'default' : 'outline'}
               >
-                <Frown className="w-4 h-4" />
+                <Frown className="h-4 w-4" />
               </Button>
               <Button
-                type="button"
-                variant={selectedReaction === "neutral" ? "default" : "outline"}
-                size="icon"
                 onClick={() =>
                   setSelectedReaction(
-                    selectedReaction === "neutral" ? null : "neutral",
+                    selectedReaction === 'neutral' ? null : 'neutral',
                   )
                 }
+                size="icon"
+                type="button"
+                variant={selectedReaction === 'neutral' ? 'default' : 'outline'}
               >
-                <Meh className="w-4 h-4" />
+                <Meh className="h-4 w-4" />
               </Button>
               <Button
-                type="button"
-                variant={selectedReaction === "happy" ? "default" : "outline"}
-                size="icon"
                 onClick={() =>
                   setSelectedReaction(
-                    selectedReaction === "happy" ? null : "happy",
+                    selectedReaction === 'happy' ? null : 'happy',
                   )
                 }
+                size="icon"
+                type="button"
+                variant={selectedReaction === 'happy' ? 'default' : 'outline'}
               >
-                <Smile className="w-4 h-4" />
+                <Smile className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="flex gap-2 ml-auto">
+            <div className="ml-auto flex gap-2">
               <DialogClose asChild>
-                <Button variant="outline" type="button">
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={!feedback.trim()}>
+              <Button disabled={!feedback.trim()} type="submit">
                 Submit
               </Button>
             </div>

@@ -1,14 +1,14 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 const footerLinks = [
-  { label: "Pricing", href: "/pricing" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Refund", href: "/refund" },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Terms of Service', href: '/terms' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Refund', href: '/refund' },
   {
-    label: "GitHub",
-    href: "https://github.com/eersnington/obby-dev",
+    label: 'GitHub',
+    href: 'https://github.com/eersnington/obby-dev',
     newTab: true,
   },
 ];
@@ -17,22 +17,22 @@ export function LowProfileFooter() {
   return (
     <footer className="mt-auto pt-8 pb-6">
       <div className="flex items-center justify-center">
-        <nav className="flex items-center gap-1 text-sm text-muted-foreground">
+        <nav className="flex items-center gap-1 text-muted-foreground text-sm">
           {footerLinks.map((link, index) => (
-            <div key={link.href} className="flex items-center gap-1">
+            <div className="flex items-center gap-1" key={link.href}>
               {link.newTab ? (
                 <a
+                  className="rounded-md px-2 py-1 transition-colors hover:bg-accent/50 hover:text-foreground"
                   href={link.href}
-                  target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-accent/50"
+                  target="_blank"
                 >
                   {link.label}
                 </a>
               ) : (
                 <Link
+                  className="rounded-md px-2 py-1 transition-colors hover:bg-accent/50 hover:text-foreground"
                   href={link.href}
-                  className="hover:text-foreground transition-colors px-2 py-1 rounded-md hover:bg-accent/50"
                 >
                   {link.label}
                 </Link>

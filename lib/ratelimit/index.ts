@@ -1,6 +1,6 @@
-import type { Duration } from "../utils/duration";
-import { Ratelimit } from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
+import type { Duration } from '../utils/duration';
+import { Ratelimit } from '@upstash/ratelimit';
+import { kv } from '@vercel/kv';
 
 export default async function ratelimit(
   key: string | null,

@@ -1,5 +1,5 @@
-import { animate, type ValueAnimationTransition } from "motion/react";
-import { useRef } from "react";
+import { animate, type ValueAnimationTransition } from 'motion/react';
+import { useRef } from 'react';
 
 export function useScrollTo() {
   const ref = useRef<HTMLDivElement>(null);
@@ -8,7 +8,7 @@ export function useScrollTo() {
     if (!ref.current) return;
 
     const defaultOptions: ValueAnimationTransition = {
-      type: "spring",
+      type: 'spring',
       bounce: 0,
       duration: 0.6,
     };

@@ -42,20 +42,20 @@ function PureSuggestedActions({
 
   return (
     <div
+      className="grid w-full gap-2 sm:grid-cols-2"
       data-testid="suggested-actions"
-      className="grid sm:grid-cols-2 gap-2 w-full"
     >
       {suggestedActions.map((suggestedAction, index) => (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.05 * index }}
-          key={`suggested-action-${suggestedAction.title}-${index}`}
           className={index > 1 ? 'hidden sm:block' : 'block'}
+          exit={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
+          key={`suggested-action-${suggestedAction.title}-${index}`}
+          transition={{ delay: 0.05 * index }}
         >
           <Button
-            variant="ghost"
+            className="h-auto w-full flex-1 items-start justify-start gap-1 rounded-xl border px-4 py-3.5 text-left text-sm sm:flex-col"
             onClick={async () => {
               window.history.replaceState({}, '', `/chat/${chatId}`);
 
@@ -64,7 +64,7 @@ function PureSuggestedActions({
                 content: suggestedAction.action,
               });
             }}
-            className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
+            variant="ghost"
           >
             <span className="font-medium">{suggestedAction.title}</span>
             <span className="text-muted-foreground">

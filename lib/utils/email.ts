@@ -1,7 +1,7 @@
 export function blurEmail(email: string): string {
   const [localPart, domain] = email.split('@');
 
-  if (!localPart || !domain) {
+  if (!(localPart && domain)) {
     return email;
   }
 

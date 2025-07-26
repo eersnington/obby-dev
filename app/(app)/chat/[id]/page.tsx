@@ -49,16 +49,16 @@ export default async function ChatPage(props: {
   const chatModel = chatModelFromCookie?.value || 'obbylabs:agent-chat';
 
   return (
-    <UnifiedChatLayout user={user} os={os}>
+    <UnifiedChatLayout os={os} user={user}>
       <ChatPageInitializer chatId={id} />
       <ChatContainer
+        autoResume={true}
         id={chat.chatId}
-        initialMessages={convertToUIMessages(messagesFromDb)}
         initialChatModel={chatModel}
+        initialMessages={convertToUIMessages(messagesFromDb)}
         initialVisibilityType={chat.visibility}
         isReadonly={user?.id !== chat.userId}
         session={user}
-        autoResume={true}
       />
     </UnifiedChatLayout>
   );

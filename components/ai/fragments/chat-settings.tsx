@@ -1,20 +1,20 @@
-import { Button } from "components/ui/button";
+import { Button } from 'components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "components/ui/dropdown-menu";
-import { Input } from "components/ui/input";
-import { Label } from "components/ui/label";
+} from 'components/ui/dropdown-menu';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import type { ModelInfo } from "lib/ai/models";
-import { Settings2 } from "lucide-react";
+} from 'components/ui/tooltip';
+import type { ModelInfo } from 'lib/ai/models';
+import { Settings2 } from 'lucide-react';
 
 export function ChatSettings({
   apiKeyConfigurable,
@@ -36,9 +36,9 @@ export function ChatSettings({
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost"
+                className="h-6 w-6 rounded-sm text-muted-foreground"
                 size="icon"
-                className="text-muted-foreground h-6 w-6 rounded-sm"
+                variant="ghost"
               >
                 <Settings2 className="h-4 w-4" />
               </Button>
@@ -53,11 +53,9 @@ export function ChatSettings({
             <div className="flex flex-col gap-2 px-2 py-2">
               <Label htmlFor="apiKey">API Key</Label>
               <Input
-                name="apiKey"
-                type="password"
-                placeholder="Auto"
-                required={true}
+                className="text-sm"
                 defaultValue={languageModel.apiKey}
+                name="apiKey"
                 onChange={(e) =>
                   onLanguageModelChange({
                     ...languageModel,
@@ -65,7 +63,9 @@ export function ChatSettings({
                       e.target.value.length > 0 ? e.target.value : undefined,
                   } as ModelInfo)
                 }
-                className="text-sm"
+                placeholder="Auto"
+                required={true}
+                type="password"
               />
             </div>
             <DropdownMenuSeparator />
@@ -76,11 +76,9 @@ export function ChatSettings({
             <div className="flex flex-col gap-2 px-2 py-2">
               <Label htmlFor="baseURL">Base URL</Label>
               <Input
-                name="baseURL"
-                type="text"
-                placeholder="Auto"
-                required={true}
+                className="text-sm"
                 defaultValue={languageModel.baseURL}
+                name="baseURL"
                 onChange={(e) =>
                   onLanguageModelChange({
                     ...languageModel,
@@ -88,7 +86,9 @@ export function ChatSettings({
                       e.target.value.length > 0 ? e.target.value : undefined,
                   } as ModelInfo)
                 }
-                className="text-sm"
+                placeholder="Auto"
+                required={true}
+                type="text"
               />
             </div>
             <DropdownMenuSeparator />

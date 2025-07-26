@@ -1,25 +1,25 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "@/styles/globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import '@/styles/globals.css';
 
-import { ThemeProvider } from "components/providers/theme-provider";
-import { ConvexClientProvider } from "components/providers/convex-provider";
-import { AuthKitProviderWrapper } from "components/providers/authkit-provider";
+import { ThemeProvider } from 'components/providers/theme-provider';
+import { ConvexClientProvider } from 'components/providers/convex-provider';
+import { AuthKitProviderWrapper } from 'components/providers/authkit-provider';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Obby – The AI Editor for the Web",
+  title: 'Obby – The AI Editor for the Web',
   description:
-    "Obby is a developer-first web editor powered by AI. It helps you design, build, and ship real web apps from scratch.",
+    'Obby is a developer-first web editor powered by AI. It helps you design, build, and ship real web apps from scratch.',
 };
 
 export default async function RootLayout({
@@ -38,8 +38,8 @@ export default async function RootLayout({
               <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
-                enableSystem
                 disableTransitionOnChange
+                enableSystem
               >
                 {children}
               </ThemeProvider>

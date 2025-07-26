@@ -61,19 +61,25 @@ export const deleteDocumentsByIdAfterTimestamp = mutation({
     timestamp: v.number(),
   },
   handler: async (ctx, args) => {
-    await ctx.db
+    const suggestions = await ctx.db
       .query('suggestions')
       .withIndex('by_documentId', (q) => q.eq('documentId', args.documentId))
       .filter((q) => q.gt(q.field('_creationTime'), args.timestamp))
-      .collect()
-      .then((suggestions) => suggestions.forEach((s) => ctx.db.delete(s._id)));
+      .collect();
 
-    return await ctx.db
+    for (const s of suggestions) {
+      await ctx.db.delete(s._id);
+    }
+
+    const documents = await ctx.db
       .query('documents')
       .withIndex('by_documentId', (q) => q.eq('documentId', args.documentId))
       .filter((q) => q.gt(q.field('_creationTime'), args.timestamp))
-      .collect()
-      .then((docs) => docs.forEach((doc) => ctx.db.delete(doc._id)));
+      .collect();
+
+    for (const d of documents) {
+      await ctx.db.delete(d._id);
+    }
   },
 });
 

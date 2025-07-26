@@ -1,41 +1,41 @@
-import { GitHubIcon } from "./icons";
-import { Separator } from "components/ui/separator";
-import { cn } from "lib/utils";
-import { StarFilledIcon } from "@radix-ui/react-icons";
+import { GitHubIcon } from './icons';
+import { Separator } from 'components/ui/separator';
+import { cn } from 'lib/utils';
+import { StarFilledIcon } from '@radix-ui/react-icons';
 
-const REPO_URL = "https://github.com/eersnington/obby-dev";
+const REPO_URL = 'https://github.com/eersnington/obby-dev';
 
 export function RepoBanner({ className }: { className?: string }) {
   return (
     <a
-      href={REPO_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={"View Obby repository on GitHub"}
+      aria-label={'View Obby repository on GitHub'}
       className={cn(
-        "bg-background overflow-hidden px-3 py-1 rounded-t-2xl",
-        "gap-2 flex items-center border border-b-0",
-        "transform-y-1 group relative",
-        "before:absolute before:inset-0 dark:before:bg-[radial-gradient(circle_at_10%_-50%,rgba(255,255,255,0.1),transparent_10%)] before:rounded-t-2xl before:pointer-events-none",
+        'overflow-hidden rounded-t-2xl bg-background px-3 py-1',
+        'flex items-center gap-2 border border-b-0',
+        'transform-y-1 group relative',
+        'before:pointer-events-none before:absolute before:inset-0 before:rounded-t-2xl dark:before:bg-[radial-gradient(circle_at_10%_-50%,rgba(255,255,255,0.1),transparent_10%)]',
         className,
       )}
+      href={REPO_URL}
+      rel="noopener noreferrer"
+      target="_blank"
     >
-      <GitHubIcon className="w-4 h-4" aria-hidden="true" />
+      <GitHubIcon aria-hidden="true" className="h-4 w-4" />
       <Separator
-        orientation="vertical"
-        className="h-6 bg-[hsl(var(--border))]"
         aria-hidden="true"
+        className="h-6 bg-[hsl(var(--border))]"
+        orientation="vertical"
       />
-      <p className="text-sm font-medium text-foreground tracking-wide">
+      <p className="font-medium text-foreground text-sm tracking-wide">
         Star on GitHub
       </p>
       <div
-        className="flex items-center gap-1 text-foreground/80"
         aria-live="polite"
+        className="flex items-center gap-1 text-foreground/80"
       >
         <StarFilledIcon
-          className="w-4 h-4 transition-transform group-hover:text-[#e4b340] duration-200 ease-in-out"
           aria-label="GitHub stars"
+          className="h-4 w-4 transition-transform duration-200 ease-in-out group-hover:text-[#e4b340]"
         />
       </div>
     </a>

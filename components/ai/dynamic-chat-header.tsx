@@ -31,15 +31,15 @@ export function DynamicChatHeader() {
 
   if (loading) {
     return (
-      <header className="bg-background flex-shrink-0 w-full items-center px-4 py-3">
+      <header className="w-full flex-shrink-0 items-center bg-background px-4 py-3">
         <div className="flex w-full justify-between">
-          <div className="justify-center flex items-center">
+          <div className="flex items-center justify-center">
             <Link href="/">
               <Logo />
             </Link>
           </div>
           <div className="pr-9">
-            <div className="h-8 w-8 animate-pulse bg-muted rounded-full" />
+            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           </div>
         </div>
       </header>
@@ -47,9 +47,9 @@ export function DynamicChatHeader() {
   }
 
   return (
-    <header className="bg-background flex-shrink-0 w-full items-center px-4 py-3">
+    <header className="w-full flex-shrink-0 items-center bg-background px-4 py-3">
       <div className="flex w-full justify-between">
-        <div className="justify-center flex items-center gap-4">
+        <div className="flex items-center justify-center gap-4">
           <Link href="/" onClick={handleLogoClick}>
             <Logo />
           </Link>
@@ -57,10 +57,10 @@ export function DynamicChatHeader() {
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">/</span>
               <motion.h1
-                initial={{ width: 0 }}
                 animate={{ width: 'auto' }}
+                className="overflow-hidden whitespace-nowrap font-medium text-foreground text-sm tracking-tight"
+                initial={{ width: 0 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="font-medium text-foreground text-sm tracking-tight overflow-hidden whitespace-nowrap"
               >
                 {chatData.title}
               </motion.h1>
@@ -68,7 +68,7 @@ export function DynamicChatHeader() {
           )}
         </div>
         <div className="pr-9">
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <FeedbackModal />
             {user && <UserNav user={user} />}
           </div>

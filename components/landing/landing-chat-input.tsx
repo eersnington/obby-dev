@@ -185,7 +185,7 @@ export function LandingChatInput({ className }: { className?: string }) {
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-      if (!input.trim() && !attachments.length) return;
+      if (!(input.trim() || attachments.length)) return;
 
       if (!user || loading) {
         setAuthDialog(true);
@@ -264,20 +264,20 @@ export function LandingChatInput({ className }: { className?: string }) {
     return attachments.map((attachment, index) => (
       <div className="relative" key={`${attachment.name}-${index}`}>
         <span
+          className="absolute top-[-8px] right-[-8px] z-10 cursor-pointer rounded-full bg-transparent p-1"
+          onClick={() => removeAttachment(index)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               removeAttachment(index);
             }
           }}
-          onClick={() => removeAttachment(index)}
-          className="absolute top-[-8px] right-[-8px] bg-transparent rounded-full p-1 cursor-pointer z-10"
         >
           <X className="h-3 w-3" />
         </span>
         <img
-          src={attachment.url}
           alt={attachment.name}
-          className="rounded-xl w-10 h-10 object-cover"
+          className="h-10 w-10 rounded-xl object-cover"
+          src={attachment.url}
         />
       </div>
     ));
@@ -289,10 +289,10 @@ export function LandingChatInput({ className }: { className?: string }) {
       <div className={cn('relative w-full', className)}>
         {/* Error display */}
         {error && (
-          <div className="flex items-center p-1.5 text-sm font-medium mb-4 rounded-xl bg-red-400/10 text-red-400">
+          <div className="mb-4 flex items-center rounded-xl bg-red-400/10 p-1.5 font-medium text-red-400 text-sm">
             <span className="flex-1 px-1.5">{error}</span>
             <Button
-              className="px-2 py-1 rounded-sm bg-red-400/20"
+              className="rounded-sm bg-red-400/20 px-2 py-1"
               onClick={handleRetry}
             >
               Try again
@@ -301,88 +301,88 @@ export function LandingChatInput({ className }: { className?: string }) {
         )}
 
         <form
-          onSubmit={handleSubmit}
-          onKeyDown={handleKeyDown}
           className="flex flex-col bg-transparent"
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
+          onKeyDown={handleKeyDown}
+          onSubmit={handleSubmit}
         >
           <div className="relative">
             <div
               className={cn(
-                'shadow-md rounded-2xl relative z-10 bg-accent border-2 border-accent-foreground/10',
+                'relative z-10 rounded-2xl border-2 border-accent-foreground/10 bg-accent shadow-md',
                 dragActive &&
-                  'before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-dashed before:border-primary',
+                  'before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-primary before:border-dashed',
               )}
             >
               {/* Top section with model selector */}
-              <div className="flex items-center px-3 py-2 gap-1">
+              <div className="flex items-center gap-1 px-3 py-2">
                 <ChatPicker
-                  templates={templates}
-                  selectedTemplate={selectedTemplate}
-                  onSelectedTemplateChange={setSelectedTemplate}
-                  models={AI_MODELS}
                   languageModel={languageModel}
+                  models={AI_MODELS}
                   onLanguageModelChange={handleLanguageModelChange}
+                  onSelectedTemplateChange={setSelectedTemplate}
+                  selectedTemplate={selectedTemplate}
+                  templates={templates}
                 />
                 <ChatSettings
-                  languageModel={languageModel}
-                  onLanguageModelChange={handleLanguageModelChange}
                   apiKeyConfigurable={!process.env.NEXT_PUBLIC_NO_API_KEY_INPUT}
                   baseURLConfigurable={
                     !process.env.NEXT_PUBLIC_NO_BASE_URL_INPUT
                   }
+                  languageModel={languageModel}
+                  onLanguageModelChange={handleLanguageModelChange}
                 />
               </div>
 
               {/* Textarea */}
               <Textarea
-                ref={textareaRef}
                 autoFocus={true}
-                rows={2}
-                className="text-normal px-4 resize-none ring-0 bg-inherit w-full m-0 outline-none border-0 focus-visible:ring-0"
-                required={true}
-                placeholder="Ask Obby to build..."
+                className="m-0 w-full resize-none border-0 bg-inherit px-4 text-normal outline-none ring-0 focus-visible:ring-0"
                 disabled={error !== ''}
-                value={input}
                 onChange={(e) => {
                   setInput(e.target.value);
                   adjustHeight();
                 }}
                 onPaste={handlePaste}
+                placeholder="Ask Obby to build..."
+                ref={textareaRef}
+                required={true}
+                rows={2}
+                value={input}
               />
 
               {/* Bottom toolbar */}
-              <div className="flex p-3 gap-2 items-center">
+              <div className="flex items-center gap-2 p-3">
                 {/* Hidden file input */}
                 <input
-                  type="file"
-                  id="multimodal-landing"
-                  name="multimodal-landing"
                   accept="image/*"
-                  multiple={true}
                   className="hidden"
-                  ref={fileInputRef}
+                  id="multimodal-landing"
+                  multiple={true}
+                  name="multimodal-landing"
                   onChange={handleFileChange}
+                  ref={fileInputRef}
+                  type="file"
                 />
 
-                <div className="flex items-center flex-1 gap-2">
+                <div className="flex flex-1 items-center gap-2">
                   {/* Attachment button */}
                   <TooltipProvider>
                     <Tooltip delayDuration={0}>
                       <TooltipTrigger asChild>
                         <Button
+                          className="h-10 w-10 rounded-xl"
                           disabled={error !== '' || isSubmitting}
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className="rounded-xl h-10 w-10"
                           onClick={(e) => {
                             e.preventDefault();
                             fileInputRef.current?.click();
                           }}
+                          size="icon"
+                          type="button"
+                          variant="outline"
                         >
                           <Paperclip className="h-5 w-5" />
                         </Button>
@@ -398,8 +398,8 @@ export function LandingChatInput({ className }: { className?: string }) {
                   {uploadQueue.length > 0 &&
                     uploadQueue.map((filename) => (
                       <div
+                        className="flex items-center gap-1 text-muted-foreground text-xs"
                         key={filename}
-                        className="flex items-center gap-1 text-xs text-muted-foreground"
                       >
                         <div className="animate-pulse">
                           Uploading {filename}...
@@ -409,25 +409,23 @@ export function LandingChatInput({ className }: { className?: string }) {
                 </div>
 
                 <div>
-                  {!isSubmitting ? (
+                  {isSubmitting ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                           <Button
-                            disabled={
-                              error !== '' ||
-                              (!input.trim() && !attachments.length) ||
-                              uploadQueue.length > 0
-                            }
-                            variant="default"
+                            className="h-10 w-10 rounded-xl"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              stop();
+                            }}
                             size="icon"
-                            type="submit"
-                            className="rounded-xl h-10 w-10"
+                            variant="secondary"
                           >
-                            <ArrowUp className="h-5 w-5" />
+                            <Square className="h-5 w-5" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Send message</TooltipContent>
+                        <TooltipContent>Stop</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   ) : (
@@ -435,18 +433,20 @@ export function LandingChatInput({ className }: { className?: string }) {
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                           <Button
-                            variant="secondary"
+                            className="h-10 w-10 rounded-xl"
+                            disabled={
+                              error !== '' ||
+                              !(input.trim() || attachments.length) ||
+                              uploadQueue.length > 0
+                            }
                             size="icon"
-                            className="rounded-xl h-10 w-10"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              stop();
-                            }}
+                            type="submit"
+                            variant="default"
                           >
-                            <Square className="h-5 w-5" />
+                            <ArrowUp className="h-5 w-5" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Stop</TooltipContent>
+                        <TooltipContent>Send message</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
@@ -456,7 +456,7 @@ export function LandingChatInput({ className }: { className?: string }) {
           </div>
 
           {/* Disclaimer */}
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+          <p className="mt-2 text-center text-muted-foreground text-xs">
             Obby may make mistakes. Please use with discretion.
           </p>
         </form>

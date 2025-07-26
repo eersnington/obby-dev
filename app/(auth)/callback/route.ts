@@ -1,5 +1,5 @@
-import { handleAuth } from "@workos-inc/authkit-nextjs";
+import { handleAuth } from '@workos-inc/authkit-nextjs';
 
 export const GET = handleAuth({
-  returnPathname: "/router",
+  returnPathname: '/router',
 });

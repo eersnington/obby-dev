@@ -6,7 +6,9 @@ import type { GoogleGenerativeAIProviderOptions } from '@ai-sdk/google';
 
 export async function generateTitleFromUserMessage({
   message,
-}: { message: UIMessage }) {
+}: {
+  message: UIMessage;
+}) {
   const { text: title } = await generateText({
     model: obbyRegistry.languageModel('google:gemini-2.5-flash'),
     providerOptions: {

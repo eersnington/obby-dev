@@ -1,8 +1,8 @@
-"use node";
+'use node';
 
-import { internalAction } from "./_generated/server";
-import { v } from "convex/values";
-import { Stripe } from "stripe";
+import { internalAction } from './_generated/server';
+import { v } from 'convex/values';
+import { Stripe } from 'stripe';
 
 export const verifyStripeWebhook = internalAction({
   args: v.object({

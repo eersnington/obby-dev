@@ -45,14 +45,14 @@ export function PureMessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground"
-              variant="outline"
+              className="h-fit px-2 py-1 text-muted-foreground"
               onClick={async () => {
                 await copyToClipboard(message.content as string);
                 toast.success('Copied to clipboard');
               }}
+              variant="outline"
             >
-              <Copy className="w-4 h-4" />
+              <Copy className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Copy</TooltipContent>
@@ -61,9 +61,8 @@ export function PureMessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
+              className="!pointer-events-auto h-fit px-2 py-1 text-muted-foreground"
               disabled={vote?.isUpvoted}
-              variant="outline"
               onClick={async () => {
                 toast.promise(
                   voteMessage({ chatId, messageId: message.id, type: 'up' }),
@@ -74,8 +73,9 @@ export function PureMessageActions({
                   },
                 );
               }}
+              variant="outline"
             >
-              <ThumbsUp className="w-4 h-4" />
+              <ThumbsUp className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Upvote</TooltipContent>
@@ -84,8 +84,7 @@ export function PureMessageActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-2 h-fit text-muted-foreground !pointer-events-auto"
-              variant="outline"
+              className="!pointer-events-auto h-fit px-2 py-1 text-muted-foreground"
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
                 toast.promise(
@@ -97,8 +96,9 @@ export function PureMessageActions({
                   },
                 );
               }}
+              variant="outline"
             >
-              <ThumbsDown className="w-4 h-4" />
+              <ThumbsDown className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Downvote</TooltipContent>

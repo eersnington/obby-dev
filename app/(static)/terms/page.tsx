@@ -1,14 +1,14 @@
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-4xl">
           <div className="prose prose-gray dark:prose-invert max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8">
+            <h1 className="mb-8 font-bold text-3xl tracking-tight sm:text-4xl lg:text-5xl">
               Terms of Service
             </h1>
 
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="mb-8 text-lg text-muted-foreground">
               Obby, a product owned and operated by Sage AI. These Terms of
               Service govern your access to and use of Obby's services,
               including our website, mobile applications, and any other software
@@ -19,7 +19,7 @@ export default function TermsPage() {
               regulations.
             </p>
 
-            <p className="text-sm text-muted-foreground mb-8">
+            <p className="mb-8 text-muted-foreground text-sm">
               <strong>Effective Date:</strong> June 10, 2025
             </p>
 
@@ -34,7 +34,7 @@ export default function TermsPage() {
               </p>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   1. Acceptance of Terms
                 </h2>
                 <p>
@@ -46,7 +46,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   2. Description of Service
                 </h2>
                 <p>
@@ -62,11 +62,11 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   3. User Accounts and Responsibilities
                 </h2>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   3.1 Account Registration
                 </h3>
                 <p className="mb-4">
@@ -75,11 +75,11 @@ export default function TermsPage() {
                   provide accurate, up-to-date information during registration.
                 </p>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   3.2 Prohibited Activities
                 </h3>
                 <p className="mb-2">You agree not to:</p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Use the Services for unlawful purposes or activities.</li>
                   <li>
                     Generate or distribute any offensive, defamatory, or harmful
@@ -96,7 +96,7 @@ export default function TermsPage() {
                   </li>
                 </ul>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   3.3 Account Suspension
                 </h3>
                 <p>
@@ -107,7 +107,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   4. Code Ownership and Usage Rights
                 </h2>
                 <p>
@@ -122,7 +122,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   5. Privacy Policy
                 </h2>
                 <p>
@@ -132,7 +132,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   6. Intellectual Property Rights
                 </h2>
                 <p>
@@ -145,11 +145,11 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   7. Limitation of Liability
                 </h2>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   7.1 Disclaimer of Damages
                 </h3>
                 <p className="mb-4">
@@ -159,7 +159,7 @@ export default function TermsPage() {
                   from generated code, project failures, or data loss.
                 </p>
 
-                <h3 className="text-xl font-medium mb-3">7.2 Liability Cap</h3>
+                <h3 className="mb-3 font-medium text-xl">7.2 Liability Cap</h3>
                 <p>
                   In no event shall Obby's total liability exceed the greater of
                   $50 for using the Services.
@@ -167,14 +167,14 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   8. Indemnification
                 </h2>
                 <p className="mb-2">
                   You agree to indemnify and hold harmless Obby and its
                   affiliates from any claims or liabilities resulting from:
                 </p>
-                <ul className="list-disc pl-6 space-y-1">
+                <ul className="list-disc space-y-1 pl-6">
                   <li>Your use of the Services.</li>
                   <li>Violations of these Terms.</li>
                   <li>Infringements of third-party rights.</li>
@@ -183,7 +183,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   9. Governing Law
                 </h2>
                 <p>
@@ -194,7 +194,7 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   10. Changes to Terms
                 </h2>
                 <p>
@@ -206,30 +206,30 @@ export default function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">11. Contact Us</h2>
+                <h2 className="mb-4 font-semibold text-2xl">11. Contact Us</h2>
                 <p className="mb-2">
                   If you have questions or concerns about these Terms, please
                   reach out to us:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Email: support@obby.dev</li>
                   <li>
-                    X (formerly Twitter):{" "}
+                    X (formerly Twitter):{' '}
                     <a
-                      href="https://x.com/eersnington"
                       className="text-primary hover:underline"
+                      href="https://x.com/eersnington"
                     >
                       @eersnington
                     </a>
                   </li>
                 </ul>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Obby is a product owned and operated by Sage AI.
                 </p>
               </section>
 
-              <div className="border-t pt-8 mt-12">
-                <p className="text-sm text-muted-foreground">
+              <div className="mt-12 border-t pt-8">
+                <p className="text-muted-foreground text-sm">
                   <strong>Last updated:</strong> June 10, 2025
                 </p>
               </div>

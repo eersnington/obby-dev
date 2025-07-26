@@ -18,16 +18,16 @@ export default async function Page() {
   const chatModel = modelIdFromCookie?.value || 'obbylabs:agent-chat';
 
   return (
-    <UnifiedChatLayout user={user} os={os} isLandingPage={true}>
+    <UnifiedChatLayout isLandingPage={true} os={os} user={user}>
       <ChatContainer
-        key={id}
+        autoResume={false}
         id={id}
-        initialMessages={[]}
         initialChatModel={chatModel}
+        initialMessages={[]}
         initialVisibilityType="private"
         isReadonly={false}
+        key={id}
         session={user}
-        autoResume={false}
       />
     </UnifiedChatLayout>
   );

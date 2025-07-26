@@ -1,27 +1,27 @@
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-4xl">
           <div className="prose prose-gray dark:prose-invert max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8">
+            <h1 className="mb-8 font-bold text-3xl tracking-tight sm:text-4xl lg:text-5xl">
               Privacy Policy
             </h1>
 
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="mb-8 text-lg text-muted-foreground">
               This Privacy Policy explains how Obby ("we," "us," or "our")
               collects, uses, and protects your personal information when you
               use our services ("Service"). By using Obby, you agree to the
               practices described in this policy.
             </p>
 
-            <p className="text-sm text-muted-foreground mb-8">
+            <p className="mb-8 text-muted-foreground text-sm">
               <strong>Effective Date:</strong> June 10, 2025
             </p>
 
             <div className="space-y-8">
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   1. Information We Collect
                 </h2>
                 <p className="mb-4">
@@ -29,12 +29,12 @@ export default function PrivacyPolicyPage() {
                   Service. This includes:
                 </p>
 
-                <h3 className="text-xl font-medium mb-3">1.1 Personal Data</h3>
+                <h3 className="mb-3 font-medium text-xl">1.1 Personal Data</h3>
                 <p className="mb-2">
                   We may ask you to provide personal information to identify or
                   contact you. This includes, but is not limited to:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Your name</li>
                   <li>Email address</li>
                   <li>
@@ -47,12 +47,12 @@ export default function PrivacyPolicyPage() {
                   </li>
                 </ul>
 
-                <h3 className="text-xl font-medium mb-3">1.2 Usage Data</h3>
+                <h3 className="mb-3 font-medium text-xl">1.2 Usage Data</h3>
                 <p className="mb-2">
                   We automatically collect certain information about how you
                   access and interact with our Service. This includes:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Your device's IP address</li>
                   <li>Browser type and version</li>
                   <li>Pages you visit and time spent on them</li>
@@ -60,21 +60,21 @@ export default function PrivacyPolicyPage() {
                   <li>Diagnostic data (e.g., crash reports)</li>
                 </ul>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   1.3 Project and Code Data
                 </h3>
                 <p className="mb-2">
                   When you use Obby to generate code or create projects, we
                   collect:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Project descriptions and requirements you provide</li>
                   <li>Generated code and project structures</li>
                   <li>Feedback on generated code</li>
                   <li>Project customization preferences</li>
                 </ul>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   1.4 Cookies and Similar Technologies
                 </h3>
                 <p>
@@ -86,13 +86,13 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   2. How We Use Your Information
                 </h2>
                 <p className="mb-2">
                   Obby uses the data we collect for purposes such as:
                 </p>
-                <ul className="list-disc pl-6 space-y-1">
+                <ul className="list-disc space-y-1 pl-6">
                   <li>Delivering and improving the Service</li>
                   <li>Managing your account and providing customer support</li>
                   <li>
@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   3. Data Retention
                 </h2>
                 <p>
@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   4. How We Share Your Information
                 </h2>
                 <p className="mb-4">
@@ -131,7 +131,7 @@ export default function PrivacyPolicyPage() {
                   the following conditions:
                 </p>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   4.1 Service Providers
                 </h3>
                 <p className="mb-4">
@@ -141,13 +141,13 @@ export default function PrivacyPolicyPage() {
                   use your data for the specific services they provide to us.
                 </p>
 
-                <h3 className="text-xl font-medium mb-3">
+                <h3 className="mb-3 font-medium text-xl">
                   4.2 Legal Requirements
                 </h3>
                 <p className="mb-2">
                   We may disclose your information if required to:
                 </p>
-                <ul className="list-disc pl-6 space-y-1">
+                <ul className="list-disc space-y-1 pl-6">
                   <li>Comply with legal obligations</li>
                   <li>Enforce our agreements and policies</li>
                   <li>Protect user safety or the integrity of the Service</li>
@@ -155,12 +155,12 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">5. Your Rights</h2>
+                <h2 className="mb-4 font-semibold text-2xl">5. Your Rights</h2>
                 <p className="mb-2">
                   Depending on your location, you may have the following rights
                   regarding your personal data:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Access: Request a copy of the data we hold about you.</li>
                   <li>
                     Correction: Ask us to correct inaccurate or incomplete data.
@@ -178,7 +178,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">6. Security</h2>
+                <h2 className="mb-4 font-semibold text-2xl">6. Security</h2>
                 <p>
                   We use industry-standard measures to protect your information.
                   However, no method of transmission or storage is entirely
@@ -188,7 +188,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   7. International Transfers
                 </h2>
                 <p>
@@ -200,7 +200,7 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h2 className="mb-4 font-semibold text-2xl">
                   8. Updates to This Policy
                 </h2>
                 <p>
@@ -213,19 +213,19 @@ export default function PrivacyPolicyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
+                <h2 className="mb-4 font-semibold text-2xl">9. Contact Us</h2>
                 <p className="mb-2">
                   If you have any questions about this Privacy Policy, you can
                   reach us at:
                 </p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
+                <ul className="mb-4 list-disc space-y-1 pl-6">
                   <li>Email: support@obby.dev</li>
                   <li>Representative: Sree Narayanan</li>
                   <li>
-                    Social:{" "}
+                    Social:{' '}
                     <a
-                      href="https://x.com/eersnington"
                       className="text-primary hover:underline"
+                      href="https://x.com/eersnington"
                     >
                       x.com/eersnington
                     </a>
@@ -233,8 +233,8 @@ export default function PrivacyPolicyPage() {
                 </ul>
               </section>
 
-              <div className="border-t pt-8 mt-12">
-                <p className="text-sm text-muted-foreground">
+              <div className="mt-12 border-t pt-8">
+                <p className="text-muted-foreground text-sm">
                   <strong>Last updated:</strong> June 10, 2025
                 </p>
               </div>

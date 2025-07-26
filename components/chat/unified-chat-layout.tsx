@@ -36,10 +36,10 @@ export function UnifiedChatLayout({
 
   if (isChatActive) {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="flex h-screen flex-col">
         <SidebarProvider className="flex flex-col">
           <DynamicChatHeader />
-          <div className="flex-1 overflow-hidden w-full">{children}</div>
+          <div className="w-full flex-1 overflow-hidden">{children}</div>
         </SidebarProvider>
       </div>
     );
@@ -49,15 +49,15 @@ export function UnifiedChatLayout({
     <SidebarProvider className="flex flex-col">
       <ClientHeader user={user} />
       <div className="flex flex-1">
-        <AppSidebar user={user} os={os} />
+        <AppSidebar os={os} user={user} />
         <SidebarInset className="p-2">
-          <div className="flex flex-col bg-accent/30 border-2 border-accent h-full w-full rounded-lg shadow-sm">
+          <div className="flex h-full w-full flex-col rounded-lg border-2 border-accent bg-accent/30 shadow-sm">
             <header className="flex h-16 items-center gap-4 px-6">
               {user && <SidebarToggle />}
             </header>
             <main className="flex-1 p-6">
               <div className="space-y-6">
-                <div className="max-w-3xl mx-auto">{children}</div>
+                <div className="mx-auto max-w-3xl">{children}</div>
               </div>
             </main>
             <LowProfileFooter />

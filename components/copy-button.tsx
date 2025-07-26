@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState, type ReactNode, useEffect } from "react";
-import { Button } from "components/ui/button";
+import { useState, type ReactNode, useEffect } from 'react';
+import { Button } from 'components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import { Check, Copy } from "lucide-react";
-import { useTheme } from "next-themes";
+} from 'components/ui/tooltip';
+import { Check, Copy } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 export default function CopyButton({
   children,
@@ -32,7 +32,7 @@ export default function CopyButton({
     try {
       await navigator.clipboard.writeText(copyValue);
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      console.error('Failed to copy: ', err);
     }
 
     // Reset copied state after 2 seconds
@@ -43,20 +43,20 @@ export default function CopyButton({
 
   // Determine button variant based on theme
   const variant = mounted
-    ? resolvedTheme === "dark"
-      ? "secondary"
-      : "default"
-    : "default";
+    ? resolvedTheme === 'dark'
+      ? 'secondary'
+      : 'default'
+    : 'default';
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={variant}
-            size="default"
-            onClick={copyToClipboard}
             className="cursor-pointer"
+            onClick={copyToClipboard}
+            size="default"
+            variant={variant}
           >
             {children}
             {copied ? (
@@ -67,7 +67,7 @@ export default function CopyButton({
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{copied ? "Copied" : "Copy"}</p>
+          <p>{copied ? 'Copied' : 'Copy'}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

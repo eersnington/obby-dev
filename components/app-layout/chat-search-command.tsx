@@ -76,7 +76,7 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
   onSelectChat,
 }) => {
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog onOpenChange={onOpenChange} open={open}>
       <CommandInput placeholder="Search chats..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
@@ -89,10 +89,10 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
                   <CommandGroup heading="Today">
                     {groupedChats.today.map((chat) => (
                       <CommandItem
-                        key={chat.chatId}
-                        value={`${chat.chatId} ${chat.title}`}
-                        onSelect={() => onSelectChat(chat.chatId)}
                         className="cursor-pointer"
+                        key={chat.chatId}
+                        onSelect={() => onSelectChat(chat.chatId)}
+                        value={`${chat.chatId} ${chat.title}`}
                       >
                         {chat.title}
                       </CommandItem>
@@ -103,10 +103,10 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
                   <CommandGroup heading="Yesterday">
                     {groupedChats.yesterday.map((chat) => (
                       <CommandItem
-                        key={chat.chatId}
-                        value={`${chat.chatId} ${chat.title}`}
-                        onSelect={() => onSelectChat(chat.chatId)}
                         className="cursor-pointer"
+                        key={chat.chatId}
+                        onSelect={() => onSelectChat(chat.chatId)}
+                        value={`${chat.chatId} ${chat.title}`}
                       >
                         {chat.title}
                       </CommandItem>
@@ -117,10 +117,10 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
                   <CommandGroup heading="Last 7 days">
                     {groupedChats.lastWeek.map((chat) => (
                       <CommandItem
-                        key={chat.chatId}
-                        value={`${chat.chatId} ${chat.title}`}
-                        onSelect={() => onSelectChat(chat.chatId)}
                         className="cursor-pointer"
+                        key={chat.chatId}
+                        onSelect={() => onSelectChat(chat.chatId)}
+                        value={`${chat.chatId} ${chat.title}`}
                       >
                         {chat.title}
                       </CommandItem>
@@ -131,10 +131,10 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
                   <CommandGroup heading="Last 30 days">
                     {groupedChats.lastMonth.map((chat) => (
                       <CommandItem
-                        key={chat.chatId}
-                        value={`${chat.chatId} ${chat.title}`}
-                        onSelect={() => onSelectChat(chat.chatId)}
                         className="cursor-pointer"
+                        key={chat.chatId}
+                        onSelect={() => onSelectChat(chat.chatId)}
+                        value={`${chat.chatId} ${chat.title}`}
                       >
                         {chat.title}
                       </CommandItem>
@@ -145,10 +145,10 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
                   <CommandGroup heading="Older">
                     {groupedChats.older.map((chat) => (
                       <CommandItem
-                        key={chat.chatId}
-                        value={`${chat.chatId} ${chat.title}`}
-                        onSelect={() => onSelectChat(chat.chatId)}
                         className="cursor-pointer"
+                        key={chat.chatId}
+                        onSelect={() => onSelectChat(chat.chatId)}
+                        value={`${chat.chatId} ${chat.title}`}
                       >
                         {chat.title}
                       </CommandItem>
@@ -159,8 +159,8 @@ export const ChatSearchCommand: React.FC<ChatSearchCommandProps> = ({
             );
           })()
         ) : (
-          <div className="p-4 flex justify-center items-center">
-            <LoaderCircle className="w-6 h-6 animate-spin" />
+          <div className="flex items-center justify-center p-4">
+            <LoaderCircle className="h-6 w-6 animate-spin" />
           </div>
         )}
       </CommandList>

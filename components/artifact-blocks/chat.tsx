@@ -107,38 +107,38 @@ export function Chat({
 
   return (
     <>
-      <div className="flex flex-col h-full w-full">
+      <div className="flex h-full w-full flex-col">
         <div className="flex-1 overflow-y-auto px-4">
           <Messages
             chatId={id}
+            isArtifactVisible={isArtifactVisible}
+            isReadonly={isReadonly}
+            messages={messages}
+            reload={reload}
+            setMessages={setMessages}
             status={status}
             votes={votes}
-            messages={messages}
-            setMessages={setMessages}
-            reload={reload}
-            isReadonly={isReadonly}
-            isArtifactVisible={isArtifactVisible}
           />
         </div>
 
-        <div className="flex-shrink-0 flex justify-center px-4 py-4">
+        <div className="flex flex-shrink-0 justify-center px-4 py-4">
           <div className="w-full max-w-3xl">
-            <form className="flex gap-2 w-full">
+            <form className="flex w-full gap-2">
               {!isReadonly && (
                 <MultimodalInput
-                  session={session}
+                  append={append}
+                  attachments={attachments}
                   chatId={id}
-                  input={input}
-                  setInput={setInput}
                   handleSubmit={handleSubmit}
+                  input={input}
+                  messages={messages}
+                  selectedVisibilityType={visibilityType}
+                  session={session}
+                  setAttachments={setAttachments}
+                  setInput={setInput}
+                  setMessages={setMessages}
                   status={status}
                   stop={stop}
-                  attachments={attachments}
-                  setAttachments={setAttachments}
-                  messages={messages}
-                  setMessages={setMessages}
-                  append={append}
-                  selectedVisibilityType={visibilityType}
                 />
               )}
             </form>
@@ -147,22 +147,22 @@ export function Chat({
       </div>
 
       <Artifact
-        session={session}
+        append={append}
+        attachments={attachments}
         chatId={id}
-        input={input}
-        setInput={setInput}
         handleSubmit={handleSubmit}
+        input={input}
+        isReadonly={isReadonly}
+        messages={messages}
+        reload={reload}
+        selectedVisibilityType={visibilityType}
+        session={session}
+        setAttachments={setAttachments}
+        setInput={setInput}
+        setMessages={setMessages}
         status={status}
         stop={stop}
-        attachments={attachments}
-        setAttachments={setAttachments}
-        append={append}
-        messages={messages}
-        setMessages={setMessages}
-        reload={reload}
         votes={votes}
-        isReadonly={isReadonly}
-        selectedVisibilityType={visibilityType}
       />
     </>
   );

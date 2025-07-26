@@ -1,14 +1,14 @@
-import { CodeView } from "./code-view";
-import { Button } from "components/ui/button";
-import CopyButton from "components/copy-button";
+import { CodeView } from './code-view';
+import { Button } from 'components/ui/button';
+import CopyButton from 'components/copy-button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import { Download, FileText } from "lucide-react";
-import { useState } from "react";
+} from 'components/ui/tooltip';
+import { Download, FileText } from 'lucide-react';
+import { useState } from 'react';
 
 export function FragmentCode({
   files,
@@ -21,10 +21,10 @@ export function FragmentCode({
   )?.content;
 
   function download(filename: string, content: string) {
-    const blob = new Blob([content], { type: "text/plain" });
+    const blob = new Blob([content], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
+    const a = document.createElement('a');
+    a.style.display = 'none';
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -34,18 +34,18 @@ export function FragmentCode({
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center px-2 pt-1 gap-2">
+    <div className="flex h-full flex-col">
+      <div className="flex items-center gap-2 px-2 pt-1">
         <div className="flex flex-1 gap-2 overflow-x-auto">
           {files.map((file) => (
             <div
-              key={file.name}
-              className={`flex gap-2 select-none cursor-pointer items-center text-sm text-muted-foreground px-2 py-1 rounded-md hover:bg-muted border ${
-                file.name === currentFile ? "bg-muted border-muted" : ""
+              className={`flex cursor-pointer select-none items-center gap-2 rounded-md border px-2 py-1 text-muted-foreground text-sm hover:bg-muted ${
+                file.name === currentFile ? 'border-muted bg-muted' : ''
               }`}
+              key={file.name}
               onClick={() => setCurrentFile(file.name)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === 'Enter' || e.key === ' ') {
                   setCurrentFile(file.name);
                 }
               }}
@@ -59,7 +59,7 @@ export function FragmentCode({
           <TooltipProvider>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <CopyButton copyValue={currentFileContent || ""} />
+                <CopyButton copyValue={currentFileContent || ''} />
               </TooltipTrigger>
               <TooltipContent side="bottom">Copy</TooltipContent>
             </Tooltip>
@@ -68,12 +68,12 @@ export function FragmentCode({
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
-                  size="icon"
                   className="text-muted-foreground"
                   onClick={() =>
-                    download(currentFile, currentFileContent || "")
+                    download(currentFile, currentFileContent || '')
                   }
+                  size="icon"
+                  variant="ghost"
                 >
                   <Download className="h-4 w-4" />
                 </Button>
@@ -83,10 +83,10 @@ export function FragmentCode({
           </TooltipProvider>
         </div>
       </div>
-      <div className="flex flex-col flex-1 overflow-x-auto">
+      <div className="flex flex-1 flex-col overflow-x-auto">
         <CodeView
-          code={currentFileContent || ""}
-          lang={currentFile.split(".").pop() || ""}
+          code={currentFileContent || ''}
+          lang={currentFile.split('.').pop() || ''}
         />
       </div>
     </div>

@@ -84,14 +84,14 @@ export async function POST(request: Request) {
 
   console.log('[api/chat POST] User:', user);
 
-  if (!user || !sessionId) {
+  if (!(user && sessionId)) {
     console.error('[api/chat POST] Unauthorized: No user found.');
     return new Response('Unauthorized', { status: 401 });
   }
 
   console.log('[api/chat POST] User authenticated:', user.id);
 
-  if (!userMessage || !userMessage.content) {
+  if (!userMessage?.content) {
     console.error(
       '[api/chat POST] Bad Request: User message or content missing.',
     );
@@ -101,7 +101,9 @@ export async function POST(request: Request) {
   }
 
   const chat = await fetchQuery(api.chats.getChatById, { id });
-  if (!chat) {
+  if (chat) {
+    console.log('[api/chat POST] Existing chat found.');
+  } else {
     console.log(
       '[api/chat POST] No existing chat found. Generating title and saving new chat.',
     );
@@ -115,8 +117,6 @@ export async function POST(request: Request) {
     });
 
     console.log('[api/chat POST] New chat saved.');
-  } else {
-    console.log('[api/chat POST] Existing chat found.');
   }
 
   console.log('[api/chat POST] Saving user message to DB...');
@@ -325,7 +325,7 @@ export async function GET(request: Request) {
 
   const { user, sessionId } = await withAuth();
 
-  if (!user || !sessionId) {
+  if (!(user && sessionId)) {
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -385,7 +385,7 @@ export async function DELETE(request: Request) {
 
   const { user, sessionId } = await withAuth();
 
-  if (!user || !sessionId) {
+  if (!(user && sessionId)) {
     return new Response('Unauthorized', { status: 401 });
   }
 

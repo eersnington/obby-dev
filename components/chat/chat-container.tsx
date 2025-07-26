@@ -41,13 +41,13 @@ export function ChatContainer({
   return (
     <>
       <Chat
+        autoResume={autoResume}
         id={id}
-        initialMessages={initialMessages}
         initialChatModel={initialChatModel}
+        initialMessages={initialMessages}
         initialVisibilityType={initialVisibilityType}
         isReadonly={isReadonly}
         session={session}
-        autoResume={autoResume}
       />
       <DataStreamHandler id={id} />
     </>

@@ -1,24 +1,24 @@
-import type { FragmentSchema } from "../fragment";
-import type { ExecutionResult } from "../types";
-import type { DeepPartial } from "ai";
+import type { FragmentSchema } from '../fragment';
+import type { ExecutionResult } from '../types';
+import type { DeepPartial } from 'ai';
 
 export type MessageText = {
-  type: "text";
+  type: 'text';
   text: string;
 };
 
 export type MessageCode = {
-  type: "code";
+  type: 'code';
   text: string;
 };
 
 export type MessageImage = {
-  type: "image";
+  type: 'image';
   image: string;
 };
 
 export type Message = {
-  role: "assistant" | "user";
+  role: 'assistant' | 'user';
   content: Array<MessageText | MessageCode | MessageImage>;
   object?: DeepPartial<FragmentSchema>;
   result?: ExecutionResult;
@@ -28,9 +28,9 @@ export function toAISDKMessages(messages: Message[]) {
   return messages.map((message) => ({
     role: message.role,
     content: message.content.map((content) => {
-      if (content.type === "code") {
+      if (content.type === 'code') {
         return {
-          type: "text",
+          type: 'text',
           text: content.text,
         };
       }
@@ -47,7 +47,7 @@ export async function toMessageImage(files: File[]) {
 
   return Promise.all(
     files.map(async (file) => {
-      const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+      const base64 = Buffer.from(await file.arrayBuffer()).toString('base64');
       return `data:${file.type};base64,${base64}`;
     }),
   );

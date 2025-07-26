@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "components/ui/button";
-import redirectToBillingPortal from "actions/redirectToBillingPortal";
+import { Button } from 'components/ui/button';
+import redirectToBillingPortal from 'actions/redirectToBillingPortal';
 
 export function UpgradeButton({
   children,
@@ -15,7 +15,7 @@ export function UpgradeButton({
   };
 
   return (
-    <Button variant="default" className="cursor-pointer" onClick={handleClick}>
+    <Button className="cursor-pointer" onClick={handleClick} variant="default">
       {children}
     </Button>
   );

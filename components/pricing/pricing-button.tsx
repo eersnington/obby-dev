@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { Button } from "components/ui/button";
+import { Button } from 'components/ui/button';
 
 interface PricingButtonProps {
   children: React.ReactNode;
-  variant?: "default" | "secondary" | "outline";
+  variant?: 'default' | 'secondary' | 'outline';
   planTitle: string;
 }
 
 export function PricingButton({
   children,
-  variant = "default",
+  variant = 'default',
   planTitle,
 }: PricingButtonProps) {
   const handleClick = () => {
@@ -22,10 +22,10 @@ export function PricingButton({
 
   return (
     <Button
-      disabled
       className="w-full text-sm"
-      variant={variant}
+      disabled
       onClick={handleClick}
+      variant={variant}
     >
       {children}
     </Button>

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { FragmentInterpreter } from "./fragment-interpreter";
-import { FragmentWeb } from "./fragment-web";
-import type { ExecutionResult } from "lib/types";
+import { FragmentInterpreter } from './fragment-interpreter';
+import { FragmentWeb } from './fragment-web';
+import type { ExecutionResult } from 'lib/types';
 
 export function FragmentPreview({ result }: { result: ExecutionResult }) {
-  if (result.template === "code-interpreter-v1") {
+  if (result.template === 'code-interpreter-v1') {
     return <FragmentInterpreter result={result} />;
   }
 

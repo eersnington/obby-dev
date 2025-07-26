@@ -1,9 +1,9 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z.enum(["development", "production"]).default("development"),
+    NODE_ENV: z.enum(['development', 'production']).default('development'),
     CONVEX_DEPLOYMENT: z.string().url(),
     WORKOS_API_KEY: z.string().min(1),
     WORKOS_CLIENT_ID: z.string().min(1),
@@ -18,7 +18,7 @@ export const env = createEnv({
     XAI_API_KEY: z.string().min(1).optional(),
     AWS_ACCESS_KEY_ID: z.string().min(1).optional(),
     AWS_SECRET_ACCESS_KEY: z.string().min(1).optional(),
-    AWS_REGION: z.string().min(1).default("us-west-2").optional(),
+    AWS_REGION: z.string().min(1).default('us-west-2').optional(),
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().min(1),
@@ -48,6 +48,6 @@ export const env = createEnv({
     XAI_API_KEY: process.env.XAI_API_KEY,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-    AWS_REGION: process.env.AWS_REGION || "us-west-2",
+    AWS_REGION: process.env.AWS_REGION || 'us-west-2',
   },
 });

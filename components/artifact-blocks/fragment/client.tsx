@@ -121,21 +121,21 @@ export const fragmentArtifact = new Artifact<'fragment', FragmentMetadata>({
 
     return (
       <Preview
-        teamID={undefined}
         accessToken={undefined}
-        selectedTab={metadata.selectedTab}
+        fragment={metadata.fragmentSchema}
+        isChatLoading={false}
+        isPreviewLoading={metadata.isCreatingSandbox}
+        onClose={() => {
+          // this should be handled by the artifact's own close button
+        }} // this is handled by the artifact system now
         onSelectedTabChange={(tab) => {
           if (tab === 'code' || tab === 'fragment') {
             setMetadata((prev) => ({ ...prev, selectedTab: tab }));
           }
         }}
-        isChatLoading={false} // this is handled by the artifact system now
-        isPreviewLoading={metadata.isCreatingSandbox}
-        fragment={metadata.fragmentSchema}
         result={metadata.executionResult}
-        onClose={() => {
-          // this should be handled by the artifact's own close button
-        }}
+        selectedTab={metadata.selectedTab}
+        teamID={undefined}
       />
     );
   },
@@ -200,7 +200,7 @@ export const fragmentArtifact = new Artifact<'fragment', FragmentMetadata>({
         }
       },
       isDisabled: ({ metadata }) =>
-        !metadata?.executionResult || !('url' in metadata.executionResult),
+        !(metadata?.executionResult && 'url' in metadata.executionResult),
     },
     {
       icon: <Copy size={18} />,

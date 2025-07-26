@@ -63,7 +63,7 @@ export const obbyRegistry = createProviderRegistry({
 export function getModelFromRegistry(modelId: string): LanguageModelV1 {
   const validation = validateModelIdFormat(modelId);
 
-  if (!validation.isValid || !validation.provider) {
+  if (!(validation.isValid && validation.provider)) {
     throw new Error(`Invalid model ID: ${modelId}`);
   }
 

@@ -37,8 +37,7 @@ function PureDocumentToolResult({
 
   return (
     <button
-      type="button"
-      className="bg-background cursor-pointer border py-2 px-3 rounded-xl w-fit flex flex-row gap-3 items-start"
+      className="flex w-fit cursor-pointer flex-row items-start gap-3 rounded-xl border bg-background px-3 py-2"
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
@@ -66,14 +65,15 @@ function PureDocumentToolResult({
           boundingBox,
         });
       }}
+      type="button"
     >
-      <div className="text-muted-foreground mt-1">
+      <div className="mt-1 text-muted-foreground">
         {type === 'create' ? (
-          <File className="w-4 h-4" />
+          <File className="h-4 w-4" />
         ) : type === 'update' ? (
-          <Pencil className="w-4 h-4" />
+          <Pencil className="h-4 w-4" />
         ) : type === 'request-suggestions' ? (
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="h-4 w-4" />
         ) : null}
       </div>
       <div className="text-left">
@@ -100,8 +100,7 @@ function PureDocumentToolCall({
 
   return (
     <button
-      type="button"
-      className="cursor pointer w-fit border py-2 px-3 rounded-xl flex flex-row items-start justify-between gap-3"
+      className="cursor pointer flex w-fit flex-row items-start justify-between gap-3 rounded-xl border px-3 py-2"
       onClick={(event) => {
         if (isReadonly) {
           toast.error(
@@ -125,15 +124,16 @@ function PureDocumentToolCall({
           boundingBox,
         }));
       }}
+      type="button"
     >
-      <div className="flex flex-row gap-3 items-start">
-        <div className="text-zinc-500 mt-1">
+      <div className="flex flex-row items-start gap-3">
+        <div className="mt-1 text-zinc-500">
           {type === 'create' ? (
-            <File className="w-4 h-4" />
+            <File className="h-4 w-4" />
           ) : type === 'update' ? (
-            <Pencil className="w-4 h-4" />
+            <Pencil className="h-4 w-4" />
           ) : type === 'request-suggestions' ? (
-            <MessageCircle className="w-4 h-4" />
+            <MessageCircle className="h-4 w-4" />
           ) : null}
         </div>
 
@@ -142,8 +142,8 @@ function PureDocumentToolCall({
         </div>
       </div>
 
-      <div className="animate-spin mt-1">
-        <LoaderCircle className="w-4 h-4" />
+      <div className="mt-1 animate-spin">
+        <LoaderCircle className="h-4 w-4" />
       </div>
     </button>
   );

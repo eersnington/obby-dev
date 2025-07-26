@@ -1,6 +1,6 @@
-import { Check } from "lucide-react";
-import { PricingButton } from "./pricing-button";
-import { generateArrayKey } from "lib/utils/array-utils";
+import { Check } from 'lucide-react';
+import { PricingButton } from './pricing-button';
+import { generateArrayKey } from 'lib/utils/array-utils';
 
 interface PricingCardProps {
   title: string;
@@ -9,7 +9,7 @@ interface PricingCardProps {
   description: string;
   features: string[];
   buttonText: string;
-  buttonVariant?: "default" | "secondary" | "outline";
+  buttonVariant?: 'default' | 'secondary' | 'outline';
   recommended?: boolean;
 }
 
@@ -20,50 +20,50 @@ export function PricingCard({
   description,
   features,
   buttonText,
-  buttonVariant = "default",
+  buttonVariant = 'default',
   recommended = false,
 }: PricingCardProps) {
   if (recommended) {
     return (
-      <div className="rounded-lg p-[1px] h-full bg-gradient-to-br from-[var(--obby-purple)] via-[var(--obby-violet)] via-[var(--obby-pink)] to-[var(--obby-orange)]">
-        <div className="bg-background rounded-lg h-full">
-          <div className="h-full border-0 bg-transparent rounded-lg overflow-hidden flex flex-col relative">
+      <div className="h-full rounded-lg bg-gradient-to-br from-[var(--obby-purple)] via-[var(--obby-pink)] via-[var(--obby-violet)] to-[var(--obby-orange)] p-[1px]">
+        <div className="h-full rounded-lg bg-background">
+          <div className="relative flex h-full flex-col overflow-hidden rounded-lg border-0 bg-transparent">
             {/* Popular Badge */}
             <div className="absolute top-4 right-4">
-              <div className="rounded-full px-3 py-1 text-xs font-medium relative overflow-hidden">
-                <span className="absolute inset-0 obby-gradient opacity-90" />
+              <div className="relative overflow-hidden rounded-full px-3 py-1 font-medium text-xs">
+                <span className="obby-gradient absolute inset-0 opacity-90" />
                 <span className="relative text-white">Popular</span>
               </div>
             </div>
 
-            <div className="text-center pb-6 px-6 pt-6">
-              <h3 className="text-lg font-semibold">{title}</h3>
+            <div className="px-6 pt-6 pb-6 text-center">
+              <h3 className="font-semibold text-lg">{title}</h3>
               <div className="mt-3">
-                <span className="text-2xl sm:text-3xl font-bold">{price}</span>{" "}
-                <span className="text-lg font-normal text-muted-foreground">
+                <span className="font-bold text-2xl sm:text-3xl">{price}</span>{' '}
+                <span className="font-normal text-lg text-muted-foreground">
                   {period}
                 </span>
               </div>
-              <p className="text-sm mt-2 text-muted-foreground">
+              <p className="mt-2 text-muted-foreground text-sm">
                 {description}
               </p>
             </div>
 
             {/* Features - flex-1 to take remaining space */}
-            <div className="px-6 space-y-3 flex-1">
+            <div className="flex-1 space-y-3 px-6">
               {features.map((feature, index) => (
                 <div
-                  key={generateArrayKey(index)}
                   className="flex items-start gap-2"
+                  key={generateArrayKey(index)}
                 >
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                   <span className="text-sm">{feature}</span>
                 </div>
               ))}
             </div>
 
-            <div className="px-6 pb-6 pt-6 mt-auto">
-              <div className="relative rounded-md overflow-hidden">
+            <div className="mt-auto px-6 pt-6 pb-6">
+              <div className="relative overflow-hidden rounded-md">
                 <PricingButton planTitle={title}>{buttonText}</PricingButton>
               </div>
             </div>
@@ -74,29 +74,29 @@ export function PricingCard({
   }
 
   return (
-    <div className="h-full border rounded-lg overflow-hidden flex flex-col">
-      <div className="text-center pb-6 px-6 pt-6">
-        <h3 className="text-lg font-semibold">{title}</h3>
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border">
+      <div className="px-6 pt-6 pb-6 text-center">
+        <h3 className="font-semibold text-lg">{title}</h3>
         <div className="mt-3">
-          <span className="text-2xl sm:text-3xl font-bold">{price}</span>
-          <span className="text-lg font-normal text-muted-foreground">
+          <span className="font-bold text-2xl sm:text-3xl">{price}</span>
+          <span className="font-normal text-lg text-muted-foreground">
             {period}
           </span>
         </div>
-        <p className="text-sm mt-2 text-muted-foreground">{description}</p>
+        <p className="mt-2 text-muted-foreground text-sm">{description}</p>
       </div>
 
-      <div className="px-6 space-y-3 flex-1">
+      <div className="flex-1 space-y-3 px-6">
         {features.map((feature, index) => (
-          <div key={generateArrayKey(index)} className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-2" key={generateArrayKey(index)}>
+            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
             <span className="text-sm">{feature}</span>
           </div>
         ))}
       </div>
 
-      <div className="px-6 pb-6 pt-6 mt-auto">
-        <PricingButton variant={buttonVariant} planTitle={title}>
+      <div className="mt-auto px-6 pt-6 pb-6">
+        <PricingButton planTitle={title} variant={buttonVariant}>
           {buttonText}
         </PricingButton>
       </div>

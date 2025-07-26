@@ -58,23 +58,19 @@ export async function POST(req: Request) {
   if (fragment.template === 'code-interpreter-v1') {
     const { logs, error, results } = await sbx.runCode(fragment.code || '');
 
-    return new Response(
-      JSON.stringify({
-        sbxId: sbx?.sandboxId,
-        template: fragment.template,
-        stdout: logs.stdout,
-        stderr: logs.stderr,
-        runtimeError: error,
-        cellResults: results,
-      } as ExecutionResultInterpreter),
-    );
-  }
-
-  return new Response(
-    JSON.stringify({
+    return Response.json({
       sbxId: sbx?.sandboxId,
       template: fragment.template,
-      url: `https://${sbx?.getHost(fragment.port || 80)}`,
-    } as ExecutionResultWeb),
-  );
+      stdout: logs.stdout,
+      stderr: logs.stderr,
+      runtimeError: error,
+      cellResults: results,
+    } as ExecutionResultInterpreter);
+  }
+
+  return Response.json({
+    sbxId: sbx?.sandboxId,
+    template: fragment.template,
+    url: `https://${sbx?.getHost(fragment.port || 80)}`,
+  } as ExecutionResultWeb);
 }

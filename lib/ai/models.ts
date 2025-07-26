@@ -30,11 +30,11 @@ export const AI_MODELS: ModelInfo[] = [
   //   },
   // },
   {
-    id: "obbylabs:fast-chat",
-    image: "obbylabs.webp",
-    name: "Fast Chat",
-    provider: "obbylabs",
-    description: "Quick responses for simple tasks",
+    id: 'obbylabs:fast-chat',
+    image: 'obbylabs.webp',
+    name: 'Fast Chat',
+    provider: 'obbylabs',
+    description: 'Quick responses for simple tasks',
     capabilities: {
       text: true,
       image: true,
@@ -45,11 +45,11 @@ export const AI_MODELS: ModelInfo[] = [
 
   // OpenAI Models
   {
-    id: "openai:gpt-4.1",
-    image: "openai.svg",
-    name: "GPT-4.1",
-    provider: "openai",
-    description: "Latest GPT-4.1 model",
+    id: 'openai:gpt-4.1',
+    image: 'openai.svg',
+    name: 'GPT-4.1',
+    provider: 'openai',
+    description: 'Latest GPT-4.1 model',
     capabilities: {
       text: true,
       image: true,
@@ -58,11 +58,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "openai:gpt-4.1-mini",
-    image: "openai.svg",
-    name: "GPT-4.1 Mini",
-    provider: "openai",
-    description: "Smaller version of GPT-4.1",
+    id: 'openai:gpt-4.1-mini',
+    image: 'openai.svg',
+    name: 'GPT-4.1 Mini',
+    provider: 'openai',
+    description: 'Smaller version of GPT-4.1',
     capabilities: {
       text: true,
       image: true,
@@ -71,11 +71,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "openai:gpt-4o",
-    image: "openai.svg",
-    name: "GPT-4o",
-    provider: "openai",
-    description: "Multimodal GPT-4o model",
+    id: 'openai:gpt-4o',
+    image: 'openai.svg',
+    name: 'GPT-4o',
+    provider: 'openai',
+    description: 'Multimodal GPT-4o model',
     capabilities: {
       text: true,
       image: true,
@@ -84,11 +84,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "openai:gpt-4o-mini",
-    image: "openai.svg",
-    name: "GPT-4o Mini",
-    provider: "openai",
-    description: "Fast and efficient GPT-4o",
+    id: 'openai:gpt-4o-mini',
+    image: 'openai.svg',
+    name: 'GPT-4o Mini',
+    provider: 'openai',
+    description: 'Fast and efficient GPT-4o',
     capabilities: {
       text: true,
       image: true,
@@ -97,11 +97,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "openai:o3",
-    image: "openai.svg",
-    name: "o3",
-    provider: "openai",
-    description: "Advanced reasoning model",
+    id: 'openai:o3',
+    image: 'openai.svg',
+    name: 'o3',
+    provider: 'openai',
+    description: 'Advanced reasoning model',
     capabilities: {
       text: true,
       image: true,
@@ -110,11 +110,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "openai:o4-mini",
-    image: "openai.svg",
-    name: "o4 Mini",
-    provider: "openai",
-    description: "Compact reasoning model",
+    id: 'openai:o4-mini',
+    image: 'openai.svg',
+    name: 'o4 Mini',
+    provider: 'openai',
+    description: 'Compact reasoning model',
     capabilities: {
       text: true,
       image: false,
@@ -125,11 +125,11 @@ export const AI_MODELS: ModelInfo[] = [
 
   // Anthropic Models
   {
-    id: "anthropic:claude-sonnet-4",
-    image: "anthropic.svg",
-    name: "Claude Sonnet 4",
-    provider: "anthropic",
-    description: "Most capable Claude model",
+    id: 'anthropic:claude-sonnet-4',
+    image: 'anthropic.svg',
+    name: 'Claude Sonnet 4',
+    provider: 'anthropic',
+    description: 'Most capable Claude model',
     capabilities: {
       text: true,
       image: true,
@@ -138,11 +138,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "anthropic:claude-3.7-sonnet",
-    image: "anthropic.svg",
-    name: "Claude 3.7 Sonnet",
-    provider: "anthropic",
-    description: "Advanced Claude 3.7 model",
+    id: 'anthropic:claude-3.7-sonnet',
+    image: 'anthropic.svg',
+    name: 'Claude 3.7 Sonnet',
+    provider: 'anthropic',
+    description: 'Advanced Claude 3.7 model',
     capabilities: {
       text: true,
       image: true,
@@ -153,11 +153,11 @@ export const AI_MODELS: ModelInfo[] = [
 
   // Google Models
   {
-    id: "google:gemini-2.5-pro",
-    image: "google.svg",
-    name: "Gemini 2.5 Pro",
-    provider: "google",
-    description: "Advanced Gemini model",
+    id: 'google:gemini-2.5-pro',
+    image: 'google.svg',
+    name: 'Gemini 2.5 Pro',
+    provider: 'google',
+    description: 'Advanced Gemini model',
     capabilities: {
       text: true,
       image: true,
@@ -166,11 +166,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "google:gemini-2.5-flash",
-    image: "google.svg",
-    name: "Gemini 2.5 Flash",
-    provider: "google",
-    description: "Fast Gemini model",
+    id: 'google:gemini-2.5-flash',
+    image: 'google.svg',
+    name: 'Gemini 2.5 Flash',
+    provider: 'google',
+    description: 'Fast Gemini model',
     capabilities: {
       text: true,
       image: true,
@@ -179,11 +179,11 @@ export const AI_MODELS: ModelInfo[] = [
     },
   },
   {
-    id: "google:gemini-2.0-flash",
-    image: "google.svg",
-    name: "Gemini 2.0 Flash",
-    provider: "google",
-    description: "Stable Gemini 2.0 model",
+    id: 'google:gemini-2.0-flash',
+    image: 'google.svg',
+    name: 'Gemini 2.0 Flash',
+    provider: 'google',
+    description: 'Stable Gemini 2.0 model',
     capabilities: {
       text: true,
       image: true,
@@ -210,9 +210,9 @@ export function isValidModelId(modelId: string): boolean {
 }
 
 export function getProviderFromModelId(modelId: string): string | null {
-  const [provider] = modelId.split(":");
+  const [provider] = modelId.split(':');
 
-  if (!provider || !isValidModelId(modelId)) {
+  if (!(provider && isValidModelId(modelId))) {
     return null;
   }
 
@@ -225,7 +225,7 @@ export function validateModelIdFormat(modelId: string): {
   model: string | null;
   resolvedId: string;
 } {
-  const [provider, model] = modelId.split(":");
+  const [provider, model] = modelId.split(':');
 
   const isValid = provider && model && isValidModelId(modelId);
 

@@ -37,10 +37,10 @@ export const VersionFooter = ({
 
   return (
     <motion.div
-      className="absolute flex flex-col gap-4 lg:flex-row bottom-0 bg-background p-4 w-full border-t z-50 justify-between"
-      initial={{ y: isMobile ? 200 : 77 }}
       animate={{ y: 0 }}
+      className="absolute bottom-0 z-50 flex w-full flex-col justify-between gap-4 border-t bg-background p-4 lg:flex-row"
       exit={{ y: isMobile ? 200 : 77 }}
+      initial={{ y: isMobile ? 200 : 77 }}
       transition={{ type: 'spring', stiffness: 140, damping: 20 }}
     >
       <div>
@@ -70,15 +70,15 @@ export const VersionFooter = ({
           <div>Restore this version</div>
           {isMutating && (
             <div className="animate-spin">
-              <LoaderCircle className="w-4 h-4" />
+              <LoaderCircle className="h-4 w-4" />
             </div>
           )}
         </Button>
         <Button
-          variant="outline"
           onClick={() => {
             handleVersionChange('latest');
           }}
+          variant="outline"
         >
           Back to latest version
         </Button>

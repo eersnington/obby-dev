@@ -1,5 +1,5 @@
 export const SHADCN_TEMPLATE_FILES = {
-  "/src/components/ui/accordion.tsx": `import * as React from "react"
+  '/src/components/ui/accordion.tsx': `import * as React from "react"
   import * as AccordionPrimitive from "@radix-ui/react-accordion"
   import { ChevronDownIcon } from "lucide-react"
   
@@ -70,7 +70,7 @@ export const SHADCN_TEMPLATE_FILES = {
   
   export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
   `,
-  "/src/components/ui/alert-dialog.tsx": `"use client"
+  '/src/components/ui/alert-dialog.tsx': `"use client"
   
   import * as React from "react"
   import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
@@ -234,7 +234,7 @@ export const SHADCN_TEMPLATE_FILES = {
     AlertDialogCancel,
   }
     `,
-  "/src/components/ui/alert.tsx": `import * as React from "react"
+  '/src/components/ui/alert.tsx': `import * as React from "react"
   import { cva, type VariantProps } from "class-variance-authority"
     
   import { type ClassValue, clsx } from 'clsx';
@@ -307,7 +307,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Alert, AlertTitle, AlertDescription }
     `,
-  "/src/components/ui/aspect-ratio.tsx": `import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio"
+  '/src/components/ui/aspect-ratio.tsx': `import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio"
     
     function AspectRatio({
       ...props
@@ -317,7 +317,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { AspectRatio }
     `,
-  "/src/components/ui/avatar.tsx": `"use client"
+  '/src/components/ui/avatar.tsx': `"use client"
     
     import * as React from "react"
     import * as AvatarPrimitive from "@radix-ui/react-avatar"
@@ -377,7 +377,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Avatar, AvatarImage, AvatarFallback }
     `,
-  "/src/components/ui/badge.tsx": `import * as React from "react"
+  '/src/components/ui/badge.tsx': `import * as React from "react"
     import { Slot } from "@radix-ui/react-slot"
     import { cva, type VariantProps } from "class-variance-authority"
     
@@ -430,7 +430,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Badge, badgeVariants }
     `,
-  "/src/components/ui/breadcrumb.tsx": `import * as React from "react"
+  '/src/components/ui/breadcrumb.tsx': `import * as React from "react"
     import { Slot } from "@radix-ui/react-slot"
     import { ChevronRight, MoreHorizontal } from "lucide-react"
     
@@ -546,7 +546,7 @@ export const SHADCN_TEMPLATE_FILES = {
       BreadcrumbEllipsis,
     }
     `,
-  "/src/components/ui/button.tsx": `import * as React from "react"
+  '/src/components/ui/button.tsx': `import * as React from "react"
     import { Slot } from "@radix-ui/react-slot"
     import { cva, type VariantProps } from "class-variance-authority"
     
@@ -612,7 +612,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Button, buttonVariants }
     `,
-  "/src/components/ui/calendar.tsx": `import * as React from "react"
+  '/src/components/ui/calendar.tsx': `import * as React from "react"
     import {
       ChevronDownIcon,
       ChevronLeftIcon,
@@ -648,8 +648,8 @@ export const SHADCN_TEMPLATE_FILES = {
           showOutsideDays={showOutsideDays}
           className={cn(
             "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
-            String.raw\`rtl:**:[.rdp-button\_next>svg]:rotate-180\`,
-            String.raw\`rtl:**:[.rdp-button\_previous>svg]:rotate-180\`,
+            String.raw\`rtl:**:[.rdp-button_next>svg]:rotate-180\`,
+            String.raw\`rtl:**:[.rdp-button_previous>svg]:rotate-180\`,
             className
           )}
           captionLayout={captionLayout}
@@ -827,7 +827,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Calendar, CalendarDayButton }
     `,
-  "/src/components/ui/card.tsx": `import * as React from "react"
+  '/src/components/ui/card.tsx': `import * as React from "react"
     
     import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
@@ -926,7 +926,7 @@ export const SHADCN_TEMPLATE_FILES = {
       CardContent,
     }
     `,
-  "/src/components/ui/carousel.tsx": `"use client"
+  '/src/components/ui/carousel.tsx': `"use client"
     
     import * as React from "react"
     import useEmblaCarousel, {
@@ -1174,7 +1174,7 @@ export const SHADCN_TEMPLATE_FILES = {
       CarouselNext,
     }
     `,
-  "/src/components/ui/chart.tsx": `import * as React from "react"
+  '/src/components/ui/chart.tsx': `import * as React from "react"
     import * as RechartsPrimitive from "recharts"
     
     import { type ClassValue, clsx } from 'clsx';
@@ -1532,7 +1532,7 @@ export const SHADCN_TEMPLATE_FILES = {
       ChartStyle,
     }
     `,
-  "/src/components/ui/checkbox.tsx": `"use client"
+  '/src/components/ui/checkbox.tsx': `"use client"
     
     import * as React from "react"
     import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
@@ -1571,7 +1571,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Checkbox }
     `,
-  "/src/components/ui/collapsible.tsx": `import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
+  '/src/components/ui/collapsible.tsx': `import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
     
     function Collapsible({
       ...props
@@ -1603,7 +1603,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Collapsible, CollapsibleTrigger, CollapsibleContent }
     `,
-  "/src/components/ui/command.tsx": `"use client"
+  '/src/components/ui/command.tsx': `"use client"
     
     import * as React from "react"
     import { Command as CommandPrimitive } from "cmdk"
@@ -1794,7 +1794,7 @@ export const SHADCN_TEMPLATE_FILES = {
       CommandSeparator,
     }
     `,
-  "/src/components/ui/context-menu.tsx": `"use client"
+  '/src/components/ui/context-menu.tsx': `"use client"
     
     import * as React from "react"
     import * as ContextMenuPrimitive from "@radix-ui/react-context-menu"
@@ -2053,7 +2053,7 @@ export const SHADCN_TEMPLATE_FILES = {
       ContextMenuRadioGroup,
     }
     `,
-  "/src/components/ui/dialog.tsx": `import * as React from "react"
+  '/src/components/ui/dialog.tsx': `import * as React from "react"
     import * as DialogPrimitive from "@radix-ui/react-dialog"
     import { XIcon } from "lucide-react"
     
@@ -2201,7 +2201,7 @@ export const SHADCN_TEMPLATE_FILES = {
       DialogTrigger,
     }
     `,
-  "/src/components/ui/drawer.tsx": `import * as React from "react"
+  '/src/components/ui/drawer.tsx': `import * as React from "react"
     import { Drawer as DrawerPrimitive } from "vaul"
     
     import { type ClassValue, clsx } from 'clsx';
@@ -2341,7 +2341,7 @@ export const SHADCN_TEMPLATE_FILES = {
       DrawerDescription,
     }
     `,
-  "/src/components/ui/dropdown-menu.tsx": `"use client"
+  '/src/components/ui/dropdown-menu.tsx': `"use client"
     
     import * as React from "react"
     import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
@@ -2605,7 +2605,7 @@ export const SHADCN_TEMPLATE_FILES = {
       DropdownMenuSubContent,
     }
     `,
-  "/src/components/ui/form.tsx": `import * as React from "react"
+  '/src/components/ui/form.tsx': `import * as React from "react"
     import * as LabelPrimitive from "@radix-ui/react-label"
     import { Slot } from "@radix-ui/react-slot"
     import {
@@ -2777,7 +2777,7 @@ export const SHADCN_TEMPLATE_FILES = {
       FormField,
     }
     `,
-  "/src/components/ui/hover-card.tsx": `import * as React from "react"
+  '/src/components/ui/hover-card.tsx': `import * as React from "react"
     import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
     
     import { type ClassValue, clsx } from 'clsx';
@@ -2826,7 +2826,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { HoverCard, HoverCardTrigger, HoverCardContent }
     `,
-  "/src/components/ui/input-otp.tsx": `"use client"
+  '/src/components/ui/input-otp.tsx': `"use client"
     
     import * as React from "react"
     import { OTPInput, OTPInputContext } from "input-otp"
@@ -2910,7 +2910,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
     `,
-  "/src/components/ui/input.tsx": `import * as React from "react"
+  '/src/components/ui/input.tsx': `import * as React from "react"
     
     import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
@@ -2938,7 +2938,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Input }
     `,
-  "/src/components/ui/label.tsx": `"use client"
+  '/src/components/ui/label.tsx': `"use client"
     
     import * as React from "react"
     import * as LabelPrimitive from "@radix-ui/react-label"
@@ -2969,7 +2969,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Label }
     `,
-  "/src/components/ui/menubar.tsx": `import * as React from "react"
+  '/src/components/ui/menubar.tsx': `import * as React from "react"
     import * as MenubarPrimitive from "@radix-ui/react-menubar"
     import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
     
@@ -3250,7 +3250,7 @@ export const SHADCN_TEMPLATE_FILES = {
       MenubarSubContent,
     }
     `,
-  "/src/components/ui/navigation-menu.tsx": `import * as React from "react"
+  '/src/components/ui/navigation-menu.tsx': `import * as React from "react"
     import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
     import { cva } from "class-variance-authority"
     import { ChevronDownIcon } from "lucide-react"
@@ -3425,7 +3425,7 @@ export const SHADCN_TEMPLATE_FILES = {
       navigationMenuTriggerStyle,
     }
     `,
-  "/src/components/ui/pagination.tsx": `import * as React from "react"
+  '/src/components/ui/pagination.tsx': `import * as React from "react"
     import {
       ChevronLeftIcon,
       ChevronRightIcon,
@@ -3559,7 +3559,7 @@ export const SHADCN_TEMPLATE_FILES = {
       PaginationEllipsis,
     }
     `,
-  "/src/components/ui/popover.tsx": `"use client"
+  '/src/components/ui/popover.tsx': `"use client"
     
     import * as React from "react"
     import * as PopoverPrimitive from "@radix-ui/react-popover"
@@ -3614,7 +3614,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
     `,
-  "/src/components/ui/progress.tsx": `import * as React from "react"
+  '/src/components/ui/progress.tsx': `import * as React from "react"
     import * as ProgressPrimitive from "@radix-ui/react-progress"
     
     import { type ClassValue, clsx } from 'clsx';
@@ -3650,7 +3650,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Progress }
     `,
-  "/src/components/ui/radio-group.tsx": `"use client"
+  '/src/components/ui/radio-group.tsx': `"use client"
     
     import * as React from "react"
     import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
@@ -3702,7 +3702,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { RadioGroup, RadioGroupItem }
     `,
-  "/src/components/ui/resizable.tsx": `import * as React from "react"
+  '/src/components/ui/resizable.tsx': `import * as React from "react"
     import { GripVerticalIcon } from "lucide-react"
     import * as ResizablePrimitive from "react-resizable-panels"
     
@@ -3763,7 +3763,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
     `,
-  "/src/components/ui/scroll-area.tsx": `"use client"
+  '/src/components/ui/scroll-area.tsx': `"use client"
     
     import * as React from "react"
     import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
@@ -3828,7 +3828,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { ScrollArea, ScrollBar }
     `,
-  "/src/components/ui/select.tsx": `import * as React from "react"
+  '/src/components/ui/select.tsx': `import * as React from "react"
     import * as SelectPrimitive from "@radix-ui/react-select"
     import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
     
@@ -4018,7 +4018,7 @@ export const SHADCN_TEMPLATE_FILES = {
       SelectValue,
     }
     `,
-  "/src/components/ui/separator.tsx": `"use client"
+  '/src/components/ui/separator.tsx': `"use client"
     
     import * as React from "react"
     import * as SeparatorPrimitive from "@radix-ui/react-separator"
@@ -4053,7 +4053,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Separator }
     `,
-  "/src/components/ui/sheet.tsx": `import * as React from "react"
+  '/src/components/ui/sheet.tsx': `import * as React from "react"
     import * as SheetPrimitive from "@radix-ui/react-dialog"
     import { XIcon } from "lucide-react"
     
@@ -4197,7 +4197,7 @@ export const SHADCN_TEMPLATE_FILES = {
       SheetDescription,
     }
     `,
-  "/src/components/ui/sidebar.tsx": `"use client"
+  '/src/components/ui/sidebar.tsx': `"use client"
     
     import * as React from "react"
     import { Slot } from "@radix-ui/react-slot"
@@ -4930,7 +4930,7 @@ export const SHADCN_TEMPLATE_FILES = {
       useSidebar,
     }
     `,
-  "/src/components/ui/skeleton.tsx": `import { type ClassValue, clsx } from 'clsx';
+  '/src/components/ui/skeleton.tsx': `import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
       
   function cn(...inputs: ClassValue[]) {
@@ -4950,7 +4950,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Skeleton }
     `,
-  "/src/components/ui/slider.tsx": `"use client"
+  '/src/components/ui/slider.tsx': `"use client"
     
     import * as React from "react"
     import * as SliderPrimitive from "@radix-ui/react-slider"
@@ -5020,7 +5020,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Slider }
     `,
-  "/src/components/ui/sonner.tsx": `import { useTheme } from "next-themes"
+  '/src/components/ui/sonner.tsx': `import { useTheme } from "next-themes"
     import { Toaster as Sonner, ToasterProps } from "sonner"
     
     const Toaster = ({ ...props }: ToasterProps) => {
@@ -5044,7 +5044,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Toaster }
     `,
-  "/src/components/ui/switch.tsx": `"use client"
+  '/src/components/ui/switch.tsx': `"use client"
     
     import * as React from "react"
     import * as SwitchPrimitive from "@radix-ui/react-switch"
@@ -5082,7 +5082,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Switch }
     `,
-  "/src/components/ui/table.tsx": `import * as React from "react"
+  '/src/components/ui/table.tsx': `import * as React from "react"
     
     import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
@@ -5203,7 +5203,7 @@ export const SHADCN_TEMPLATE_FILES = {
       TableCaption,
     }
     `,
-  "/src/components/ui/tabs.tsx": `"use client"
+  '/src/components/ui/tabs.tsx': `"use client"
     
     import * as React from "react"
     import * as TabsPrimitive from "@radix-ui/react-tabs"
@@ -5276,7 +5276,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Tabs, TabsList, TabsTrigger, TabsContent }
     `,
-  "/src/components/ui/textarea.tsx": `import * as React from "react"
+  '/src/components/ui/textarea.tsx': `import * as React from "react"
     
     import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
@@ -5301,7 +5301,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Textarea }
     `,
-  "/src/components/ui/toggle-group.tsx": `"use client"
+  '/src/components/ui/toggle-group.tsx': `"use client"
     
     import * as React from "react"
     import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
@@ -5381,7 +5381,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { ToggleGroup, ToggleGroupItem }
     `,
-  "/src/components/ui/toggle.tsx": `import * as React from "react"
+  '/src/components/ui/toggle.tsx': `import * as React from "react"
     import * as TogglePrimitive from "@radix-ui/react-toggle"
     import { cva, type VariantProps } from "class-variance-authority"
     
@@ -5433,7 +5433,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Toggle, toggleVariants }
     `,
-  "/src/components/ui/tooltip.tsx": `import * as React from "react"
+  '/src/components/ui/tooltip.tsx': `import * as React from "react"
     import * as TooltipPrimitive from "@radix-ui/react-tooltip"
     
     import { type ClassValue, clsx } from 'clsx';
@@ -5499,7 +5499,7 @@ export const SHADCN_TEMPLATE_FILES = {
     
     export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
     `,
-  "/src/hooks/use-mobile.ts": `import * as React from "react"
+  '/src/hooks/use-mobile.ts': `import * as React from "react"
     
     const MOBILE_BREAKPOINT = 768
     
@@ -5522,7 +5522,7 @@ export const SHADCN_TEMPLATE_FILES = {
 };
 
 export const REACT_TEMPLATE_FILES = {
-  "/.gitignore": `
+  '/.gitignore': `
   # Logs
   logs
   *.log
@@ -5548,7 +5548,7 @@ export const REACT_TEMPLATE_FILES = {
   *.sln
   *.sw?
     `.trim(),
-  "/eslint.config.js": `
+  '/eslint.config.js': `
   import js from '@eslint/js'
   import globals from 'globals'
   import reactHooks from 'eslint-plugin-react-hooks'
@@ -5579,7 +5579,7 @@ export const REACT_TEMPLATE_FILES = {
     },
   )
     `.trim(),
-  "/index.html": `
+  '/index.html': `
   <!doctype html>
   <html lang="en">
     <head>
@@ -5595,42 +5595,42 @@ export const REACT_TEMPLATE_FILES = {
     </body>
   </html>
     `.trim(),
-  "/package.json": JSON.stringify(
+  '/package.json': JSON.stringify(
     {
-      name: "obby-dev-project",
+      name: 'obby-dev-project',
       private: true,
-      version: "0.1.0",
-      type: "module",
+      version: '0.1.0',
+      type: 'module',
       scripts: {
-        dev: "vite",
-        build: "tsc -b && vite build",
-        lint: "eslint .",
-        preview: "vite preview",
+        dev: 'vite',
+        build: 'tsc -b && vite build',
+        lint: 'eslint .',
+        preview: 'vite preview',
       },
       dependencies: {
-        react: "^19.1.0",
-        "react-dom": "^19.1.0",
-        motion: "^12.15.0",
-        "react-router-dom": "7.2.0",
+        react: '^19.1.0',
+        'react-dom': '^19.1.0',
+        motion: '^12.15.0',
+        'react-router-dom': '7.2.0',
       },
       devDependencies: {
-        "@eslint/js": "^9.25.0",
-        "@types/react": "^19.1.2",
-        "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        eslint: "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        globals: "^16.0.0",
-        typescript: "~5.8.3",
-        "typescript-eslint": "^8.30.1",
-        vite: "^6.3.5",
+        '@eslint/js': '^9.25.0',
+        '@types/react': '^19.1.2',
+        '@types/react-dom': '^19.1.2',
+        '@vitejs/plugin-react': '^4.4.1',
+        eslint: '^9.25.0',
+        'eslint-plugin-react-hooks': '^5.2.0',
+        'eslint-plugin-react-refresh': '^0.4.19',
+        globals: '^16.0.0',
+        typescript: '~5.8.3',
+        'typescript-eslint': '^8.30.1',
+        vite: '^6.3.5',
       },
     },
     null,
     2,
   ).trim(),
-  "/src/pages/Index.tsx": `import { useState } from 'react'
+  '/src/pages/Index.tsx': `import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 
 function Index() {
@@ -5653,7 +5653,7 @@ function Index() {
 }
 
 export default Index`,
-  "/src/App.tsx": `
+  '/src/App.tsx': `
 import { Toaster  } from "./components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -5675,7 +5675,7 @@ const App = () => (
 export default App;
   `,
 
-  "/src/index.css": `:root {
+  '/src/index.css': `:root {
     --background: oklch(0.9900 0 0);
     --foreground: oklch(0 0 0);
     --card: oklch(1 0 0);
@@ -5822,7 +5822,7 @@ export default App;
     --shadow-2xl: var(--shadow-2xl);
   }
     `,
-  "/src/main.tsx": `
+  '/src/main.tsx': `
 import App from './App.tsx'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -5835,26 +5835,26 @@ createRoot(document.getElementById('root')!).render(
     </StrictMode>,
 )
     `.trim(),
-  "/vite-env.d.ts": `
+  '/vite-env.d.ts': `
     /// <reference types="vite/client" />
     `.trim(),
-  "/tsconfig.app.json": JSON.stringify(
+  '/tsconfig.app.json': JSON.stringify(
     {
       compilerOptions: {
-        tsBuildInfoFile: "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-        target: "ES2020",
+        tsBuildInfoFile: './node_modules/.tmp/tsconfig.app.tsbuildinfo',
+        target: 'ES2020',
         useDefineForClassFields: true,
-        lib: ["ES2020", "DOM", "DOM.Iterable"],
-        module: "ESNext",
+        lib: ['ES2020', 'DOM', 'DOM.Iterable'],
+        module: 'ESNext',
         skipLibCheck: true,
 
         /* Bundler mode */
-        moduleResolution: "bundler",
+        moduleResolution: 'bundler',
         allowImportingTsExtensions: true,
         verbatimModuleSyntax: true,
-        moduleDetection: "force",
+        moduleDetection: 'force',
         noEmit: true,
-        jsx: "react-jsx",
+        jsx: 'react-jsx',
 
         /* Linting */
         strict: true,
@@ -5863,41 +5863,41 @@ createRoot(document.getElementById('root')!).render(
         noFallthroughCasesInSwitch: true,
         noUncheckedSideEffectImports: true,
 
-        baseUrl: ".", // Required for `paths` to work
+        baseUrl: '.', // Required for `paths` to work
         paths: {
-          "@/*": ["src/*"],
+          '@/*': ['src/*'],
         },
       },
-      include: ["src"],
+      include: ['src'],
     },
     null,
     2,
   ).trim(),
-  "/tsconfig.json": JSON.stringify(
+  '/tsconfig.json': JSON.stringify(
     {
       files: [],
       references: [
-        { path: "./tsconfig.app.json" },
-        { path: "./tsconfig.node.json" },
+        { path: './tsconfig.app.json' },
+        { path: './tsconfig.node.json' },
       ],
     },
     null,
     2,
   ).trim(),
-  "/tsconfig.node.json": JSON.stringify(
+  '/tsconfig.node.json': JSON.stringify(
     {
       compilerOptions: {
-        tsBuildInfoFile: "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-        target: "ES2022",
-        lib: ["ES2023"],
-        module: "ESNext",
+        tsBuildInfoFile: './node_modules/.tmp/tsconfig.node.tsbuildinfo',
+        target: 'ES2022',
+        lib: ['ES2023'],
+        module: 'ESNext',
         skipLibCheck: true,
 
         /* Bundler mode */
-        moduleResolution: "bundler",
+        moduleResolution: 'bundler',
         allowImportingTsExtensions: true,
         verbatimModuleSyntax: true,
-        moduleDetection: "force",
+        moduleDetection: 'force',
         noEmit: true,
 
         /* Linting */
@@ -5908,12 +5908,12 @@ createRoot(document.getElementById('root')!).render(
         noFallthroughCasesInSwitch: true,
         noUncheckedSideEffectImports: true,
       },
-      include: ["vite.config.ts"],
+      include: ['vite.config.ts'],
     },
     null,
     2,
   ).trim(),
-  "/vite.config.ts": `
+  '/vite.config.ts': `
   import { defineConfig } from 'vite'
   import react from '@vitejs/plugin-react'
   import path from "path";
@@ -5928,10 +5928,10 @@ createRoot(document.getElementById('root')!).render(
     },
   })
     `.trim(),
-  "/README.md": `
+  '/README.md': `
   # Generated by (Obby.dev)[https://obby.dev]
   `.trim(),
-  "/src/lib/utils.ts": ` 
+  '/src/lib/utils.ts': ` 
   import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
   

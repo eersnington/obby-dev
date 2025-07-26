@@ -34,22 +34,22 @@ export function MessageReasoning({
   return (
     <div className="flex flex-col">
       {isLoading ? (
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row items-center gap-2">
           <div className="font-medium">Reasoning</div>
           <div className="animate-spin">
             <Loader />
           </div>
         </div>
       ) : (
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row items-center gap-2">
           <div className="font-medium">Reasoned for a few seconds</div>
           <button
-            data-testid="message-reasoning-toggle"
-            type="button"
             className="cursor-pointer"
+            data-testid="message-reasoning-toggle"
             onClick={() => {
               setIsExpanded(!isExpanded);
             }}
+            type="button"
           >
             <ChevronDown />
           </button>
@@ -59,15 +59,15 @@ export function MessageReasoning({
       <AnimatePresence initial={false}>
         {isExpanded && (
           <motion.div
-            data-testid="message-reasoning"
-            key="content"
-            initial="collapsed"
             animate="expanded"
+            className="flex flex-col gap-4 border-l pl-4 text-zinc-600 dark:text-zinc-400"
+            data-testid="message-reasoning"
             exit="collapsed"
-            variants={variants}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            initial="collapsed"
+            key="content"
             style={{ overflow: 'hidden' }}
-            className="pl-4 text-zinc-600 dark:text-zinc-400 border-l flex flex-col gap-4"
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            variants={variants}
           >
             <Markdown>{reasoning}</Markdown>
           </motion.div>

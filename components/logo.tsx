@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Image from "next/image";
+import Image from 'next/image';
 
 export function Logo() {
   return (
     <div className="flex items-center space-x-2 pl-4">
       <Image
-        src={"/logos/obby/obby-logo-min.webp"}
-        className="logo"
         alt="Obby Logo"
-        width={28}
+        className="logo"
         height={28}
+        src={'/logos/obby/obby-logo-min.webp'}
+        width={28}
       />
-      <span className="text-foreground text-xl md:text-2xl font-bold font-mono">
+      <span className="font-bold font-mono text-foreground text-xl md:text-2xl">
         Obby
       </span>
     </div>

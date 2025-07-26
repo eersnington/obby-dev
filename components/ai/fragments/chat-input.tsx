@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { RepoBanner } from "./repo-banner";
-import { Button } from "components/ui/button";
+import { RepoBanner } from './repo-banner';
+import { Button } from 'components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "components/ui/tooltip";
-import { isFileInArray } from "lib/utils";
-import { ArrowUp, Paperclip, Square, X } from "lucide-react";
-import { useLocalStorage, useWindowSize } from "usehooks-ts";
+} from 'components/ui/tooltip';
+import { isFileInArray } from 'lib/utils';
+import { ArrowUp, Paperclip, Square, X } from 'lucide-react';
+import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
 import {
   type SetStateAction,
@@ -18,9 +18,9 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { Textarea } from "components/ui/textarea";
-import { useScrollToBottom } from "hooks/use-scroll-to-bottom";
+} from 'react';
+import { Textarea } from 'components/ui/textarea';
+import { useScrollToBottom } from 'hooks/use-scroll-to-bottom';
 
 export function ChatInput({
   retry,
@@ -64,21 +64,21 @@ export function ChatInput({
 
   const adjustHeight = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
 
   const resetHeight = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = "98px";
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = '98px';
     }
   };
 
   const [localStorageInput, setLocalStorageInput] = useLocalStorage(
-    "input",
-    "",
+    'input',
+    '',
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Only run once after hydration
@@ -86,7 +86,7 @@ export function ChatInput({
     if (textareaRef.current) {
       const domValue = textareaRef.current.value;
       // Prefer DOM value over localStorage to handle hydration
-      const finalValue = domValue || localStorageInput || "";
+      const finalValue = domValue || localStorageInput || '';
       setInput(finalValue);
       adjustHeight();
     }
@@ -112,7 +112,7 @@ export function ChatInput({
     const items = Array.from(e.clipboardData.items);
 
     for (const item of items) {
-      if (item.type.indexOf("image") !== -1) {
+      if (item.type.indexOf('image') !== -1) {
         e.preventDefault();
 
         const file = item.getAsFile();
@@ -133,9 +133,9 @@ export function ChatInput({
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -146,7 +146,7 @@ export function ChatInput({
     setDragActive(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files).filter((file) =>
-      file.type.startsWith("image/"),
+      file.type.startsWith('image/'),
     );
 
     if (droppedFiles.length > 0) {
@@ -166,20 +166,20 @@ export function ChatInput({
       return (
         <div className="relative" key={file.name}>
           <span
+            className="absolute top-[-8] right-[-8] rounded-full bg-muted p-1"
+            onClick={() => handleFileRemove(file)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 handleFileRemove(file);
               }
             }}
-            onClick={() => handleFileRemove(file)}
-            className="absolute top-[-8] right-[-8] bg-muted rounded-full p-1"
           >
             <X className="h-3 w-3 cursor-pointer" />
           </span>
           <img
-            src={URL.createObjectURL(file)}
             alt={file.name}
-            className="rounded-xl w-10 h-10 object-cover"
+            className="h-10 w-10 rounded-xl object-cover"
+            src={URL.createObjectURL(file)}
           />
         </div>
       );
@@ -187,7 +187,7 @@ export function ChatInput({
   }, [files]);
 
   const onEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       if (e.currentTarget.checkValidity()) {
         handleSubmit(e);
@@ -208,26 +208,26 @@ export function ChatInput({
 
   return (
     <form
-      onSubmit={handleSubmit}
-      onKeyDown={onEnter}
-      className="mb-2 mt-auto flex flex-col bg-transparent"
+      className="mt-auto mb-2 flex flex-col bg-transparent"
       onDragEnter={isMultiModal ? handleDrag : undefined}
       onDragLeave={isMultiModal ? handleDrag : undefined}
       onDragOver={isMultiModal ? handleDrag : undefined}
       onDrop={isMultiModal ? handleDrop : undefined}
+      onKeyDown={onEnter}
+      onSubmit={handleSubmit}
     >
       {isErrored && (
         <div
-          className={`flex items-center p-1.5 text-sm font-medium mx-4 mb-10 rounded-xl ${
+          className={`mx-4 mb-10 flex items-center rounded-xl p-1.5 font-medium text-sm ${
             isRateLimited
-              ? "bg-orange-400/10 text-orange-400"
-              : "bg-red-400/10 text-red-400"
+              ? 'bg-orange-400/10 text-orange-400'
+              : 'bg-red-400/10 text-red-400'
           }`}
         >
           <span className="flex-1 px-1.5">{errorMessage}</span>
           <Button
-            className={`px-2 py-1 rounded-sm ${
-              isRateLimited ? "bg-orange-400/20" : "bg-red-400/20"
+            className={`rounded-sm px-2 py-1 ${
+              isRateLimited ? 'bg-orange-400/20' : 'bg-red-400/20'
             }`}
             onClick={retry}
           >
@@ -238,48 +238,48 @@ export function ChatInput({
       <div className="relative">
         {/* <RepoBanner className="absolute bottom-full inset-x-2 translate-y-1 z-0 pb-2" /> */}
         <div
-          className={`shadow-md rounded-2xl relative z-10 bg-accent border ${
+          className={`relative z-10 rounded-2xl border bg-accent shadow-md ${
             dragActive
-              ? "before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-dashed before:border-primary"
-              : ""
+              ? 'before:absolute before:inset-0 before:rounded-2xl before:border-2 before:border-primary before:border-dashed'
+              : ''
           }`}
         >
-          <div className="flex items-center px-3 py-2 gap-1">{children}</div>
+          <div className="flex items-center gap-1 px-3 py-2">{children}</div>
           <Textarea
             autoFocus={true}
-            rows={2}
-            className="text-normal px-4 resize-none ring-0 bg-inherit w-full m-0 outline-none border-0 focus-visible:ring-0"
-            required={true}
-            placeholder="Ask Obby to build..."
+            className="m-0 w-full resize-none border-0 bg-inherit px-4 text-normal outline-none ring-0 focus-visible:ring-0"
             disabled={isErrored}
-            value={input}
             onChange={handleInputChange}
             onPaste={isMultiModal ? handlePaste : undefined}
+            placeholder="Ask Obby to build..."
+            required={true}
+            rows={2}
+            value={input}
           />
-          <div className="flex p-3 gap-2 items-center">
+          <div className="flex items-center gap-2 p-3">
             <input
-              type="file"
-              id="multimodal"
-              name="multimodal"
               accept="image/*"
-              multiple={true}
               className="hidden"
+              id="multimodal"
+              multiple={true}
+              name="multimodal"
               onChange={handleFileInput}
+              type="file"
             />
-            <div className="flex items-center flex-1 gap-2">
+            <div className="flex flex-1 items-center gap-2">
               <TooltipProvider>
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
                     <Button
+                      className="h-10 w-10 rounded-xl"
                       disabled={!isMultiModal || isErrored}
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="rounded-xl h-10 w-10"
                       onClick={(e) => {
                         e.preventDefault();
-                        document.getElementById("multimodal")?.click();
+                        document.getElementById('multimodal')?.click();
                       }}
+                      size="icon"
+                      type="button"
+                      variant="outline"
                     >
                       <Paperclip className="h-5 w-5" />
                     </Button>
@@ -290,35 +290,18 @@ export function ChatInput({
               {files.length > 0 && filePreview}
             </div>
             <div>
-              {!isLoading ? (
+              {isLoading ? (
                 <TooltipProvider>
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger asChild>
                       <Button
-                        disabled={isErrored}
-                        variant="default"
-                        size="icon"
-                        type="submit"
-                        className="rounded-xl h-10 w-10"
-                      >
-                        <ArrowUp className="h-5 w-5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Send message</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="rounded-xl h-10 w-10"
+                        className="h-10 w-10 rounded-xl"
                         onClick={(e) => {
                           e.preventDefault();
                           stop();
                         }}
+                        size="icon"
+                        variant="secondary"
                       >
                         <Square className="h-5 w-5" />
                       </Button>
@@ -326,12 +309,29 @@ export function ChatInput({
                     <TooltipContent>Stop generation</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="h-10 w-10 rounded-xl"
+                        disabled={isErrored}
+                        size="icon"
+                        type="submit"
+                        variant="default"
+                      >
+                        <ArrowUp className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Send message</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           </div>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mt-2 text-center">
+      <p className="mt-2 text-center text-muted-foreground text-xs">
         Obby may make mistakes. Please use with discretion.
       </p>
     </form>

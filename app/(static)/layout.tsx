@@ -1,5 +1,5 @@
-import { Header } from "components/app-layout/header";
-import { LowProfileFooter } from "components/landing/low-profile-footer";
+import { Header } from 'components/app-layout/header';
+import { LowProfileFooter } from 'components/landing/low-profile-footer';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

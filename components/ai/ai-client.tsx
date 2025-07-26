@@ -108,7 +108,7 @@ function AIClientInner({
           method: 'POST',
           body: JSON.stringify({
             fragment,
-            userID: userID,
+            userID,
           }),
         });
 
@@ -245,56 +245,56 @@ function AIClientInner({
   return (
     <>
       <AuthDialog open={isAuthDialogOpen} setOpen={setAuthDialog} />
-      <div className="h-full grid w-full md:grid-cols-2">
+      <div className="grid h-full w-full md:grid-cols-2">
         <div
-          className={`flex flex-col w-full max-h-full max-w-[800px] mx-auto px-4 overflow-auto ${fragment ? 'col-span-1' : 'col-span-2'}`}
+          className={`mx-auto flex max-h-full w-full max-w-[800px] flex-col overflow-auto px-4 ${fragment ? 'col-span-1' : 'col-span-2'}`}
         >
           <Chat
-            messages={effectiveMessages}
             isLoading={isLoading}
+            messages={effectiveMessages}
             setCurrentPreview={setCurrentPreview}
           />
           <ChatInput
-            retry={handleRetry}
-            isErrored={error !== undefined}
             errorMessage={errorMessage}
-            isLoading={isLoading}
-            isRateLimited={isRateLimited}
-            stop={stop}
-            input={chatInput}
-            setInput={setChatInput}
-            handleInputChange={handleSaveInputChange}
-            handleSubmit={handleSubmitAuth}
-            isMultiModal={currentModel?.capabilities?.image || false}
             files={files}
             handleFileChange={handleFileChange}
+            handleInputChange={handleSaveInputChange}
+            handleSubmit={handleSubmitAuth}
+            input={chatInput}
+            isErrored={error !== undefined}
+            isLoading={isLoading}
+            isMultiModal={currentModel?.capabilities?.image}
+            isRateLimited={isRateLimited}
+            retry={handleRetry}
+            setInput={setChatInput}
+            stop={stop}
           >
             <ChatPicker
-              templates={templates}
-              selectedTemplate={selectedTemplate}
-              onSelectedTemplateChange={setSelectedTemplate}
-              models={AI_MODELS}
               languageModel={languageModel}
+              models={AI_MODELS}
               onLanguageModelChange={handleLanguageModelChange}
+              onSelectedTemplateChange={setSelectedTemplate}
+              selectedTemplate={selectedTemplate}
+              templates={templates}
             />
             <ChatSettings
-              languageModel={languageModel}
-              onLanguageModelChange={handleLanguageModelChange}
               apiKeyConfigurable={!process.env.NEXT_PUBLIC_NO_API_KEY_INPUT}
               baseURLConfigurable={!process.env.NEXT_PUBLIC_NO_BASE_URL_INPUT}
+              languageModel={languageModel}
+              onLanguageModelChange={handleLanguageModelChange}
             />
           </ChatInput>
         </div>
         <Preview
-          teamID={undefined}
           accessToken={undefined}
-          selectedTab={currentTab}
-          onSelectedTabChange={setCurrentTab}
+          fragment={fragment}
           isChatLoading={isLoading}
           isPreviewLoading={isPreviewLoading}
-          fragment={fragment}
-          result={result as ExecutionResult}
           onClose={() => setFragment(undefined)}
+          onSelectedTabChange={setCurrentTab}
+          result={result as ExecutionResult}
+          selectedTab={currentTab}
+          teamID={undefined}
         />
       </div>
     </>

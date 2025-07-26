@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   SandpackProvider,
@@ -6,10 +6,10 @@ import {
   SandpackCodeEditor,
   SandpackFileExplorer,
   SandpackPreview,
-} from "@codesandbox/sandpack-react";
+} from '@codesandbox/sandpack-react';
 
 const files = {
-  "/styles.css": `@import "tailwindcss";
+  '/styles.css': `@import "tailwindcss";
 
 :root {
   --background: oklch(0.9399 0.0203 345.6985);
@@ -157,7 +157,7 @@ const files = {
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 }`,
-  "/pages/index.js": `export default function Home({ data }) {
+  '/pages/index.js': `export default function Home({ data }) {
   return (
     <div 
       className="min-h-screen bg-background text-foreground font-sans"
@@ -204,19 +204,19 @@ export function getServerSideProps() {
 
 export default () => (
   <SandpackProvider
-    template="nextjs"
     className="m-4 rounded-2xl border"
     customSetup={{
       dependencies: {
-        tailwindcss: "latest",
+        tailwindcss: 'latest',
       },
     }}
+    files={files}
     options={{
       externalResources: [
-        "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4",
+        'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4',
       ],
     }}
-    files={files}
+    template="nextjs"
   >
     <SandpackLayout className="h-full w-full">
       <SandpackFileExplorer className="h-full" />

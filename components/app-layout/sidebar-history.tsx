@@ -182,24 +182,24 @@ const PureChatItem = ({
   return (
     <SidebarMenuItem className="mb-1">
       {isRenaming ? (
-        <div className="flex items-center px-2 py-1.5 w-full">
+        <div className="flex w-full items-center px-2 py-1.5">
           <Input
+            className="h-7 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+            onBlur={handleRenameSubmit}
+            onChange={(e) => setEditingTitle(e.target.value)}
+            onKeyDown={handleKeyDown}
             ref={inputRef}
             value={editingTitle}
-            onChange={(e) => setEditingTitle(e.target.value)}
-            onBlur={handleRenameSubmit}
-            onKeyDown={handleKeyDown}
-            className="h-7 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-ring"
           />
         </div>
       ) : (
         <SidebarMenuButton asChild isActive={isActive}>
           <Link
+            className="flex items-center justify-between"
             href={`/chat/${chat.chatId}`}
             onClick={() => setOpenMobile(false)}
-            className="flex items-center justify-between"
           >
-            <span className="truncate flex-1 mr-2">{chat.title}</span>
+            <span className="mr-2 flex-1 truncate">{chat.title}</span>
           </Link>
         </SidebarMenuButton>
       )}
@@ -207,20 +207,20 @@ const PureChatItem = ({
       {!isRenaming && (
         <DropdownMenu
           modal={true}
-          open={dropdownOpen}
           onOpenChange={setDropdownOpen}
+          open={dropdownOpen}
         >
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
+              className="mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               showOnHover={!isActive}
             >
-              <MoreHorizontal className="w-4 h-4" />
+              <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">More</span>
             </SidebarMenuAction>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent side="bottom" align="end">
+          <DropdownMenuContent align="end" side="bottom">
             <DropdownMenuItem
               className="cursor-pointer"
               onSelect={(e) => {
@@ -230,16 +230,16 @@ const PureChatItem = ({
               }}
             >
               {chat.isPinned ? (
-                <PinOff className="w-4 h-4 mr-2" />
+                <PinOff className="mr-2 h-4 w-4" />
               ) : (
-                <Pin className="w-4 h-4 mr-2" />
+                <Pin className="mr-2 h-4 w-4" />
               )}
               <span>{chat.isPinned ? 'Unpin' : 'Pin'}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="cursor-pointer">
-                <Share2 className="w-4 h-4 mr-2" />
+                <Share2 className="mr-2 h-4 w-4" />
                 <span>Share</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -252,7 +252,7 @@ const PureChatItem = ({
                   >
                     Private
                     {visibilityType === 'private' ? (
-                      <Check className="w-4 h-4" />
+                      <Check className="h-4 w-4" />
                     ) : null}
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -273,7 +273,7 @@ const PureChatItem = ({
                   >
                     Public
                     {visibilityType === 'public' ? (
-                      <Check className="w-4 h-4" />
+                      <Check className="h-4 w-4" />
                     ) : null}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
@@ -289,7 +289,7 @@ const PureChatItem = ({
                 setDropdownOpen(false);
               }}
             >
-              <Pencil className="w-4 h-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               <span>Rename</span>
             </DropdownMenuItem>
 
@@ -303,7 +303,7 @@ const PureChatItem = ({
                 setDropdownOpen(false);
               }}
             >
-              <Trash className="w-4 h-4 mr-2" />
+              <Trash className="mr-2 h-4 w-4" />
               <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -423,7 +423,7 @@ export function SidebarHistory({
     return (
       <SidebarGroup>
         <SidebarGroupContent>
-          <div className="px-2 text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
+          <div className="flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500">
             Login to save and revisit previous chats.
           </div>
         </SidebarGroupContent>
@@ -434,18 +434,18 @@ export function SidebarHistory({
   if (status === 'LoadingFirstPage') {
     return (
       <SidebarGroup>
-        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+        <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
           Loading...
         </div>
         <SidebarGroupContent>
           <div className="flex flex-col">
             {[44, 32, 28, 64, 52].map((item) => (
               <div
+                className="flex h-8 items-center gap-2 rounded-md px-2"
                 key={item}
-                className="rounded-md h-8 flex gap-2 px-2 items-center"
               >
                 <div
-                  className="h-4 rounded-md flex-1 max-w-[--skeleton-width] bg-sidebar-accent-foreground/10"
+                  className="h-4 max-w-[--skeleton-width] flex-1 rounded-md bg-sidebar-accent-foreground/10"
                   style={
                     {
                       '--skeleton-width': `${item}%`,
@@ -464,7 +464,7 @@ export function SidebarHistory({
     return (
       <SidebarGroup>
         <SidebarGroupContent>
-          <div className="px-2 text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
+          <div className="flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-zinc-500">
             Your conversations will appear here once you start chatting.
           </div>
         </SidebarGroupContent>
@@ -476,16 +476,16 @@ export function SidebarHistory({
     <>
       {pinnedChats.length > 0 && (
         <SidebarGroup>
-          <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+          <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
             Pinned
           </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {pinnedChats.map((chat) => (
                 <ChatItem
-                  key={chat._id}
                   chat={chat}
                   isActive={chat.chatId === chatId}
+                  key={chat._id}
                   onDelete={(chatId) => {
                     setDeleteId(chatId);
                     setShowDeleteDialog(true);
@@ -506,14 +506,14 @@ export function SidebarHistory({
                 <div className="flex flex-col gap-6">
                   {otherChatsGrouped.today.length > 0 && (
                     <div>
-                      <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                      <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
                         Today
                       </div>
                       {otherChatsGrouped.today.map((chat) => (
                         <ChatItem
-                          key={chat._id}
                           chat={chat}
                           isActive={chat.chatId === chatId}
+                          key={chat._id}
                           onDelete={(chatId) => {
                             setDeleteId(chatId);
                             setShowDeleteDialog(true);
@@ -526,14 +526,14 @@ export function SidebarHistory({
 
                   {otherChatsGrouped.yesterday.length > 0 && (
                     <div>
-                      <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                      <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
                         Yesterday
                       </div>
                       {otherChatsGrouped.yesterday.map((chat) => (
                         <ChatItem
-                          key={chat._id}
                           chat={chat}
                           isActive={chat.chatId === chatId}
+                          key={chat._id}
                           onDelete={(chatId) => {
                             setDeleteId(chatId);
                             setShowDeleteDialog(true);
@@ -546,14 +546,14 @@ export function SidebarHistory({
 
                   {otherChatsGrouped.lastWeek.length > 0 && (
                     <div>
-                      <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                      <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
                         Last 7 days
                       </div>
                       {otherChatsGrouped.lastWeek.map((chat) => (
                         <ChatItem
-                          key={chat._id}
                           chat={chat}
                           isActive={chat.chatId === chatId}
+                          key={chat._id}
                           onDelete={(chatId) => {
                             setDeleteId(chatId);
                             setShowDeleteDialog(true);
@@ -566,14 +566,14 @@ export function SidebarHistory({
 
                   {otherChatsGrouped.lastMonth.length > 0 && (
                     <div>
-                      <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                      <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
                         Last 30 days
                       </div>
                       {otherChatsGrouped.lastMonth.map((chat) => (
                         <ChatItem
-                          key={chat._id}
                           chat={chat}
                           isActive={chat.chatId === chatId}
+                          key={chat._id}
                           onDelete={(chatId) => {
                             setDeleteId(chatId);
                             setShowDeleteDialog(true);
@@ -586,14 +586,14 @@ export function SidebarHistory({
 
                   {otherChatsGrouped.older.length > 0 && (
                     <div>
-                      <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                      <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
                         Older
                       </div>
                       {otherChatsGrouped.older.map((chat) => (
                         <ChatItem
-                          key={chat._id}
                           chat={chat}
                           isActive={chat.chatId === chatId}
+                          key={chat._id}
                           onDelete={(chatId) => {
                             setDeleteId(chatId);
                             setShowDeleteDialog(true);
@@ -610,15 +610,15 @@ export function SidebarHistory({
         )}
 
       <div
+        className="mt-4 flex h-10 w-full items-center justify-center text-muted-foreground text-sm"
         ref={loadMoreRef}
-        className="h-10 w-full mt-4 flex justify-center items-center text-sm text-muted-foreground"
       >
         {status === 'LoadingMore' && (
           <LoaderCircle className="h-4 w-4 animate-spin" />
         )}
       </div>
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialog onOpenChange={setShowDeleteDialog} open={showDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -639,10 +639,10 @@ export function SidebarHistory({
       </AlertDialog>
 
       <ChatSearchCommand
-        open={openCommandDialog}
-        onOpenChange={setOpenCommandDialog}
         history={allChats}
+        onOpenChange={setOpenCommandDialog}
         onSelectChat={onSelectChat}
+        open={openCommandDialog}
       />
     </>
   );

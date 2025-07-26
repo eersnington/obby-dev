@@ -1,23 +1,23 @@
 export const vite_configs = {
-  "/vite-env.d.ts": `/// <reference types="vite/client" />
+  '/vite-env.d.ts': `/// <reference types="vite/client" />
   `,
-  "/tsconfig.app.json": JSON.stringify(
+  '/tsconfig.app.json': JSON.stringify(
     {
       compilerOptions: {
-        tsBuildInfoFile: "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-        target: "ES2020",
+        tsBuildInfoFile: './node_modules/.tmp/tsconfig.app.tsbuildinfo',
+        target: 'ES2020',
         useDefineForClassFields: true,
-        lib: ["ES2020", "DOM", "DOM.Iterable"],
-        module: "ESNext",
+        lib: ['ES2020', 'DOM', 'DOM.Iterable'],
+        module: 'ESNext',
         skipLibCheck: true,
 
         /* Bundler mode */
-        moduleResolution: "bundler",
+        moduleResolution: 'bundler',
         allowImportingTsExtensions: true,
         verbatimModuleSyntax: true,
-        moduleDetection: "force",
+        moduleDetection: 'force',
         noEmit: true,
-        jsx: "react-jsx",
+        jsx: 'react-jsx',
 
         /* Linting */
         strict: true,
@@ -26,41 +26,41 @@ export const vite_configs = {
         noFallthroughCasesInSwitch: true,
         noUncheckedSideEffectImports: true,
 
-        baseUrl: ".", // Required for `paths` to work
+        baseUrl: '.', // Required for `paths` to work
         paths: {
-          "@/*": ["/src/*"],
+          '@/*': ['/src/*'],
         },
       },
-      include: ["src"],
+      include: ['src'],
     },
     null,
     2,
   ).trim(),
-  "/tsconfig.json": JSON.stringify(
+  '/tsconfig.json': JSON.stringify(
     {
       files: [],
       references: [
-        { path: "./tsconfig.app.json" },
-        { path: "./tsconfig.node.json" },
+        { path: './tsconfig.app.json' },
+        { path: './tsconfig.node.json' },
       ],
     },
     null,
     2,
   ).trim(),
-  "/tsconfig.node.json": JSON.stringify(
+  '/tsconfig.node.json': JSON.stringify(
     {
       compilerOptions: {
-        tsBuildInfoFile: "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-        target: "ES2022",
-        lib: ["ES2023"],
-        module: "ESNext",
+        tsBuildInfoFile: './node_modules/.tmp/tsconfig.node.tsbuildinfo',
+        target: 'ES2022',
+        lib: ['ES2023'],
+        module: 'ESNext',
         skipLibCheck: true,
 
         /* Bundler mode */
-        moduleResolution: "bundler",
+        moduleResolution: 'bundler',
         allowImportingTsExtensions: true,
         verbatimModuleSyntax: true,
-        moduleDetection: "force",
+        moduleDetection: 'force',
         noEmit: true,
 
         /* Linting */
@@ -71,12 +71,12 @@ export const vite_configs = {
         noFallthroughCasesInSwitch: true,
         noUncheckedSideEffectImports: true,
       },
-      include: ["vite.config.ts"],
+      include: ['vite.config.ts'],
     },
     null,
     2,
   ).trim(),
-  "/vite.config.ts": `import { defineConfig } from 'vite'
+  '/vite.config.ts': `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite"
 import path from "path";
@@ -91,7 +91,7 @@ export default defineConfig({
   },
 })
   `,
-  "/components.json": `{
+  '/components.json': `{
       "$schema": "https://ui.shadcn.com/schema.json",
       "style": "new-york",
       "rsc": false,
@@ -112,7 +112,7 @@ export default defineConfig({
       },
       "iconLibrary": "lucide"
     }`.trim(),
-  "/eslint.config.js": `import js from '@eslint/js'
+  '/eslint.config.js': `import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -141,7 +141,7 @@ export default tseslint.config(
   },
 )
     `.trim(),
-  "/index.html": `<!doctype html>
+  '/index.html': `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />

@@ -1,8 +1,8 @@
-"use node";
+'use node';
 
-import { internalAction } from "./_generated/server";
-import { v } from "convex/values";
-import { WorkOS } from "@workos-inc/node";
+import { internalAction } from './_generated/server';
+import { v } from 'convex/values';
+import { WorkOS } from '@workos-inc/node';
 
 export const verifyWebhook = internalAction({
   args: v.object({

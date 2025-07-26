@@ -1,12 +1,12 @@
-"use server";
+'use server';
 
-import { api } from "@/convex/_generated/api";
-import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import type { Id } from "@/convex/_generated/dataModel";
-import type { MessageText, MessageImage, Message } from "lib/ai/messages";
+import { api } from '@/convex/_generated/api';
+import { fetchMutation, fetchQuery } from 'convex/nextjs';
+import { withAuth } from '@workos-inc/authkit-nextjs';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import type { Id } from '@/convex/_generated/dataModel';
+import type { MessageText, MessageImage, Message } from 'lib/ai/messages';
 
 export async function createChatFromMessage({
   message,
@@ -19,7 +19,7 @@ export async function createChatFromMessage({
     const { user } = await withAuth({ ensureSignedIn: true });
 
     if (!user) {
-      throw new Error("User not authenticated");
+      throw new Error('User not authenticated');
     }
 
     const convexUser = await fetchQuery(api.users.getByWorkOSIdQuery, {
@@ -27,16 +27,19 @@ export async function createChatFromMessage({
     });
 
     if (!convexUser) {
-      throw new Error("User not found in database");
+      throw new Error('User not found in database');
     }
 
     // Handle file attachments if present
-    let fileData = undefined;
+    let fileData:
+      | Array<{ name: string; type: string; size: number; data: string }>
+      | undefined;
+
     if (files && files.length > 0) {
       // Convert files to base64 for storage
       const filePromises = files.map(async (file) => {
         const arrayBuffer = await file.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString("base64");
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
         return {
           name: file.name,
           type: file.type,
@@ -48,14 +51,14 @@ export async function createChatFromMessage({
     }
 
     const content: Array<MessageText | MessageImage> = [
-      { type: "text", text: message },
+      { type: 'text', text: message },
     ];
 
     if (fileData && fileData.length > 0) {
       for (const file of fileData) {
-        if (file.type.startsWith("image/")) {
+        if (file.type.startsWith('image/')) {
           content.push({
-            type: "image",
+            type: 'image',
             image: `data:${file.type};base64,${file.data}`,
           });
         }
@@ -63,28 +66,29 @@ export async function createChatFromMessage({
     }
 
     const initialUserMessage: Message = {
-      role: "user",
+      role: 'user',
       content,
     };
 
     // Create chat with initial message but placeholder title
     const chatId = await fetchMutation(api.chats.createChat, {
       userId: convexUser._id,
-      title: "New Chat", // Placeholder title, will be updated client-side
+      title: 'New Chat', // Placeholder title, will be updated client-side
       messages: [initialUserMessage], // Start with the initial user message
       fileData,
-      visibility: "private",
+      visibility: 'private',
     });
 
-    revalidatePath("/");
+    revalidatePath('/');
 
     return { chatId, success: true };
   } catch (error) {
-    console.error("Error creating chat:", error);
-    return { success: false, error: "Failed to create chat" };
+    console.error('Error creating chat:', error);
+    return { success: false, error: 'Failed to create chat' };
   }
 }
 
-export async function redirectToChat(chatId: Id<"chats">) {
+// biome-ignore lint/suspicious/useAwait: server actions needs to be async
+export async function redirectToChat(chatId: Id<'chats'>) {
   redirect(`/chat/${chatId}`);
 }

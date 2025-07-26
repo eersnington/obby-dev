@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { experimental_useObject as useObject } from "@ai-sdk/react";
-import { type Message, toAISDKMessages } from "lib/ai/messages";
-import { fragmentSchema as schema } from "lib/fragment";
-import { AI_MODELS, type ModelInfo } from "lib/ai/models";
-import type { DeepPartial } from "ai";
-import type { FragmentSchema } from "lib/fragment";
-import { useState, useCallback } from "react";
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { type Message, toAISDKMessages } from 'lib/ai/messages';
+import { fragmentSchema as schema } from 'lib/fragment';
+import { AI_MODELS, type ModelInfo } from 'lib/ai/models';
+import type { DeepPartial } from 'ai';
+import type { FragmentSchema } from 'lib/fragment';
+import { useState, useCallback } from 'react';
 
 interface UseAIChatProps {
   languageModel: ModelInfo;
@@ -20,16 +20,16 @@ export function useAIChat({
   onError,
 }: UseAIChatProps) {
   const [isRateLimited, setIsRateLimited] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const currentModel = AI_MODELS.find((model) => model.id === languageModel.id);
 
   const { object, submit, isLoading, stop, error } = useObject({
-    api: "/api/chat",
+    api: '/api/chat',
     schema,
     onError: (error) => {
-      console.error("Error submitting request:", error);
-      if (error.message.includes("limit")) {
+      console.error('Error submitting request:', error);
+      if (error.message.includes('limit')) {
         setIsRateLimited(true);
       }
       setErrorMessage(error.message);
@@ -37,7 +37,7 @@ export function useAIChat({
     },
     onFinish: async ({ object: fragment, error }) => {
       if (!error && fragment) {
-        console.log("fragment", fragment);
+        console.log('fragment', fragment);
         onFragmentGenerated?.(fragment);
       }
     },
@@ -46,16 +46,16 @@ export function useAIChat({
   const submitMessages = useCallback(
     (messages: Message[], userID: string) => {
       if (!currentModel?.id) {
-        console.error("No model selected");
+        console.error('No model selected');
         return;
       }
 
       setIsRateLimited(false);
-      setErrorMessage("");
+      setErrorMessage('');
 
       submit({
         userID,
-        teamID: "none",
+        teamID: 'none',
         messages: toAISDKMessages(messages),
         model: currentModel.id,
         config: languageModel,

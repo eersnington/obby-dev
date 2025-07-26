@@ -1,39 +1,39 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 import {
   ArrowRight,
   User,
   Settings,
   LayoutDashboard,
   Archive,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
+} from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 const navItems = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
+    title: 'Dashboard',
+    href: '/dashboard',
     icon: LayoutDashboard,
-    label: "Dashboard",
+    label: 'Dashboard',
   },
   {
-    title: "Users",
-    href: "/dashboard/users",
+    title: 'Users',
+    href: '/dashboard/users',
     icon: User,
-    label: "Users",
+    label: 'Users',
   },
   {
-    title: "Audit Logs",
-    href: "/dashboard/audit-logs",
+    title: 'Audit Logs',
+    href: '/dashboard/audit-logs',
     icon: Archive,
-    label: "Audit Logs",
+    label: 'Audit Logs',
   },
   {
-    title: "Settings",
-    href: "/dashboard/settings",
+    title: 'Settings',
+    href: '/dashboard/settings',
     icon: Settings,
-    label: "Settings",
+    label: 'Settings',
   },
 ];
 
@@ -42,22 +42,22 @@ export function DashboardNav() {
 
   return (
     <div className="w-[300px]">
-      <div className="flex flex-col items-stretch gap-1 overflow-hidden flex-1">
+      <div className="flex flex-1 flex-col items-stretch gap-1 overflow-hidden">
         {navItems.map((item) => {
           const Icon = item.icon ?? ArrowRight;
           const isSelected = pathname === item.href;
           return (
             item.href && (
-              <div className="p-1 flex flex-col gap-1" key={item.href}>
+              <div className="flex flex-col gap-1 p-1" key={item.href}>
                 <Link href={item.href}>
                   <div
-                    className={`flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground ${
+                    className={`flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-accent hover:text-accent-foreground ${
                       isSelected
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground"
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="h-5 w-5" />
                     {item.title}
                   </div>
                 </Link>

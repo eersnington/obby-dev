@@ -128,19 +128,17 @@ http.route({
         headers: { 'Content-Type': 'application/json' },
       });
     } catch (e) {
-      if (e instanceof Error) {
-        if (e.message.includes('Unhandled event type')) {
-          return new Response(
-            JSON.stringify({
-              status: 'error',
-              message: e.message,
-            }),
-            {
-              status: 422,
-              headers: { 'Content-Type': 'application/json' },
-            },
-          );
-        }
+      if (e instanceof Error && e.message.includes('Unhandled event type')) {
+        return new Response(
+          JSON.stringify({
+            status: 'error',
+            message: e.message,
+          }),
+          {
+            status: 422,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
       }
 
       return new Response(

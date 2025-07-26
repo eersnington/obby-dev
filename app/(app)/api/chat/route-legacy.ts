@@ -11,7 +11,7 @@ import type { GoogleGenerativeAIProviderOptions } from '@ai-sdk/google';
 export const maxDuration = 60;
 
 const rateLimitMaxRequests = process.env.RATE_LIMIT_MAX_REQUESTS
-  ? Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS)
+  ? Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10)
   : 10;
 const ratelimitWindow = process.env.RATE_LIMIT_WINDOW
   ? (process.env.RATE_LIMIT_WINDOW as Duration)
@@ -38,13 +38,13 @@ export async function POST(req: Request) {
 
   const llmModel = getModelFromRegistry(model);
 
-  const limit = !config.apiKey
-    ? await ratelimit(
+  const limit = config.apiKey
+    ? false
+    : await ratelimit(
         req.headers.get('x-forwarded-for'),
         rateLimitMaxRequests,
         ratelimitWindow,
-      )
-    : false;
+      );
 
   if (limit) {
     return new Response('You have reached your request limit for the day.', {

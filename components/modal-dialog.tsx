@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useState } from "react";
-import { Button } from "components/ui/button";
+import type React from 'react';
+import { useState } from 'react';
+import { Button } from 'components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "components/ui/dialog";
-import { Input } from "components/ui/input";
-import { Label } from "components/ui/label";
-import { Alert, AlertDescription } from "components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from 'components/ui/dialog';
+import { Input } from 'components/ui/input';
+import { Label } from 'components/ui/label';
+import { Alert, AlertDescription } from 'components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 /**
  * The 'subscriptionLevel' prop is the name of the subscription plan and is directly tied to the Stripe price lookup key.
@@ -31,8 +31,8 @@ export function ModalDialog({
 }) {
   const router = useRouter();
 
-  const [orgName, setOrgName] = useState("");
-  const [error, setError] = useState("");
+  const [orgName, setOrgName] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -41,16 +41,16 @@ export function ModalDialog({
 
     setLoading(true);
 
-    if (orgName === "") {
-      setError("Please fill out Organization name before submitting.");
+    if (orgName === '') {
+      setError('Please fill out Organization name before submitting.');
       setLoading(false);
       return;
     }
 
     // Call API to create a new organization and subscribe to plan
     // The user will be redirected to Stripe Checkout
-    const res = await fetch("/api/subscribe", {
-      method: "POST",
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
       body: JSON.stringify({
         userId,
         orgName,
@@ -69,9 +69,9 @@ export function ModalDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
-        <Button onClick={() => setError("")}>
+        <Button onClick={() => setError('')}>
           Subscribe to {subscriptionLevel}
         </Button>
       </DialogTrigger>
@@ -86,16 +86,16 @@ export function ModalDialog({
         <div className="flex flex-col gap-3">
           <div>
             <Label
+              className="font-semibold text-sm"
               htmlFor="organization-name"
-              className="text-sm font-semibold"
             >
               Organization name
             </Label>
             <Input
-              id="organization-name"
-              placeholder="Enter your organization name"
-              onBlur={(e) => setOrgName(e.target.value)}
               className="mt-1"
+              id="organization-name"
+              onBlur={(e) => setOrgName(e.target.value)}
+              placeholder="Enter your organization name"
             />
           </div>
           {error && (
@@ -106,12 +106,12 @@ export function ModalDialog({
           )}
         </div>
 
-        <div className="flex gap-3 mt-4 justify-end">
-          <Button variant="outline" onClick={() => setOpen(false)}>
+        <div className="mt-4 flex justify-end gap-3">
+          <Button onClick={() => setOpen(false)} variant="outline">
             Cancel
           </Button>
           <Button disabled={loading} onClick={handleSubscribe}>
-            {loading ? "Processing..." : "Subscribe"}
+            {loading ? 'Processing...' : 'Subscribe'}
           </Button>
         </div>
       </DialogContent>

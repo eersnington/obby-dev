@@ -25,13 +25,13 @@ const visibilities: Array<{
     id: 'private',
     label: 'Private',
     description: 'Only you can access this chat',
-    icon: <Lock className="w-4 h-4" />,
+    icon: <Lock className="h-4 w-4" />,
   },
   {
     id: 'public',
     label: 'Public',
     description: 'Anyone with the link can access this chat',
-    icon: <LockOpen className="w-4 h-4" />,
+    icon: <LockOpen className="h-4 w-4" />,
   },
 ];
 
@@ -58,7 +58,7 @@ export function VisibilitySelector({
   );
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger
         asChild
         className={cn(
@@ -67,12 +67,12 @@ export function VisibilitySelector({
         )}
       >
         <Button
+          className="hidden md:flex md:h-[34px] md:px-2"
           variant="outline"
-          className="hidden md:flex md:px-2 md:h-[34px]"
         >
           {selectedVisibility?.icon}
           {selectedVisibility?.label}
-          <ChevronDown className="w-4 h-4" />
+          <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
 
@@ -82,6 +82,12 @@ export function VisibilitySelector({
           const isDisabled = isPublicOption && !isChatSelected;
           return (
             <DropdownMenuItem
+              className={cn(
+                'group/item flex flex-row items-center justify-between gap-4',
+                isDisabled && 'cursor-not-allowed opacity-50',
+              )}
+              data-active={visibility.id === visibilityType}
+              disabled={isDisabled}
               key={visibility.id}
               onSelect={() => {
                 if (isDisabled) return;
@@ -101,23 +107,17 @@ export function VisibilitySelector({
                     });
                 }
               }}
-              className={cn(
-                'gap-4 group/item flex flex-row justify-between items-center',
-                isDisabled && 'opacity-50 cursor-not-allowed',
-              )}
-              disabled={isDisabled}
-              data-active={visibility.id === visibilityType}
             >
-              <div className="flex flex-col gap-1 items-start">
+              <div className="flex flex-col items-start gap-1">
                 {visibility.label}
                 {visibility.description && (
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-muted-foreground text-xs">
                     {visibility.description}
                   </div>
                 )}
               </div>
-              <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
-                <Check className="w-4 h-4" />
+              <div className="text-foreground opacity-0 group-data-[active=true]/item:opacity-100 dark:text-foreground">
+                <Check className="h-4 w-4" />
               </div>
             </DropdownMenuItem>
           );

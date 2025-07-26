@@ -24,13 +24,13 @@ cd obby-dev
 ### Install dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### Start the development server
 
 ```bash
-pnpm run dev
+bun run dev
 ```
 
 ## Tech stack

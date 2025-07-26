@@ -19,7 +19,10 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 export const AppSidebar = ({
   user,
   os,
-}: { user: User | null; os: string | null }) => {
+}: {
+  user: User | null;
+  os: string | null;
+}) => {
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const [openCommandDialog, setOpenCommandDialog] = useState(false);
@@ -50,38 +53,38 @@ export const AppSidebar = ({
       <SidebarHeader className="bg-background">
         <Button
           asChild
+          className="h-9 w-full justify-center border-border/50 bg-background/50 hover:bg-accent/50"
           variant="outline"
-          className="h-9 w-full justify-center bg-background/50 border-border/50 hover:bg-accent/50"
         >
           <Link href="/chat">New Chat</Link>
         </Button>
         <Button
-          variant="ghost"
-          type="button"
-          className="h-9 w-full text-start justify-between group overflow-hidden"
+          className="group h-9 w-full justify-between overflow-hidden text-start"
           onClick={() => setOpenCommandDialog(true)}
+          type="button"
+          variant="ghost"
         >
           <span className="inline-flex items-center gap-2">
-            <Search className="w-4 h-4" />
+            <Search className="h-4 w-4" />
             Search chats
           </span>
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-0 transition-all duration-100 ease-out group-hover:translate-x-0 group-hover:opacity-100">
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-medium font-mono text-[10px] text-muted-foreground opacity-0 transition-all duration-100 ease-out group-hover:translate-x-0 group-hover:opacity-100">
             <span className="text-xs">{os === 'macOS' ? '⌘' : 'Ctrl'}</span>K
           </kbd>
         </Button>
       </SidebarHeader>
       <SidebarContent className="bg-background">
         <SidebarHistory
-          user={user}
+          onSelectChat={handleSelectChat}
           openCommandDialog={openCommandDialog}
           setOpenCommandDialog={setOpenCommandDialog}
-          onSelectChat={handleSelectChat}
+          user={user}
         />
       </SidebarContent>
       <SidebarFooter className="bg-background">
         <Alert
+          className="hover:-translate-y-1.5 transition-transform duration-300 ease-out hover:border-accent-foreground/50"
           variant="default"
-          className="hover:border-accent-foreground/50 hover:-translate-y-1.5 transition-transform duration-300 ease-out"
         >
           <AlertTitle>We're Public Beta!</AlertTitle>
           <AlertDescription>
