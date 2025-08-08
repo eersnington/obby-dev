@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "node scripts/skip-ci.js",
+  "crons": [
+    {
+      "path": "/cron/keep-alive",
+      "schedule": "0 1 * * *"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@repo/payments",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@stripe/agent-toolkit": "^0.7.8",
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "server-only": "^0.0.1",
+    "stripe": "^18.1.1",
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.8.3"
+  }
+}

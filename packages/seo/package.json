@@ -1,0 +1,22 @@
+{
+  "name": "@repo/seo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "lodash.merge": "^4.6.2",
+    "react": "^19.1.0",
+    "schema-dts": "^1.1.5"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "22.15.21",
+    "@types/react": "19.1.5",
+    "@types/react-dom": "^19.1.5",
+    "next": "15.3.2"
+  }
+}
