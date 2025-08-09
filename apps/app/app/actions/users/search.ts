@@ -1,19 +1,15 @@
 'use server';
 
-import {
-  auth,
-  clerkClient,
-  type OrganizationMembership,
-} from '@repo/auth/server';
+import { getWorkOS, type User, withAuth } from '@repo/auth/server';
 import Fuse from 'fuse.js';
 
-const getName = (user: OrganizationMembership): string | undefined => {
-  let name = user.publicUserData?.firstName;
+const getName = (user: User): string => {
+  let name = user.firstName;
 
-  if (name && user.publicUserData?.lastName) {
-    name = `${name} ${user.publicUserData.lastName}`;
+  if (name && user.lastName) {
+    name = `${name} ${user.lastName}`;
   } else if (!name) {
-    name = user.publicUserData?.identifier;
+    name = user.email;
   }
 
   return name;
@@ -30,23 +26,20 @@ export const searchUsers = async (
     }
 > => {
   try {
-    const { orgId } = await auth();
+    const { user } = await withAuth();
 
-    if (!orgId) {
+    if (!user) {
       throw new Error('Not logged in');
     }
 
-    const clerk = await clerkClient();
+    const workos = getWorkOS();
 
-    const members = await clerk.organizations.getOrganizationMembershipList({
-      organizationId: orgId,
-      limit: 100,
-    });
+    const usersResponse = await workos.userManagement.listUsers();
 
-    const users = members.data.map((user) => ({
-      id: user.id,
-      name: getName(user) ?? user.publicUserData?.identifier,
-      imageUrl: user.publicUserData?.imageUrl,
+    const users = usersResponse.data.map((u) => ({
+      id: u.id,
+      name: getName(u),
+      imageUrl: u.profilePictureUrl,
     }));
 
     const fuse = new Fuse(users, {
