@@ -7,7 +7,7 @@ export const keys = () =>
       WORKOS_CLIENT_ID: z.string().startsWith('client_'),
       WORKOS_API_KEY: z.string().startsWith('sk_test_'),
       WORKOS_COOKIE_PASSWORD: z.string().min(32),
-      WORKOS_WEBHOOK_SECRET: z.string().startsWith('whsec_'),
+      WORKOS_WEBHOOK_SECRET: z.string().optional(),
     },
     client: {
       NEXT_PUBLIC_WORKOS_REDIRECT_URI: z.string().url(),

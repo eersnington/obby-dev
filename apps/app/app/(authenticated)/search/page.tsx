@@ -1,5 +1,6 @@
-import { auth } from '@repo/auth/server';
-import { database } from '@repo/database';
+import { withAuth } from '@repo/auth/server';
+import { database, sql } from '@repo/database';
+import { page } from '@repo/database/schema';
 import { notFound, redirect } from 'next/navigation';
 import { Header } from '../components/header';
 
@@ -22,16 +23,14 @@ export const generateMetadata = async ({
 
 const SearchPage = async ({ searchParams }: SearchPageProperties) => {
   const { q } = await searchParams;
-  const pages = await database.page.findMany({
-    where: {
-      name: {
-        contains: q,
-      },
-    },
-  });
-  const { orgId } = await auth();
+  const pages = await database
+    .select()
+    .from(page)
+    .where(sql`${page.name} like ${`%${q}%`}`);
 
-  if (!orgId) {
+  const { organizationId } = await withAuth({ ensureSignedIn: true });
+
+  if (!organizationId) {
     notFound();
   }
 
@@ -41,12 +40,12 @@ const SearchPage = async ({ searchParams }: SearchPageProperties) => {
 
   return (
     <>
-      <Header pages={['Building Your Application']} page="Search" />
+      <Header page="Search" pages={['Building Your Application']} />
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          {pages.map((page) => (
-            <div key={page.id} className="aspect-video rounded-xl bg-muted/50">
-              {page.name}
+          {pages.map((p) => (
+            <div className="aspect-video rounded-xl bg-muted/50" key={p.id}>
+              {p.name}
             </div>
           ))}
         </div>

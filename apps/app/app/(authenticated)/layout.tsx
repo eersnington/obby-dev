@@ -1,10 +1,10 @@
-import { env } from '@/env';
-import { auth, currentUser } from '@repo/auth/server';
+import { withAuth } from '@repo/auth/server';
 import { SidebarProvider } from '@repo/design-system/components/ui/sidebar';
 import { showBetaFeature } from '@repo/feature-flags';
 import { NotificationsProvider } from '@repo/notifications/components/provider';
 import { secure } from '@repo/security';
 import type { ReactNode } from 'react';
+import { env } from '@/env';
 import { PostHogIdentifier } from './components/posthog-identifier';
 import { GlobalSidebar } from './components/sidebar';
 
@@ -17,13 +17,8 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
     await secure(['CATEGORY:PREVIEW']);
   }
 
-  const user = await currentUser();
-  const { redirectToSignIn } = await auth();
+  const { user } = await withAuth({ ensureSignedIn: true });
   const betaFeature = await showBetaFeature();
-
-  if (!user) {
-    return redirectToSignIn();
-  }
 
   return (
     <NotificationsProvider userId={user.id}>

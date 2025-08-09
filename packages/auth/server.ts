@@ -1,4 +1,12 @@
 import 'server-only';
 
 export * from '@workos-inc/authkit-nextjs';
-export { GeneratePortalLinkIntent, type User, WorkOS } from '@workos-inc/node';
+
+// doing this to make it fully tree-shakable
+export {
+  GeneratePortalLinkIntent,
+  type Organization,
+  type OrganizationMembership,
+  type User,
+  WorkOS,
+} from '@workos-inc/node';

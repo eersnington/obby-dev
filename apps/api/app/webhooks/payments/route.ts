@@ -1,5 +1,5 @@
 import { analytics } from '@repo/analytics/posthog/server';
-import { clerkClient } from '@repo/auth/server';
+import { WorkOS } from '@repo/auth/server';
 import { parseError } from '@repo/observability/error';
 import { log } from '@repo/observability/log';
 import type { Stripe } from '@repo/payments';
@@ -9,11 +9,12 @@ import { NextResponse } from 'next/server';
 import { env } from '@/env';
 
 const getUserFromCustomerId = async (customerId: string) => {
-  const clerk = await clerkClient();
-  const users = await clerk.users.getUserList();
+  const workos = new WorkOS(env.WORKOS_API_KEY);
+
+  const users = await workos.userManagement.listUsers();
 
   const user = users.data.find(
-    (u) => u.privateMetadata.stripeCustomerId === customerId
+    (u) => u.metadata.stripeCustomerId === customerId
   );
 
   return user;

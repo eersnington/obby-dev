@@ -1,4 +1,4 @@
-import { auth } from '@repo/auth/server';
+import { withAuth } from '@repo/auth/server';
 import { database } from '@repo/database';
 import { page } from '@repo/database/schema';
 import type { Metadata } from 'next';
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 
 const App = async () => {
   const pages = await database.select().from(page);
-  const { orgId } = await auth();
+  const { organizationId } = await withAuth({ ensureSignedIn: true });
 
-  if (!orgId) {
+  if (!organizationId) {
     notFound();
   }
 
