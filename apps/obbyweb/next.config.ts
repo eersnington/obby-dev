@@ -1,13 +1,13 @@
-import type { NextConfig } from 'next'
-import { withBotId } from 'botid/next/config'
+import { withBotId } from 'botid/next/config';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.md/,
       type: 'asset/source',
-    })
-    return config
+    });
+    return config;
   },
   turbopack: {
     rules: {
@@ -30,6 +30,6 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-}
+};
 
-export default withBotId(nextConfig)
+export default withBotId(nextConfig);

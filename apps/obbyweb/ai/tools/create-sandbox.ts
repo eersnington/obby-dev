@@ -1,12 +1,12 @@
-import type { UIMessageStreamWriter, UIMessage } from 'ai'
-import type { DataPart } from '../messages/data-parts'
-import { Sandbox } from '@vercel/sandbox'
-import { tool } from 'ai'
-import description from './create-sandbox.md'
-import z from 'zod/v3'
+import { Sandbox } from '@vercel/sandbox';
+import type { UIMessage, UIMessageStreamWriter } from 'ai';
+import { tool } from 'ai';
+import z from 'zod/v3';
+import type { DataPart } from '../messages/data-parts';
+import description from './create-sandbox.md';
 
 interface Params {
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 export const createSandbox = ({ writer }: Params) =>
@@ -32,19 +32,19 @@ export const createSandbox = ({ writer }: Params) =>
         id: toolCallId,
         type: 'data-create-sandbox',
         data: { status: 'loading' },
-      })
+      });
 
       const sandbox = await Sandbox.create({
         timeout,
         ports,
-      })
+      });
 
       writer.write({
         id: toolCallId,
         type: 'data-create-sandbox',
         data: { sandboxId: sandbox.sandboxId, status: 'done' },
-      })
+      });
 
-      return `Sandbox created with ID: ${sandbox.sandboxId}. You can now upload files, run commands, and access services on the exposed ports.`
+      return `Sandbox created with ID: ${sandbox.sandboxId}. You can now upload files, run commands, and access services on the exposed ports.`;
     },
-  })
+  });

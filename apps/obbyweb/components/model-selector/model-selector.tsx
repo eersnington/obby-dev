@@ -1,33 +1,33 @@
-'use client'
+'use client';
 
-import { Loader2Icon } from 'lucide-react'
+import { Loader2Icon } from 'lucide-react';
+import { memo } from 'react';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from '@/components/ui/select'
-import { memo } from 'react'
-import { useAvailableModels } from './use-available-models'
+} from '@/components/ui/select';
+import { useAvailableModels } from './use-available-models';
 
 interface Props {
-  modelId: string
-  onModelChange: (modelId: string) => void
+  modelId: string;
+  onModelChange: (modelId: string) => void;
 }
 
 export const ModelSelector = memo(function ModelSelector({
   modelId,
   onModelChange,
 }: Props) {
-  const { models, isLoading, error } = useAvailableModels()
+  const { models, isLoading, error } = useAvailableModels();
   return (
     <Select
-      value={modelId}
-      onValueChange={onModelChange}
       disabled={isLoading || !!error || !models?.length}
+      onValueChange={onModelChange}
+      value={modelId}
     >
       <SelectTrigger className="w-[180px] bg-background">
         {isLoading ? (
@@ -37,10 +37,10 @@ export const ModelSelector = memo(function ModelSelector({
           </div>
         ) : error ? (
           <span className="text-red-500">Error</span>
-        ) : !models?.length ? (
-          <span>No models</span>
-        ) : (
+        ) : models?.length ? (
           <SelectValue placeholder="Select a model" />
+        ) : (
+          <span>No models</span>
         )}
       </SelectTrigger>
 
@@ -57,5 +57,5 @@ export const ModelSelector = memo(function ModelSelector({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
-})
+  );
+});

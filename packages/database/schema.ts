@@ -4,5 +4,3 @@ export const page = pgTable('page', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }),
 });
-
-

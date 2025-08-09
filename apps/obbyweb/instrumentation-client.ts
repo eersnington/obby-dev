@@ -1,4 +1,4 @@
-import { initBotId } from 'botid/client/core'
+import { initBotId } from 'botid/client/core';
 
 initBotId({
   protect: [
@@ -7,4 +7,4 @@ initBotId({
       method: 'POST',
     },
   ],
-})
+});

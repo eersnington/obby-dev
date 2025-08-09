@@ -1,4 +1,4 @@
-import z from 'zod/v3'
+import z from 'zod/v3';
 
 export const dataPartSchema = z.object({
   'create-sandbox': z.object({
@@ -28,6 +28,6 @@ export const dataPartSchema = z.object({
     url: z.string().optional(),
     status: z.enum(['loading', 'done']),
   }),
-})
+});
 
-export type DataPart = z.infer<typeof dataPartSchema>
+export type DataPart = z.infer<typeof dataPartSchema>;

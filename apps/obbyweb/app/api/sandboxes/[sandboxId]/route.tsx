@@ -1,6 +1,6 @@
-import { APIError } from '@vercel/sandbox/dist/api-client/api-error'
-import { NextRequest, NextResponse } from 'next/server'
-import { Sandbox } from '@vercel/sandbox'
+import { Sandbox } from '@vercel/sandbox';
+import { APIError } from '@vercel/sandbox/dist/api-client/api-error';
+import { type NextRequest, NextResponse } from 'next/server';
 
 /**
  * We must change the SDK to add data to the instance and then
@@ -10,22 +10,21 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ sandboxId: string }> }
 ) {
-  const { sandboxId } = await params
+  const { sandboxId } = await params;
   try {
-    const sandbox = await Sandbox.get({ sandboxId })
+    const sandbox = await Sandbox.get({ sandboxId });
     await sandbox.runCommand({
       cmd: 'echo',
       args: ['Sandbox status check'],
-    })
-    return NextResponse.json({ status: 'running' })
+    });
+    return NextResponse.json({ status: 'running' });
   } catch (error) {
     if (
       error instanceof APIError &&
       error.json.error.code === 'sandbox_stopped'
     ) {
-      return NextResponse.json({ status: 'stopped' })
-    } else {
-      throw error
+      return NextResponse.json({ status: 'stopped' });
     }
+    throw error;
   }
 }

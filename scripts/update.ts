@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noAwaitInLoop: this is just for script */
 import { copyFile, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
@@ -10,12 +11,12 @@ import {
   spinner,
 } from '@clack/prompts';
 import {
-  url,
   allInternalContent,
   cleanFileName,
   exec,
   getAvailableVersions,
   tempDirName,
+  url,
 } from './utils.js';
 
 const compareVersions = (a: string, b: string) => {

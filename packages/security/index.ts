@@ -37,6 +37,7 @@ export const secure = async (
   const decision = await aj.protect(req);
 
   if (decision.isDenied()) {
+    // biome-ignore lint/suspicious/noConsole: this is intentional
     console.warn(
       `Arcjet decision: ${JSON.stringify(decision.reason, null, 2)}`
     );

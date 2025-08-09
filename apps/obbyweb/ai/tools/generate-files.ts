@@ -1,15 +1,16 @@
-import type { UIMessageStreamWriter, UIMessage } from 'ai'
-import type { DataPart } from '../messages/data-parts'
-import { Sandbox } from '@vercel/sandbox'
-import { streamObject, tool } from 'ai'
-import { getModelOptions } from '../gateway'
-import description from './generate-files.md'
-import prompt from './generate-files-prompt.md'
-import z from 'zod/v3'
+/** biome-ignore-all lint/suspicious/noConsole: this is just for script */
+import { Sandbox } from '@vercel/sandbox';
+import type { UIMessage, UIMessageStreamWriter } from 'ai';
+import { streamObject, tool } from 'ai';
+import z from 'zod/v3';
+import { getModelOptions } from '../gateway';
+import type { DataPart } from '../messages/data-parts';
+import description from './generate-files.md';
+import prompt from './generate-files-prompt.md';
 
 interface Params {
-  modelId: string
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  modelId: string;
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 const fileSchema = z.object({
@@ -23,7 +24,7 @@ const fileSchema = z.object({
     .describe(
       'The content of the file as a utf8 string (complete file contents that will replace any existing file at this path)'
     ),
-})
+});
 
 export const generateFiles = ({ writer, modelId }: Params) =>
   tool({
@@ -36,7 +37,7 @@ export const generateFiles = ({ writer, modelId }: Params) =>
         id: toolCallId,
         type: 'data-generating-files',
         data: { paths: [], status: 'generating' },
-      })
+      });
 
       /**
        * In order to provide visual feedback while files are being generated,
@@ -48,23 +49,23 @@ export const generateFiles = ({ writer, modelId }: Params) =>
         messages: [...messages, { role: 'user', content: prompt }],
         schema: z.object({ files: z.array(fileSchema) }),
         onError: (error) => {
-          console.error('Error communicating with AI')
-          console.error(JSON.stringify(error, null, 2))
+          console.error('Error communicating with AI');
+          console.error(JSON.stringify(error, null, 2));
         },
-      })
+      });
 
-      const written: string[] = []
-      const sandbox = await Sandbox.get({ sandboxId })
-      const writeFiles = getWriteFiles({ sandbox, toolCallId, writer })
+      const written: string[] = [];
+      const sandbox = await Sandbox.get({ sandboxId });
+      const writeFiles = getWriteFiles({ sandbox, toolCallId, writer });
 
       for await (const items of result.partialObjectStream) {
         if (!Array.isArray(items?.files)) {
-          continue
+          continue;
         }
 
-        const files = items.files.slice(written.length, items.files.length - 2)
+        const files = items.files.slice(written.length, items.files.length - 2);
         if (files.length > 0) {
-          written.push(...(await writeFiles({ files, written })))
+          written.push(...(await writeFiles({ files, written })));
         } else {
           writer.write({
             id: toolCallId,
@@ -77,15 +78,15 @@ export const generateFiles = ({ writer, modelId }: Params) =>
                   .flatMap((f) => (f?.path ? [f.path] : []))
               ),
             },
-          })
+          });
         }
       }
 
-      const output = await result.object
+      const output = await result.object;
       await writeFiles({
         files: output.files.slice(written.length),
-        written: written,
-      })
+        written,
+      });
 
       writer.write({
         id: toolCallId,
@@ -94,50 +95,50 @@ export const generateFiles = ({ writer, modelId }: Params) =>
           paths: output.files.map(({ path }) => path),
           status: 'done',
         },
-      })
+      });
 
       return `Successfully generated and uploaded ${
         output.files.length
       } files. Their path and content are as follows:
         ${output.files
           .map((file) => `Path: ${file.path}\nContent: ${file.content}\n`)
-          .join('\n')}`
+          .join('\n')}`;
     },
-  })
+  });
 
 interface Dependencies {
-  sandbox: Sandbox
-  toolCallId: string
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  sandbox: Sandbox;
+  toolCallId: string;
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 function getWriteFiles({ sandbox, toolCallId, writer }: Dependencies) {
   return async function writeFiles(params: {
-    files: (Partial<z.infer<typeof fileSchema>> | undefined)[]
-    written: string[]
+    files: (Partial<z.infer<typeof fileSchema>> | undefined)[];
+    written: string[];
   }) {
-    const files = params.files.map((file) => fileSchema.parse(file))
-    const paths = params.written.concat(files.map((file) => file.path))
+    const files = params.files.map((file) => fileSchema.parse(file));
+    const paths = params.written.concat(files.map((file) => file.path));
 
     writer.write({
       id: toolCallId,
       type: 'data-generating-files',
       data: { paths, status: 'uploading' },
-    })
+    });
 
     await sandbox.writeFiles(
       files.map((file) => ({
         content: Buffer.from(file.content, 'utf8'),
         path: file.path,
       }))
-    )
+    );
 
     writer.write({
       id: toolCallId,
       type: 'data-generating-files',
       data: { paths, status: 'uploaded' },
-    })
+    });
 
-    return files.map((file) => file.path)
-  }
+    return files.map((file) => file.path);
+  };
 }

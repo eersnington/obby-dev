@@ -1,30 +1,30 @@
-import { Chat } from './chat'
-import { FileExplorer } from './file-explorer'
-import { Header } from './header'
-import { Logs } from './logs'
-import { Preview } from './preview'
-import { TabItem, TabContent, TabGroup } from '@/components/tabs'
-import { Welcome } from '@/components/modals/welcome'
-import { cookies } from 'next/headers'
-import { hideBanner } from '@/app/actions'
+import { cookies } from 'next/headers';
+import { hideBanner } from '@/app/actions';
+import { Welcome } from '@/components/modals/welcome';
+import { TabContent, TabGroup, TabItem } from '@/components/tabs';
+import { Chat } from './chat';
+import { FileExplorer } from './file-explorer';
+import { Header } from './header';
+import { Logs } from './logs';
+import { Preview } from './preview';
 
 export default async function Page() {
-  const store = await cookies()
-  const banner = store.get('banner-hidden')?.value !== 'true'
+  const store = await cookies();
+  const banner = store.get('banner-hidden')?.value !== 'true';
   return (
     <>
       <Welcome defaultOpen={banner} onDismissAction={hideBanner} />
-      <div className="flex flex-col h-screen max-h-screen overflow-hidden p-2 space-x-2 space-y-2">
-        <Header className="flex items-center w-full" />
-        <ul className="flex space-x-5 lg:hidden font-mono text-sm tracking-tight mt-1.5 px-1">
+      <div className="flex h-screen max-h-screen flex-col space-x-2 space-y-2 overflow-hidden p-2">
+        <Header className="flex w-full items-center" />
+        <ul className="mt-1.5 flex space-x-5 px-1 font-mono text-sm tracking-tight lg:hidden">
           <TabItem tabId="chat">Chat</TabItem>
           <TabItem tabId="preview">Preview</TabItem>
           <TabItem tabId="file-explorer">File Explorer</TabItem>
           <TabItem tabId="logs">Logs</TabItem>
         </ul>
-        <div className="flex-1 flex w-full min-h-0 overflow-hidden lg:space-x-2">
+        <div className="flex min-h-0 w-full flex-1 overflow-hidden lg:space-x-2">
           <TabContent
-            className="h-full flex-col lg:flex w-full lg:w-1/2 min-h-0"
+            className="h-full min-h-0 w-full flex-col lg:flex lg:w-1/2"
             tabId="chat"
           >
             <Chat className="flex-1 overflow-hidden" />
@@ -43,5 +43,5 @@ export default async function Page() {
         </div>
       </div>
     </>
-  )
+  );
 }

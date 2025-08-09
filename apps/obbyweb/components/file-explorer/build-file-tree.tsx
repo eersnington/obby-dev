@@ -1,32 +1,32 @@
 export interface FileNode {
-  children?: FileNode[]
-  content?: string
-  expanded?: boolean
-  name: string
-  path: string
-  type: 'file' | 'folder'
+  children?: FileNode[];
+  content?: string;
+  expanded?: boolean;
+  name: string;
+  path: string;
+  type: 'file' | 'folder';
 }
 
 interface FileNodeBuilder {
-  children?: { [key: string]: FileNodeBuilder }
-  content?: string
-  expanded?: boolean
-  name: string
-  path: string
-  type: 'file' | 'folder'
+  children?: { [key: string]: FileNodeBuilder };
+  content?: string;
+  expanded?: boolean;
+  name: string;
+  path: string;
+  type: 'file' | 'folder';
 }
 
 export function buildFileTree(paths: string[]): FileNode[] {
-  const root: { [key: string]: FileNodeBuilder } = {}
+  const root: { [key: string]: FileNodeBuilder } = {};
 
   paths.forEach((path) => {
-    const parts = path.split('/').filter(Boolean)
-    let current = root
-    let currentPath = ''
+    const parts = path.split('/').filter(Boolean);
+    let current = root;
+    let currentPath = '';
 
     parts.forEach((part, index) => {
-      currentPath += '/' + part
-      const isFile = index === parts.length - 1
+      currentPath += '/' + part;
+      const isFile = index === parts.length - 1;
 
       if (!current[part]) {
         current[part] = {
@@ -38,17 +38,17 @@ export function buildFileTree(paths: string[]): FileNode[] {
             : undefined,
           children: isFile ? undefined : {},
           expanded: false,
-        }
+        };
       }
 
       if (!isFile) {
-        current = current[part].children!
+        current = current[part].children!;
       }
-    })
-  })
+    });
+  });
 
   const convertToArray = (obj: {
-    [key: string]: FileNodeBuilder
+    [key: string]: FileNodeBuilder;
   }): FileNode[] => {
     return Object.values(obj)
       .map(
@@ -59,11 +59,11 @@ export function buildFileTree(paths: string[]): FileNode[] {
       )
       .sort((a, b) => {
         if (a.type !== b.type) {
-          return a.type === 'folder' ? -1 : 1
+          return a.type === 'folder' ? -1 : 1;
         }
-        return a.name.localeCompare(b.name)
-      })
-  }
+        return a.name.localeCompare(b.name);
+      });
+  };
 
-  return convertToArray(root)
+  return convertToArray(root);
 }

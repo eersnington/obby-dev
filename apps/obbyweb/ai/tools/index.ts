@@ -1,14 +1,14 @@
-import type { InferUITools, UIMessage, UIMessageStreamWriter } from 'ai'
-import type { DataPart } from '../messages/data-parts'
-import { createSandbox } from './create-sandbox'
-import { generateFiles } from './generate-files'
-import { getSandboxURL } from './get-sandbox-url'
-import { runCommand } from './run-command'
-import { waitCommand } from './wait-command'
+import type { InferUITools, UIMessage, UIMessageStreamWriter } from 'ai';
+import type { DataPart } from '../messages/data-parts';
+import { createSandbox } from './create-sandbox';
+import { generateFiles } from './generate-files';
+import { getSandboxURL } from './get-sandbox-url';
+import { runCommand } from './run-command';
+import { waitCommand } from './wait-command';
 
 interface Params {
-  modelId: string
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  modelId: string;
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 export function tools({ modelId, writer }: Params) {
@@ -18,7 +18,7 @@ export function tools({ modelId, writer }: Params) {
     getSandboxURL: getSandboxURL({ writer }),
     runCommand: runCommand({ writer }),
     waitCommand: waitCommand({ writer }),
-  }
+  };
 }
 
-export type ToolSet = InferUITools<ReturnType<typeof tools>>
+export type ToolSet = InferUITools<ReturnType<typeof tools>>;

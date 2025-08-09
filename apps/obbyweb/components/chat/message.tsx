@@ -1,10 +1,10 @@
-import type { ChatUIMessage } from './types'
-import { MessagePart } from './message-part'
-import { BotIcon, UserIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { BotIcon, UserIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { MessagePart } from './message-part';
+import type { ChatUIMessage } from './types';
 
 interface Props {
-  message: ChatUIMessage
+  message: ChatUIMessage;
 }
 
 export function Message({ message }: Props) {
@@ -16,7 +16,7 @@ export function Message({ message }: Props) {
       })}
     >
       {/* Message Header */}
-      <div className="flex items-center gap-2 text-sm font-medium font-mono text-primary mb-1.5">
+      <div className="mb-1.5 flex items-center gap-2 font-medium font-mono text-primary text-sm">
         {message.role === 'user' ? (
           <>
             <UserIcon className="ml-auto w-4" />
@@ -33,9 +33,10 @@ export function Message({ message }: Props) {
       {/* Message Content */}
       <div className="space-y-1.5">
         {message.parts.map((part, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: this is not an issue
           <MessagePart key={index} part={part} />
         ))}
       </div>
     </div>
-  )
+  );
 }

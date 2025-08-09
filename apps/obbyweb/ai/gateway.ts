@@ -1,25 +1,25 @@
-import type { JSONValue } from 'ai'
-import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai'
-import { createGatewayProvider, type GatewayModelId } from '@ai-sdk/gateway'
+import { createGatewayProvider, type GatewayModelId } from '@ai-sdk/gateway';
+import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai';
+import type { JSONValue } from 'ai';
 
 const gateway = createGatewayProvider({
   baseURL: process.env.AI_GATEWAY_BASE_URL,
-})
+});
 
 interface AvailableModel {
-  id: GatewayModelId | 'openai/gpt-5'
-  name: string
+  id: GatewayModelId | 'openai/gpt-5';
+  name: string;
 }
 
 export async function getAvailableModels(): Promise<AvailableModel[]> {
-  const response = await gateway.getAvailableModels()
-  return [...response.models.map(({ id, name }) => ({ id, name }))]
+  const response = await gateway.getAvailableModels();
+  return [...response.models.map(({ id, name }) => ({ id, name }))];
 }
 
 interface ModelOptions {
-  model: string
-  providerOptions?: Record<string, Record<string, JSONValue>>
-  headers?: Record<string, string>
+  model: string;
+  providerOptions?: Record<string, Record<string, JSONValue>>;
+  headers?: Record<string, string>;
 }
 
 export function getModelOptions(modelId: string): ModelOptions {
@@ -32,7 +32,7 @@ export function getModelOptions(modelId: string): ModelOptions {
           reasoningSummary: 'detailed',
         } satisfies OpenAIResponsesProviderOptions,
       },
-    }
+    };
   }
 
   if (modelId === 'openai/gpt-5') {
@@ -45,7 +45,7 @@ export function getModelOptions(modelId: string): ModelOptions {
           reasoningSummary: 'detailed',
         } satisfies OpenAIResponsesProviderOptions,
       },
-    }
+    };
   }
 
   if (modelId === 'anthropic/claude-4-sonnet') {
@@ -58,10 +58,10 @@ export function getModelOptions(modelId: string): ModelOptions {
           cacheControl: { type: 'ephemeral' },
         },
       },
-    }
+    };
   }
 
   return {
     model: modelId,
-  }
+  };
 }

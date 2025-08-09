@@ -16,7 +16,7 @@ export const NotificationsProvider = ({
   children,
   userId,
 }: NotificationsProviderProps) => {
-  if (!knockApiKey || !knockFeedChannelId) {
+  if (!(knockApiKey && knockFeedChannelId)) {
     return children;
   }
 

@@ -6,7 +6,7 @@ const apiKey = keys().BETTERSTACK_API_KEY;
 const url = keys().BETTERSTACK_URL;
 
 export const Status = async () => {
-  if (!apiKey || !url) {
+  if (!(apiKey && url)) {
     return null;
   }
 
@@ -51,9 +51,9 @@ export const Status = async () => {
   return (
     <a
       className="flex items-center gap-3 font-medium text-sm"
-      target="_blank"
-      rel="noreferrer"
       href={url}
+      rel="noreferrer"
+      target="_blank"
     >
       <span className="relative flex h-2 w-2">
         <span

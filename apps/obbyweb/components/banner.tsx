@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import { XIcon } from 'lucide-react'
-import { useState } from 'react'
+import { XIcon } from 'lucide-react';
+import { useState } from 'react';
 
 interface Props {
-  defaultOpen: boolean
-  onDismiss: () => void
+  defaultOpen: boolean;
+  onDismiss: () => void;
 }
 
 export function Banner({ defaultOpen, onDismiss }: Props) {
-  const [open, setOpen] = useState(defaultOpen)
+  const [open, setOpen] = useState(defaultOpen);
   if (!open) {
-    return null
+    return null;
   }
 
   return (
-    <div className="relative full text-xs border border-dashed border-yellow-500 bg-yellow-100 py-2 pl-2 pr-8">
+    <div className="full relative border border-yellow-500 border-dashed bg-yellow-100 py-2 pr-8 pl-2 text-xs">
       <strong>Vercel Coding Agent demo</strong> This demo showcases a full-stack
       coding agent built with Vercel&apos;s AI Cloud, AI SDK, and Next.js This
       example gives you full flexibility of the underlying model via Vercel AI
@@ -24,14 +24,14 @@ export function Banner({ defaultOpen, onDismiss }: Props) {
       out the v0 Platform API.
       <button
         aria-label="Close Banner"
-        className="absolute top-2 right-2 text-yellow-700 hover:text-yellow-900 transition-colors cursor-pointer"
+        className="absolute top-2 right-2 cursor-pointer text-yellow-700 transition-colors hover:text-yellow-900"
         onClick={() => {
-          onDismiss()
-          setOpen(false)
+          onDismiss();
+          setOpen(false);
         }}
       >
-        <XIcon className="w-4 h-4" />
+        <XIcon className="h-4 w-4" />
       </button>
     </div>
-  )
+  );
 }

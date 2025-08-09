@@ -1,12 +1,12 @@
-import type { UIMessageStreamWriter, UIMessage } from 'ai'
-import type { DataPart } from '../messages/data-parts'
-import { Sandbox } from '@vercel/sandbox'
-import description from './run-command.md'
-import { tool } from 'ai'
-import z from 'zod/v3'
+import { Sandbox } from '@vercel/sandbox';
+import type { UIMessage, UIMessageStreamWriter } from 'ai';
+import { tool } from 'ai';
+import z from 'zod/v3';
+import type { DataPart } from '../messages/data-parts';
+import description from './run-command.md';
 
 interface Params {
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 export const runCommand = ({ writer }: Params) =>
@@ -40,15 +40,15 @@ export const runCommand = ({ writer }: Params) =>
         id: toolCallId,
         type: 'data-run-command',
         data: { command, args, status: 'loading', sandboxId },
-      })
+      });
 
-      const sandbox = await Sandbox.get({ sandboxId })
+      const sandbox = await Sandbox.get({ sandboxId });
       const cmd = await sandbox.runCommand({
         detached: true,
         cmd: command,
         args,
         sudo,
-      })
+      });
 
       writer.write({
         id: toolCallId,
@@ -60,7 +60,7 @@ export const runCommand = ({ writer }: Params) =>
           sandboxId,
           commandId: cmd.cmdId,
         },
-      })
+      });
 
       return `The command \`${command} ${args.join(
         ' '
@@ -68,6 +68,6 @@ export const runCommand = ({ writer }: Params) =>
         cmd.cmdId
       }\` to wait for its completion or check its status later. Remember, each command runs in a fresh shell session, so you cannot rely on previous commands' state. If this command need to finish before running anything else you must use the \`waitCommand\` tool with the command ID \`${
         cmd.cmdId
-      }\`. If you want to run this command in the background, you can ignore the command ID.`
+      }\`. If you want to run this command in the background, you can ignore the command ID.`;
     },
-  })
+  });

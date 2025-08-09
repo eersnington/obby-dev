@@ -1,12 +1,12 @@
-import type { UIMessageStreamWriter, UIMessage } from 'ai'
-import type { DataPart } from '../messages/data-parts'
-import { Sandbox } from '@vercel/sandbox'
-import { tool } from 'ai'
-import description from './wait-command.md'
-import z from 'zod/v3'
+import { Sandbox } from '@vercel/sandbox';
+import type { UIMessage, UIMessageStreamWriter } from 'ai';
+import { tool } from 'ai';
+import z from 'zod/v3';
+import type { DataPart } from '../messages/data-parts';
+import description from './wait-command.md';
 
 interface Params {
-  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 }
 
 export const waitCommand = ({ writer }: Params) =>
@@ -32,12 +32,15 @@ export const waitCommand = ({ writer }: Params) =>
         id: toolCallId,
         type: 'data-wait-command',
         data: { command, args, commandId, sandboxId, status: 'loading' },
-      })
+      });
 
-      const sandbox = await Sandbox.get({ sandboxId })
-      const cmd = await sandbox.getCommand(commandId)
-      const done = await cmd.wait()
-      const [stdout, stderr] = await Promise.all([done.stdout(), done.stderr()])
+      const sandbox = await Sandbox.get({ sandboxId });
+      const cmd = await sandbox.getCommand(commandId);
+      const done = await cmd.wait();
+      const [stdout, stderr] = await Promise.all([
+        done.stdout(),
+        done.stderr(),
+      ]);
 
       writer.write({
         id: toolCallId,
@@ -50,14 +53,14 @@ export const waitCommand = ({ writer }: Params) =>
           exitCode: done.exitCode,
           status: 'done',
         },
-      })
+      });
 
       return (
         `The command with ID ${commandId} has finished with exit code ${done.exitCode}.\n` +
-        `Stdout of the command was: \n` +
+        'Stdout of the command was: \n' +
         `\`\`\`\n${stdout}\n\`\`\`\n` +
-        `Stderr of the command was: \n` +
+        'Stderr of the command was: \n' +
         `\`\`\`\n${stderr}\n\`\`\``
-      )
+      );
     },
-  })
+  });

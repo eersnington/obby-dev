@@ -1,37 +1,37 @@
-import Prism from 'react-syntax-highlighter'
-import grayscale from 'react-syntax-highlighter/dist/esm/styles/hljs/grayscale'
+import Prism from 'react-syntax-highlighter';
+import grayscale from 'react-syntax-highlighter/dist/esm/styles/hljs/grayscale';
 
 export function SyntaxHighlighter(props: { path: string; code: string }) {
-  const lang = detectLanguageFromFilename(props.path)
+  const lang = detectLanguageFromFilename(props.path);
   return (
     <Prism
-      language={lang ?? 'javascript'}
-      style={grayscale}
-      showLineNumbers
-      showInlineLineNumbers
-      customStyle={{
-        fontSize: '0.875rem',
-        margin: 0,
-        background: 'transparent',
-      }}
       codeTagProps={{
         style: {
           whiteSpace: 'pre',
           overflowX: 'auto',
         },
       }}
+      customStyle={{
+        fontSize: '0.875rem',
+        margin: 0,
+        background: 'transparent',
+      }}
+      language={lang ?? 'javascript'}
+      showInlineLineNumbers
+      showLineNumbers
+      style={grayscale}
     >
       {props.code}
     </Prism>
-  )
+  );
 }
 
 function detectLanguageFromFilename(path: string): string {
-  const pathParts = path.split('/')
+  const pathParts = path.split('/');
   const extension = pathParts[pathParts.length - 1]
     ?.split('.')
     .pop()
-    ?.toLowerCase()
+    ?.toLowerCase();
 
   const extensionMap: Record<string, string> = {
     // JavaScript/TypeScript
@@ -97,7 +97,7 @@ function detectLanguageFromFilename(path: string): string {
     dockerfile: 'dockerfile',
     gitignore: 'bash',
     env: 'bash',
-  }
+  };
 
-  return extensionMap[extension || ''] || 'text'
+  return extensionMap[extension || ''] || 'text';
 }

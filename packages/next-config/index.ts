@@ -35,6 +35,7 @@ export const config: NextConfig = {
     ];
   },
 
+  // biome-ignore lint/nursery/noShadow: config is a valid parameter name
   webpack(config, { isServer }) {
     if (isServer) {
       config.plugins = config.plugins || [];

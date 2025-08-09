@@ -4,8 +4,8 @@ import {
   NotificationFeedPopover,
   NotificationIconButton,
 } from '@knocklabs/react';
-import { useRef, useState } from 'react';
 import type { RefObject } from 'react';
+import { useRef, useState } from 'react';
 import { keys } from '../keys';
 
 // Required CSS import, unless you're overriding the styling
