@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001 --turbopack",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -18,6 +18,7 @@
     "@radix-ui/react-scroll-area": "1.2.9",
     "@radix-ui/react-select": "2.2.5",
     "@radix-ui/react-slot": "1.2.3",
+    "@repo/observability": "workspace:*",
     "@upstash/redis": "1.35.3",
     "@vercel/sandbox": "0.0.15",
     "ai": "5.0.0-beta.29",

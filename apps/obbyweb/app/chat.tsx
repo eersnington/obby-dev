@@ -1,6 +1,7 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { log } from '@repo/observability/log';
 import { MessageCircleIcon, SendIcon } from 'lucide-react';
 import { createParser, useQueryState } from 'nuqs';
 import { useEffect, useRef } from 'react';
@@ -33,7 +34,7 @@ export function Chat({ className }: Props) {
     onData: mapDataToState,
     onError: (error) => {
       toast.error(`Communication error with the AI: ${error.message}`);
-      console.error('Error sending message:', error);
+      log.error('Error sending message:', error);
     },
   });
 

@@ -11,7 +11,6 @@
       "!**/apps/email/.react-email/**",
       "!**/apps/api/scripts/**",
       "!**/apps/app/scripts/**",
-      "!**/apps/obbyweb/**",
       "!**/*.css"
     ]
   }
