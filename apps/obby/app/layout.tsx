@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { SandboxState } from '@/components/modals/sandbox-state';
-import { env } from '@/env';
 
 import './styles.css';
 
@@ -19,14 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <DesignSystemProvider
-          helpUrl={env.NEXT_PUBLIC_DOCS_URL}
-          privacyUrl={new URL(
-            '/legal/privacy',
-            env.NEXT_PUBLIC_WEB_URL
-          ).toString()}
-          termsUrl={new URL('/legal/terms', env.NEXT_PUBLIC_WEB_URL).toString()}
-        >
+        <DesignSystemProvider>
           <NuqsAdapter>{children}</NuqsAdapter>
           <SandboxState />
         </DesignSystemProvider>

@@ -1,22 +1,56 @@
+import { withAuth } from '@repo/auth/server';
+import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 import { cn } from '@repo/design-system/lib/utils';
-import { VercelDashed } from '@/components/icons/vercel-dashed';
-import { ToggleWelcome } from '@/components/modals/welcome';
+import Link from 'next/link';
+import { Suspense } from 'react';
+import { ObbyLogo } from '@/components/icons/obby-logo';
+import FeedbackModal from '@/components/layout/feedback-dialog';
+import { SignInButton } from '@/components/layout/sign-in-button';
+import { SignUpButton } from '@/components/layout/sign-up-button';
+import { UserNav } from '@/components/layout/user-nav';
 
 interface Props {
   className?: string;
 }
 
-export function Header({ className }: Props) {
+export async function Header({ className }: Props) {
+  const { user, role } = await withAuth();
+
   return (
     <header className={cn('flex items-center justify-between', className)}>
       <div className="flex items-center">
-        <VercelDashed className="mr-1.5 ml-1 md:ml-2.5" />
-        <span className="hidden font-bold font-mono text-sm uppercase tracking-tight md:inline">
-          OSS Vibe Coding Platform
+        <ObbyLogo className="mr-1.5 ml-1 md:ml-2.5" />
+        <span className="hidden font-bold font-mono text-md tracking-tight md:inline">
+          0bby
         </span>
       </div>
       <div className="ml-auto flex items-center space-x-1.5">
-        <ToggleWelcome />
+        {!user && (
+          <>
+            <Link className="text-sm hover:underline" href="/pricing" prefetch>
+              Pricing
+            </Link>
+            <SignUpButton />
+            <SignInButton />
+          </>
+        )}
+        {user && (
+          <>
+            {!role && (
+              <Link
+                className="text-sm hover:underline"
+                href="/pricing"
+                prefetch
+              >
+                Pricing
+              </Link>
+            )}
+            <FeedbackModal />
+            <Suspense fallback={<Skeleton className="size-7 rounded-full" />}>
+              <UserNav user={user} />
+            </Suspense>
+          </>
+        )}
       </div>
     </header>
   );

@@ -2,7 +2,7 @@
   "name": "obby",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001 --turbopack",
+    "dev": "next dev -p 3000 --turbopack",
     "build": "next build",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
