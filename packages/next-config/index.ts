@@ -5,8 +5,18 @@ import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 import type { NextConfig } from 'next';
 
 const otelRegex = /@opentelemetry\/instrumentation/;
+const mdRegex = /\.md/;
 
 export const config: NextConfig = {
+  turbopack: {
+    rules: {
+      '*.md': {
+        loaders: ['raw-loader'],
+        as: '*.js',
+      },
+    },
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -15,6 +25,9 @@ export const config: NextConfig = {
         hostname: 'img.clerk.com',
       },
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   // biome-ignore lint/suspicious/useAwait: rewrites is async
@@ -41,6 +54,11 @@ export const config: NextConfig = {
       config.plugins = config.plugins || [];
       config.plugins.push(new PrismaPlugin());
     }
+
+    config.module.rules.push({
+      test: mdRegex,
+      type: 'asset/source',
+    });
 
     config.ignoreWarnings = [{ module: otelRegex }];
 

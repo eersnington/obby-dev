@@ -1,0 +1,149 @@
+'use client';
+
+import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
+import { cn } from '@repo/design-system/lib/utils';
+import { CompassIcon, RefreshCwIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { BarLoader } from 'react-spinners';
+import { Panel, PanelHeader } from '@/components/panels/panels';
+
+interface Props {
+  className?: string;
+  disabled?: boolean;
+  url?: string;
+}
+
+export function Preview({ className, disabled, url }: Props) {
+  const [currentUrl, setCurrentUrl] = useState(url);
+  const [error, setError] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState(url || '');
+  const [isLoading, setIsLoading] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const loadStartTime = useRef<number | null>(null);
+
+  useEffect(() => {
+    setCurrentUrl(url);
+    setInputValue(url || '');
+  }, [url]);
+
+  const refreshIframe = () => {
+    if (iframeRef.current && currentUrl) {
+      setIsLoading(true);
+      setError(null);
+      loadStartTime.current = Date.now();
+      iframeRef.current.src = '';
+      setTimeout(() => {
+        if (iframeRef.current) {
+          iframeRef.current.src = currentUrl;
+        }
+      }, 10);
+    }
+  };
+
+  const loadNewUrl = () => {
+    if (iframeRef.current && inputValue) {
+      if (inputValue !== currentUrl) {
+        setIsLoading(true);
+        setError(null);
+        loadStartTime.current = Date.now();
+        iframeRef.current.src = inputValue;
+      } else {
+        refreshIframe();
+      }
+    }
+  };
+
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+    setError(null);
+  };
+
+  const handleIframeError = () => {
+    setIsLoading(false);
+    setError('Failed to load the page');
+  };
+
+  return (
+    <Panel className={className}>
+      <PanelHeader>
+        <div className="absolute flex items-center space-x-1">
+          <a className="cursor-pointer px-1" href={currentUrl} target="_blank">
+            <CompassIcon className="w-4" />
+          </a>
+          <button
+            className={cn('cursor-pointer px-1', {
+              'animate-spin': isLoading,
+            })}
+            onClick={refreshIframe}
+            type="button"
+          >
+            <RefreshCwIcon className="w-4" />
+          </button>
+        </div>
+
+        <div className="m-auto h-6">
+          {url && (
+            <input
+              className="h-6 min-w-[300px] rounded border border-gray-200 bg-white px-4 font-mono text-xs focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(event) => setInputValue(event.target.value)}
+              onClick={(event) => event.currentTarget.select()}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.blur();
+                  loadNewUrl();
+                }
+              }}
+              type="text"
+              value={inputValue}
+            />
+          )}
+        </div>
+      </PanelHeader>
+
+      <div className="relative flex h-[calc(100%-2rem-1px)]">
+        {currentUrl && !disabled && (
+          <>
+            <ScrollArea className="w-full">
+              <iframe
+                className="h-full w-full"
+                onError={handleIframeError}
+                onLoad={handleIframeLoad}
+                ref={iframeRef}
+                src={currentUrl}
+                title="Browser content"
+              />
+            </ScrollArea>
+
+            {isLoading && !error && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white bg-opacity-90">
+                <BarLoader color="#666" />
+                <span className="text-gray-500 text-xs">Loading...</span>
+              </div>
+            )}
+
+            {error && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white">
+                <span className="text-red-500">Failed to load page</span>
+                <button
+                  className="text-blue-500 text-sm hover:underline"
+                  onClick={() => {
+                    if (currentUrl) {
+                      setIsLoading(true);
+                      setError(null);
+                      const newUrl = new URL(currentUrl);
+                      newUrl.searchParams.set('t', Date.now().toString());
+                      setCurrentUrl(newUrl.toString());
+                    }
+                  }}
+                  type="button"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </Panel>
+  );
+}
