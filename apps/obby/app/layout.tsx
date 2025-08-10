@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { SandboxState } from '@/components/modals/sandbox-state';
 import { env } from '@/env';
 
-import './globals.css';
+import './styles.css';
 
 export const metadata: Metadata = {
   title: 'Obby - OSS v0',

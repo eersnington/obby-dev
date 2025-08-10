@@ -1,12 +1,12 @@
+import { cn } from '@repo/design-system/lib/utils';
 import { VercelDashed } from '@/components/icons/vercel-dashed';
 import { ToggleWelcome } from '@/components/modals/welcome';
-import { cn } from '@/lib/utils';
 
 interface Props {
   className?: string;
 }
 
-export async function Header({ className }: Props) {
+export function Header({ className }: Props) {
   return (
     <header className={cn('flex items-center justify-between', className)}>
       <div className="flex items-center">

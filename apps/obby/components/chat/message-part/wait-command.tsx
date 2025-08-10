@@ -1,7 +1,7 @@
+import { cn } from '@repo/design-system/lib/utils';
 import { SquareChevronRightIcon } from 'lucide-react';
 import Markdown from 'react-markdown';
 import type { DataPart } from '@/ai/messages/data-parts';
-import { cn } from '@/lib/utils';
 import { MessageSpinner } from '../message-spinner';
 import { ToolHeader } from '../tool-header';
 import { ToolMessage } from '../tool-message';

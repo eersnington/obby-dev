@@ -1,21 +1,21 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { Button } from '@repo/design-system/components/ui/button';
+import { Input } from '@repo/design-system/components/ui/input';
+import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
+import { toast } from '@repo/design-system/sonner';
 import { log } from '@repo/observability/log';
 import { MessageCircleIcon, SendIcon } from 'lucide-react';
 import { createParser, useQueryState } from 'nuqs';
 import { useEffect, useRef } from 'react';
 import { MoonLoader } from 'react-spinners';
-import { toast } from 'sonner';
 import { mutate } from 'swr';
 import { DEFAULT_MODEL, SUPPORTED_MODELS, TEST_PROMPTS } from '@/ai/constants';
 import { Message } from '@/components/chat/message';
 import type { ChatUIMessage } from '@/components/chat/types';
 import { ModelSelector } from '@/components/model-selector/model-selector';
 import { Panel, PanelHeader } from '@/components/panels/panels';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
 import { useDataStateMapper } from './state';
 

@@ -1,7 +1,7 @@
 'use client';
 
+import { cn } from '@repo/design-system/lib/utils';
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
 import { useTabState } from './use-tab-state';
 
 interface Props {

@@ -299,6 +299,9 @@ importers:
       lucide-react:
         specifier: ^0.511.0
         version: 0.511.0(react@19.1.0)
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       next:
         specifier: 15.4.5
         version: 15.4.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -366,6 +369,9 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0(bufferutil@4.0.9)
+      raw-loader:
+        specifier: 4.0.2
+        version: 4.0.2(webpack@5.98.0(esbuild@0.25.2))
       tailwindcss:
         specifier: ^4.1.7
         version: 4.1.7
@@ -375,160 +381,6 @@ importers:
       vitest:
         specifier: ^3.1.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@22.15.21)(jiti@2.4.2)(jsdom@26.1.0(bufferutil@4.0.9))(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.0)
-
-  apps/obbyweb:
-    dependencies:
-      '@ai-sdk/gateway':
-        specifier: 1.0.0-beta.15
-        version: 1.0.0-beta.15(zod@3.25.76)
-      '@ai-sdk/openai':
-        specifier: 2.0.0-beta.13
-        version: 2.0.0-beta.13(zod@3.25.76)
-      '@ai-sdk/react':
-        specifier: 2.0.0-beta.29
-        version: 2.0.0-beta.29(react@19.1.0)(zod@3.25.76)
-      '@ai-sdk/vercel':
-        specifier: 1.0.0-alpha.7
-        version: 1.0.0-alpha.7(zod@3.25.76)
-      '@radix-ui/react-dialog':
-        specifier: 1.1.14
-        version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-popover':
-        specifier: 1.1.14
-        version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-scroll-area':
-        specifier: 1.2.9
-        version: 1.2.9(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-select':
-        specifier: 2.2.5
-        version: 2.2.5(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-slot':
-        specifier: 1.2.3
-        version: 1.2.3(@types/react@19.1.5)(react@19.1.0)
-      '@repo/observability':
-        specifier: workspace:*
-        version: link:../../packages/observability
-      '@upstash/redis':
-        specifier: 1.35.3
-        version: 1.35.3
-      '@vercel/sandbox':
-        specifier: 0.0.15
-        version: 0.0.15
-      ai:
-        specifier: 5.0.0-beta.29
-        version: 5.0.0-beta.29(zod@3.25.76)
-      arctic:
-        specifier: 3.7.0
-        version: 3.7.0
-      botid:
-        specifier: 1.4.5
-        version: 1.4.5(next@15.4.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      class-variance-authority:
-        specifier: 0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: 2.1.1
-        version: 2.1.1
-      cookie:
-        specifier: ^1.0.2
-        version: 1.0.2
-      jose:
-        specifier: 6.0.12
-        version: 6.0.12
-      lucide-react:
-        specifier: 0.528.0
-        version: 0.528.0(react@19.1.0)
-      ms:
-        specifier: 2.1.3
-        version: 2.1.3
-      next:
-        specifier: 15.4.5
-        version: 15.4.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      next-themes:
-        specifier: ^0.4.6
-        version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      nuqs:
-        specifier: 2.4.3
-        version: 2.4.3(next@15.4.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      react:
-        specifier: 19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: 19.1.0
-        version: 19.1.0(react@19.1.0)
-      react-markdown:
-        specifier: 10.1.0
-        version: 10.1.0(@types/react@19.1.5)(react@19.1.0)
-      react-spinners:
-        specifier: 0.17.0
-        version: 0.17.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-syntax-highlighter:
-        specifier: 15.6.1
-        version: 15.6.1(react@19.1.0)
-      rehype-raw:
-        specifier: 7.0.0
-        version: 7.0.0
-      remark-gfm:
-        specifier: 4.0.1
-        version: 4.0.1
-      sonner:
-        specifier: ^2.0.6
-        version: 2.0.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      swr:
-        specifier: 2.3.4
-        version: 2.3.4(react@19.1.0)
-      tailwind-merge:
-        specifier: 3.3.1
-        version: 3.3.1
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
-      zustand:
-        specifier: 5.0.6
-        version: 5.0.6(@types/react@19.1.5)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
-    devDependencies:
-      '@repo/testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.1.7
-      '@testing-library/dom':
-        specifier: ^10.4.0
-        version: 10.4.0
-      '@testing-library/react':
-        specifier: ^16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/ms':
-        specifier: 2.1.0
-        version: 2.1.0
-      '@types/node':
-        specifier: ^20
-        version: 20.19.10
-      '@types/react':
-        specifier: ^19
-        version: 19.1.5
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.1.5(@types/react@19.1.5)
-      '@types/react-syntax-highlighter':
-        specifier: 15.5.13
-        version: 15.5.13
-      raw-loader:
-        specifier: 4.0.2
-        version: 4.0.2(webpack@5.98.0(esbuild@0.25.2))
-      tailwindcss:
-        specifier: ^4
-        version: 4.1.7
-      tw-animate-css:
-        specifier: 1.3.6
-        version: 1.3.6
-      typescript:
-        specifier: ^5
-        version: 5.8.3
 
   packages/ai:
     dependencies:
@@ -1255,12 +1107,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
-
-  '@ai-sdk/openai@2.0.0-beta.13':
-    resolution: {integrity: sha512-0hxkegu+qx+31OfNbn+pVjOlKkdVVqthRVZo8ccWklCnrEvd1DdLLJg9N/GDzTz/QSYnXhmIzXmT0J7u2SB5Aw==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
 
   '@ai-sdk/openai@2.0.8':
     resolution: {integrity: sha512-D5AP65yCXL4GtTrWGhu3hTHhlKyYu8NBRtRZ1h5F8PYXFVLtuiQ0AypbDreXLphONehLf0zGN3Cm3Fob/DDMRw==}
@@ -2999,24 +2845,6 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
-
-  '@oslojs/asn1@1.0.0':
-    resolution: {integrity: sha512-zw/wn0sj0j0QKbIXfIlnEcTviaCzYOY3V5rAyjR6YtOByFtJiT574+8p9Wlach0lZH9fddD4yb9laEAIl4vXQA==}
-
-  '@oslojs/binary@1.0.0':
-    resolution: {integrity: sha512-9RCU6OwXU6p67H4NODbuxv2S3eenuQ4/WFLrsq+K/k682xrznH5EVWA7N4VFk9VYVcbFtKqur5YQQZc0ySGhsQ==}
-
-  '@oslojs/crypto@1.0.1':
-    resolution: {integrity: sha512-7n08G8nWjAr/Yu3vu9zzrd0L9XnrJfpMioQcvCMxBIiF5orECHe5/3J0jmXRVvgfqMm/+4oxlQ+Sq39COYLcNQ==}
-
-  '@oslojs/encoding@0.4.1':
-    resolution: {integrity: sha512-hkjo6MuIK/kQR5CrGNdAPZhS01ZCXuWDRJ187zh6qqF2+yMHZpD9fAYpX8q2bOO6Ryhl3XpCT6kUX76N8hhm4Q==}
-
-  '@oslojs/encoding@1.1.0':
-    resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
-
-  '@oslojs/jwt@0.2.0':
-    resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
 
   '@peculiar/asn1-schema@2.4.0':
     resolution: {integrity: sha512-umbembjIWOrPSOzEGG5vxFLkeM8kzIhLkgigtsOrfLKnuzxWxejAcUX+q/SoZCdemlODOcr5WiYa7+dIEzBXZQ==}
@@ -4846,9 +4674,6 @@ packages:
   '@types/node@18.19.87':
     resolution: {integrity: sha512-OIAAu6ypnVZHmsHCeJ+7CCSub38QNBS9uceMQeg7K5Ur0Jr+wG9wEOEvvMbhp09pxD5czIUy/jND7s7Tb6Nw7A==}
 
-  '@types/node@20.19.10':
-    resolution: {integrity: sha512-iAFpG6DokED3roLSP0K+ybeDdIX6Bc0Vd3mLW5uDqThPWtNos3E+EqOM11mPQHKzfWHqEBuLjIlsBQQ8CsISmQ==}
-
   '@types/node@22.15.21':
     resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
@@ -5260,9 +5085,6 @@ packages:
   arcjet@1.0.0-beta.7:
     resolution: {integrity: sha512-Rk58gG8kWVmLz5WuLlpFooP/kZqTAW/IqxMB66eERnYX+F4X2hI9mzIPF1V4kRmmtHqUdgOqrGQHXJDCljaNYA==}
     engines: {node: '>=18'}
-
-  arctic@3.7.0:
-    resolution: {integrity: sha512-ZMQ+f6VazDgUJOd+qNV+H7GohNSYal1mVjm5kEaZfE2Ifb7Ss70w+Q7xpJC87qZDkMZIXYf0pTIYZA0OPasSbw==}
 
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
@@ -5701,10 +5523,6 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
-
-  cookie@1.0.2:
-    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
-    engines: {node: '>=18'}
 
   core-js-pure@3.41.0:
     resolution: {integrity: sha512-71Gzp96T9YPk63aUvE5Q5qP+DryB4ZloUZPSOebGM88VNw8VNfvdA7z6kGA8iGOTEzAomsRidp4jXSmUIJsL+Q==}
@@ -7086,9 +6904,6 @@ packages:
   jose@5.6.3:
     resolution: {integrity: sha512-1Jh//hEEwMhNYPDDLwXHa2ePWgWiFNNUadVmguAAw2IJ6sj9mNxV5tGXJNqlMkJAybF6Lgw1mISDxTePP/187g==}
 
-  jose@6.0.12:
-    resolution: {integrity: sha512-T8xypXs8CpmiIi78k0E+Lk7T2zlK4zDyg+o1CZ4AkOHgDg98ogdP2BeZ61lTFKFyoEwJ9RgAgN+SdM3iPgNonQ==}
-
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -7370,11 +7185,6 @@ packages:
 
   lucide-react@0.511.0:
     resolution: {integrity: sha512-VK5a2ydJ7xm8GvBeKLS9mu1pVK6ucef9780JVUjw6bAjJL/QXnd4Y0p7SPeOUMC27YhzNCZvm5d/QX0Tp3rc0w==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  lucide-react@0.528.0:
-    resolution: {integrity: sha512-Qeapzej+iIKQwOevWKtsSHJKkZh16ohe0Lm5bwdsmlMC7M3T9vIP+2jLiYjcvBl8Lekcc1BTtR4eUATqs3aAjw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -9736,24 +9546,6 @@ packages:
       react:
         optional: true
 
-  zustand@5.0.6:
-    resolution: {integrity: sha512-ihAqNeUVhe0MAD+X8M5UzqyZ9k3FFZLBTtqo6JLPwV53cbRB/mJwBI0PxcIgqhBBHlEs8G45OTDTMq3gNcLq3A==}
-    engines: {node: '>=12.20.0'}
-    peerDependencies:
-      '@types/react': '>=18.0.0'
-      immer: '>=9.0.6'
-      react: '>=18.0.0'
-      use-sync-external-store: '>=1.2.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-      use-sync-external-store:
-        optional: true
-
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -9775,12 +9567,6 @@ snapshots:
     dependencies:
       '@ai-sdk/provider': 1.1.3
       '@ai-sdk/provider-utils': 2.2.8(zod@3.25.76)
-      zod: 3.25.76
-
-  '@ai-sdk/openai@2.0.0-beta.13(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0-beta.1
-      '@ai-sdk/provider-utils': 3.0.0-beta.7(zod@3.25.76)
       zod: 3.25.76
 
   '@ai-sdk/openai@2.0.8(zod@3.25.76)':
@@ -11382,25 +11168,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
-
-  '@oslojs/asn1@1.0.0':
-    dependencies:
-      '@oslojs/binary': 1.0.0
-
-  '@oslojs/binary@1.0.0': {}
-
-  '@oslojs/crypto@1.0.1':
-    dependencies:
-      '@oslojs/asn1': 1.0.0
-      '@oslojs/binary': 1.0.0
-
-  '@oslojs/encoding@0.4.1': {}
-
-  '@oslojs/encoding@1.1.0': {}
-
-  '@oslojs/jwt@0.2.0':
-    dependencies:
-      '@oslojs/encoding': 0.4.1
 
   '@peculiar/asn1-schema@2.4.0':
     dependencies:
@@ -13391,10 +13158,6 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.19.10':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
@@ -13890,12 +13653,6 @@ snapshots:
       '@arcjet/runtime': 1.0.0-beta.7
       '@arcjet/stable-hash': 1.0.0-beta.7
 
-  arctic@3.7.0:
-    dependencies:
-      '@oslojs/crypto': 1.0.1
-      '@oslojs/encoding': 1.1.0
-      '@oslojs/jwt': 0.2.0
-
   arg@4.1.3: {}
 
   arg@5.0.1: {}
@@ -14364,8 +14121,6 @@ snapshots:
   cookie@0.5.0: {}
 
   cookie@0.7.2: {}
-
-  cookie@1.0.2: {}
 
   core-js-pure@3.41.0: {}
 
@@ -15870,8 +15625,6 @@ snapshots:
 
   jose@5.6.3: {}
 
-  jose@6.0.12: {}
-
   joycon@3.1.1: {}
 
   js-tiktoken@1.0.20:
@@ -16131,10 +15884,6 @@ snapshots:
       react: 19.1.0
 
   lucide-react@0.511.0(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-
-  lucide-react@0.528.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
@@ -18943,11 +18692,5 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.5
       react: 19.1.0
-
-  zustand@5.0.6(@types/react@19.1.5)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0)):
-    optionalDependencies:
-      '@types/react': 19.1.5
-      react: 19.1.0
-      use-sync-external-store: 1.5.0(react@19.1.0)
 
   zwitch@2.0.4: {}
