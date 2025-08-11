@@ -11,10 +11,15 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^3.0.4",
+    "@ai-sdk/anthropic": "^2.0.1",
     "@ai-sdk/gateway": "1.0.0-beta.15",
+    "@ai-sdk/google": "^2.0.4",
+    "@ai-sdk/groq": "^2.0.5",
     "@ai-sdk/openai": "^2.0.8",
     "@ai-sdk/react": "2.0.0-beta.29",
     "@ai-sdk/vercel": "1.0.0-alpha.7",
+    "@openrouter/ai-sdk-provider": "^1.1.2",
     "@repo/analytics": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
@@ -60,8 +65,8 @@
     "@types/react": "19.1.5",
     "@types/react-dom": "19.1.5",
     "jsdom": "^26.1.0",
-    "tailwindcss": "^4.1.7",
     "raw-loader": "4.0.2",
+    "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
   }
