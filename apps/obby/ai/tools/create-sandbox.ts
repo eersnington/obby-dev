@@ -2,6 +2,7 @@ import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
 import z from 'zod/v3';
+import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
 import description from './create-sandbox.md';
 
@@ -35,9 +36,23 @@ export const createSandbox = ({ writer }: Params) =>
       });
 
       const sandbox = await Sandbox.create({
+        teamId: env.VERCEL_TEAM_ID ?? '',
+        projectId: env.VERCEL_PROJECT_ID ?? '',
+        token: env.VERCEL_TOKEN ?? '',
+        // source: {
+        //   url: 'https://github.com/obbylabs/nextjs-shadcn-template.git',
+        //   type: 'git',
+        // },
+        resources: { vcpus: 2 },
         timeout,
         ports,
       });
+
+      // await sandbox.runCommand({
+      //   cmd: 'curl',
+      //   args: ['-fsSL', 'https://bun.sh/install', '|', 'bash'],
+      //   sudo: true,
+      // });
 
       writer.write({
         id: toolCallId,

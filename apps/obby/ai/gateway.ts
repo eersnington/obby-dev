@@ -1,18 +1,20 @@
 import { createGatewayProvider, type GatewayModelId } from '@ai-sdk/gateway';
 import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai';
 import type { JSONValue } from 'ai';
+import { env } from '@/env';
 
 const gateway = createGatewayProvider({
-  baseURL: process.env.AI_GATEWAY_BASE_URL,
+  apiKey: env.AI_GATEWAY_API_KEY ?? '',
 });
 
-interface AvailableModel {
+export interface AvailableModel {
   id: GatewayModelId | 'openai/gpt-5';
   name: string;
 }
 
 export async function getAvailableModels(): Promise<AvailableModel[]> {
-  const response = await gateway.getAvailableModels();
+  const response = await gateway.getAvailableModels(); // this can errors out but doesn't have the need tell me it do. god i need effect
+
   return [...response.models.map(({ id, name }) => ({ id, name }))];
 }
 
