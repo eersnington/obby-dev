@@ -3,14 +3,190 @@ import type { GatewayModelId } from '@ai-sdk/gateway';
 export const DEFAULT_MODEL: GatewayModelId[number] = 'openai/gpt-5';
 
 export const SUPPORTED_MODELS: GatewayModelId[] = [
-  'amazon/nova-pro',
+  // Both OpenRouter and Vercel Gateway supported
   'anthropic/claude-4-sonnet',
-  'google/gemini-2.5-flash',
+  'anthropic/claude-3-7-sonnet',
   'moonshotai/kimi-k2',
-  'openai/gpt-4o',
+  'alibaba/qwen3-coder',
+  'alibaba/qwen-3-235b',
   'openai/gpt-5',
+  'openai/gpt-5-mini',
+  'openai/gpt-5-nano',
   'openai/o4-mini',
-  'xai/grok-3-fast',
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'google/gemini-2.5-flash',
+  'google/gemini-2.5-pro',
+];
+
+export type ModelProvider =
+  | 'openai'
+  | 'anthropic'
+  | 'google'
+  | 'groq'
+  | 'openrouter'
+  | 'vercel'
+  | 'gateway'
+  | 'bedrock';
+
+export type Model = {
+  id: string;
+  name: string;
+  provider: ModelProvider;
+  byokOnly: boolean;
+  new: boolean;
+};
+
+export const ANTHROPIC_MODELS: Model[] = [
+  {
+    id: 'claude-3-7-sonnet-20250219',
+    name: 'Claude 3.7 Sonnet',
+    provider: 'anthropic',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'claude-sonnet-4-20250514',
+    name: 'Claude Sonnet 4',
+    provider: 'anthropic',
+    byokOnly: true,
+    new: false,
+  },
+];
+
+export const OPENAI_MODELS: Model[] = [
+  {
+    id: 'gpt-5',
+    name: 'GPT-5',
+    provider: 'openai',
+    byokOnly: false,
+    new: true,
+  },
+  {
+    id: 'gpt-5-mini',
+    name: 'GPT-5 Mini',
+    provider: 'openai',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'gpt-5-nano',
+    name: 'GPT-5 Mini',
+    provider: 'openai',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'o4-mini',
+    name: 'O4 Mini',
+    provider: 'openai',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'gpt-4.1',
+    name: 'GPT-4.1',
+    provider: 'openai',
+    byokOnly: true,
+    new: false,
+  },
+];
+
+export const GOOGLE_MODELS: Model[] = [
+  {
+    id: 'gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'google',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'gemini-2.5-pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'google',
+    byokOnly: false,
+    new: false,
+  },
+];
+
+export const GROQ_MODELS: Model[] = [
+  {
+    id: 'openai/gpt-oss-20b',
+    name: 'GPT-OSS 20B',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-oss-120b',
+    name: 'GPT-OSS 120B',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'moonshotai/kimi-k2-instruct',
+    name: 'Kimi K2 Instruct',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'deepseek-r1-distill-llama-70b',
+    name: 'DeepSeek R1 Distill Llama 70B',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+    name: 'Llama 4 Maverick 17B 128E Instruct',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'meta-llama/llama-4-scout-17b-16e-instruct',
+    name: 'Llama 4 Scout 17B 16E Instruct',
+    provider: 'groq',
+    byokOnly: true,
+    new: false,
+  },
+];
+
+export const BEDROCK_MODELS: Model[] = [
+  // I have free credits for these models
+  {
+    id: 'anthropic.claude-sonnet-4-20250514-v1:0',
+    name: 'Claude 4 Sonnet',
+    provider: 'bedrock',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'anthropic.claude-3-7-sonnet-20250219-v1:0',
+    name: 'Claude 3.7 Sonnet',
+    provider: 'bedrock',
+    byokOnly: false,
+    new: false,
+  },
+];
+
+export const VERCEL_MODELS: Model[] = [
+  {
+    id: 'v0-1.5-md',
+    name: 'v0 1.5 md',
+    provider: 'vercel',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'v0-1.5-lg',
+    name: 'v0 1.5 lg',
+    provider: 'vercel',
+    byokOnly: true,
+    new: false,
+  },
 ];
 
 export const TEST_PROMPTS = [
