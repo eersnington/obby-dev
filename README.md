@@ -38,7 +38,7 @@ pnpm run dev
 - Framework: Next.js
 - Database: Convex
 - Authentication: AuthKit by WorkOS
-- Payments: Paddle
+- Payments: Polar | Dodopayments
 
 
 
