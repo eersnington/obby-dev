@@ -28,20 +28,20 @@ async function fetchOpenRouterModels(): Promise<Model[]> {
       : [];
 
     const mapped = data.map((m): Model | null => {
-      const idCandidate =
-        (m?.id as string | undefined) ??
-        (m?.canonical_slug as string | undefined) ??
-        (m?.slug as string | undefined) ??
-        (m?.name as string | undefined);
+      const idCandidate = m?.id as string | undefined;
+
       if (!idCandidate) {
         return null;
       }
+
       const isSupported = SUPPORTED_MODELS_OPENROUTER.some(
         (id) => id === idCandidate
       );
+
       if (!isSupported) {
         return null;
       }
+
       return {
         id: idCandidate,
         name: (m?.name as string) ?? idCandidate,
