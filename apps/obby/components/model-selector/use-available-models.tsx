@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { ModelProvider } from '@/ai/constants';
 
 interface DisplayModel {
   id: string;
   label: string;
+  provider?: ModelProvider;
 }
 
 const MAX_RETRIES = 3;
@@ -27,12 +29,18 @@ export function useAvailableModels() {
           throw new Error('Failed to fetch models');
         }
         const data = await response.json();
-        const newModels = data.models.map(
-          (model: { id: string; name: string }) => ({
-            id: model.id,
-            label: model.name,
-          })
-        );
+        // Use the models exactly as returned by the API without altering ids or providers
+        const newModels: DisplayModel[] = (
+          data.models as Array<{
+            id: string;
+            name: string;
+            provider?: ModelProvider;
+          }>
+        ).map((model) => ({
+          id: model.id,
+          label: model.name,
+          provider: model.provider,
+        }));
         setModels(newModels);
         setError(null);
         setRetryCount(0);
@@ -43,12 +51,11 @@ export function useAvailableModels() {
         );
         if (retryCount < MAX_RETRIES) {
           setRetryCount((prev) => prev + 1);
+          // keep loading true while retrying
           setIsLoading(true);
         } else {
           setIsLoading(false);
         }
-      } finally {
-        setIsLoading(false);
       }
     },
     [retryCount]
