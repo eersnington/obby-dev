@@ -2,13 +2,28 @@ import type { GatewayModelId } from '@ai-sdk/gateway';
 
 export const DEFAULT_MODEL: GatewayModelId[number] = 'openai/gpt-5';
 
-export const SUPPORTED_MODELS: GatewayModelId[] = [
-  // Both OpenRouter and Vercel Gateway supported
-  'anthropic/claude-4-sonnet',
-  'anthropic/claude-3-7-sonnet',
+export const SUPPORTED_MODELS_GATEWAY: GatewayModelId[] = [
+  'anthropic/claude-sonnet-4',
+  'anthropic/claude-3.7-sonnet',
   'moonshotai/kimi-k2',
   'alibaba/qwen3-coder',
   'alibaba/qwen-3-235b',
+  'openai/gpt-5',
+  'openai/gpt-5-mini',
+  'openai/gpt-5-nano',
+  'openai/o4-mini',
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'google/gemini-2.5-flash',
+  'google/gemini-2.5-pro',
+];
+
+export const SUPPORTED_MODELS_OPENROUTER: GatewayModelId[] = [
+  'anthropic/claude-sonnet-4',
+  'anthropic/claude-3.7-sonnet',
+  'moonshotai/kimi-k2',
+  'qwen/qwen3-coder',
+  'qwen/qwen3-235b-a22b-thinking-2507',
   'openai/gpt-5',
   'openai/gpt-5-mini',
   'openai/gpt-5-nano',
