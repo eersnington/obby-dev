@@ -52,6 +52,77 @@ export type Model = {
   new: boolean;
 };
 
+// Provider metadata for UI and BYOK handling
+export const PROVIDERS: ModelProvider[] = [
+  'openai',
+  'anthropic',
+  'google',
+  'groq',
+  'openrouter',
+  'vercel',
+  'gateway',
+  'bedrock',
+];
+
+export const PROVIDER_LOGOS: Record<ModelProvider, string> = {
+  openai: '/providers/openai.svg',
+  anthropic: '/providers/anthropic.svg',
+  google: '/providers/gemini.svg',
+  groq: '/providers/groq.svg',
+  openrouter: '/providers/openrouter.svg',
+  vercel: '/providers/v0.svg',
+  gateway: '/providers/vercel.svg',
+  bedrock: '/providers/aws.svg',
+};
+
+type PROVIDER_API_KEYS =
+  | 'OPENAI_API_KEY'
+  | 'ANTHROPIC_API_KEY'
+  | 'GOOGLE_GENERATIVE_AI_API_KEY'
+  | 'GROQ_API_KEY'
+  | 'OPENROUTER_API_KEY'
+  | 'VERCEL_API_KEY'
+  | 'AI_GATEWAY_API_KEY';
+
+type ProviderKeySchema =
+  | { type: 'token'; placeholderEnv: PROVIDER_API_KEYS }
+  | {
+      type: 'aws';
+      fields: [
+        { name: 'region'; label: 'Region'; required: true },
+        { name: 'accessKeyId'; label: 'Access Key ID'; required: true },
+        { name: 'secretAccessKey'; label: 'Secret Access Key'; required: true },
+        {
+          name: 'sessionToken';
+          label: 'Session Token (optional)';
+          required: false;
+        },
+      ];
+    };
+
+export const PROVIDER_KEY_SCHEMAS: Record<ModelProvider, ProviderKeySchema> = {
+  openai: { type: 'token', placeholderEnv: 'OPENAI_API_KEY' },
+  anthropic: { type: 'token', placeholderEnv: 'ANTHROPIC_API_KEY' },
+  google: { type: 'token', placeholderEnv: 'GOOGLE_GENERATIVE_AI_API_KEY' },
+  groq: { type: 'token', placeholderEnv: 'GROQ_API_KEY' },
+  openrouter: { type: 'token', placeholderEnv: 'OPENROUTER_API_KEY' },
+  vercel: { type: 'token', placeholderEnv: 'VERCEL_API_KEY' },
+  gateway: { type: 'token', placeholderEnv: 'AI_GATEWAY_API_KEY' },
+  bedrock: {
+    type: 'aws',
+    fields: [
+      { name: 'region', label: 'Region', required: true },
+      { name: 'accessKeyId', label: 'Access Key ID', required: true },
+      { name: 'secretAccessKey', label: 'Secret Access Key', required: true },
+      {
+        name: 'sessionToken',
+        label: 'Session Token (optional)',
+        required: false,
+      },
+    ],
+  },
+};
+
 export const ANTHROPIC_MODELS: Model[] = [
   {
     id: 'claude-3-7-sonnet-20250219',
@@ -86,7 +157,7 @@ export const OPENAI_MODELS: Model[] = [
   },
   {
     id: 'gpt-5-nano',
-    name: 'GPT-5 Mini',
+    name: 'GPT-5 Nano',
     provider: 'openai',
     byokOnly: false,
     new: false,
@@ -170,7 +241,6 @@ export const GROQ_MODELS: Model[] = [
 ];
 
 export const BEDROCK_MODELS: Model[] = [
-  // I have free credits for these models
   {
     id: 'anthropic.claude-sonnet-4-20250514-v1:0',
     name: 'Claude 4 Sonnet',
