@@ -1,10 +1,14 @@
 <p align="center">
   <img src="./public/splash-image.png" alt="Screenshot of UI"/>
-  <h1 align="center">Obby – The AI Editor for the Web</h1>
+  <h1 align="center">Obby – AI Background agent for your codebase (WIP)</h1>
 </p>
 
 <p align="center">
-    Obby is a developer-first web editor powered by AI. It helps you design, build, and ship real apps from scratch.
+  Obby is a background agent that takes instructions, navigates your codebase, and make changes in the background.
+</p>
+
+<p align="center">
+  Link: <a href="https://obby.dev">obby.dev</a>
 </p>
 
 ## Getting started
