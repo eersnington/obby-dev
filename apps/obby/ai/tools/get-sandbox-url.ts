@@ -5,9 +5,9 @@ import z from 'zod/v3';
 import type { DataPart } from '../messages/data-parts';
 import description from './get-sandbox-url.md';
 
-interface Params {
+type Params = {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 export const getSandboxURL = ({ writer }: Params) =>
   tool({

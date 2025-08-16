@@ -7,10 +7,10 @@ const gateway = createGatewayProvider({
   apiKey: env.AI_GATEWAY_API_KEY ?? '',
 });
 
-export interface AvailableModel {
+type AvailableModel = {
   id: GatewayModelId | 'openai/gpt-5';
   name: string;
-}
+};
 
 export async function getAvailableModels(): Promise<AvailableModel[]> {
   const response = await gateway.getAvailableModels(); // this can errors out but doesn't have the need tell me it do. god i need effect
@@ -18,11 +18,11 @@ export async function getAvailableModels(): Promise<AvailableModel[]> {
   return [...response.models.map(({ id, name }) => ({ id, name }))];
 }
 
-interface ModelOptions {
+type ModelOptions = {
   model: string;
   providerOptions?: Record<string, Record<string, JSONValue>>;
   headers?: Record<string, string>;
-}
+};
 
 export function getModelOptions(modelId: string): ModelOptions {
   if (modelId === 'openai/o4-mini') {

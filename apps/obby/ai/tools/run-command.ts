@@ -5,9 +5,9 @@ import z from 'zod/v3';
 import type { DataPart } from '../messages/data-parts';
 import description from './run-command.md';
 
-interface Params {
+type Params = {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 export const runCommand = ({ writer }: Params) =>
   tool({
@@ -24,7 +24,7 @@ export const runCommand = ({ writer }: Params) =>
       args: z
         .array(z.string())
         .optional()
-        .describe(
+        .describe(  
           "Array of arguments for the command. Each argument should be a separate string (e.g., ['install', '--verbose'] for npm install --verbose, or ['src/index.js'] to run a file, or ['-la', './src'] to list files). IMPORTANT: Use relative paths (e.g., 'src/file.js') or absolute paths instead of trying to change directories with 'cd' first, since each command runs in a fresh shell session."
         ),
       sudo: z

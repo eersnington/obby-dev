@@ -8,10 +8,10 @@ import type { DataPart } from '../messages/data-parts';
 import description from './generate-files.md';
 import prompt from './generate-files-prompt.md';
 
-interface Params {
+type Params = {
   modelId: string;
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 const fileSchema = z.object({
   path: z
@@ -106,11 +106,11 @@ export const generateFiles = ({ writer, modelId }: Params) =>
     },
   });
 
-interface Dependencies {
+type Dependencies = {
   sandbox: Sandbox;
   toolCallId: string;
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 function getWriteFiles({ sandbox, toolCallId, writer }: Dependencies) {
   return async function writeFiles(params: {

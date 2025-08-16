@@ -27,14 +27,14 @@
   },
   "devDependencies": {
     "@auto-it/first-time-contributor": "^11.3.0",
-    "@biomejs/biome": "2.1.2",
+    "@biomejs/biome": "2.2.0",
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^2.5.3",
     "@types/node": "^22.15.21",
     "tsup": "^8.5.0",
     "turbo": "^2.5.3",
     "typescript": "^5.8.3",
-    "ultracite": "^5.1.2",
+    "ultracite": "^5.1.3",
     "vitest": "^3.1.4"
   },
   "engines": {

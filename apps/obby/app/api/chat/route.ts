@@ -14,10 +14,12 @@ import { getAvailableModels, getModelOptions } from '@/ai/gateway';
 import { tools } from '@/ai/tools';
 import prompt from './prompt.md';
 
-interface BodyData {
+type BodyData = {
   messages: UIMessage[];
   modelId?: string;
-}
+};
+
+const STEP_COUNT = 20;
 
 export async function POST(req: Request) {
   const checkResult = await checkBotId();
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
           ...getModelOptions(modelId),
           system: prompt,
           messages: convertToModelMessages(messages),
-          stopWhen: stepCountIs(20),
+          stopWhen: stepCountIs(STEP_COUNT),
           tools: tools({ modelId, writer }),
           onError: (error) => {
             log.error('Error communicating with AI');

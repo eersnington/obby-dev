@@ -6,9 +6,9 @@ import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
 import description from './create-sandbox.md';
 
-interface Params {
+type Params = {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 export const createSandbox = ({ writer }: Params) =>
   tool({
