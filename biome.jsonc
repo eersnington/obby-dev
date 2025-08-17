@@ -4,6 +4,9 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "complexity": {
+        "noExcessiveLinesPerFunction": "off"
+      },
       "nursery": {
         //Enforce type definitions to consistently use either interface or type.
         "useConsistentTypeDefinitions": {
