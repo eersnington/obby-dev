@@ -15,13 +15,15 @@ import { Label } from '@repo/design-system/components/ui/label';
 import { cn } from '@repo/design-system/lib/utils';
 import { toast } from '@repo/design-system/sonner';
 import { CheckIcon, KeyIcon, LayersIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   type ModelProvider,
   PROVIDER_KEY_SCHEMAS,
   PROVIDER_LOGOS,
   PROVIDERS,
 } from '@/ai/constants';
+import { useModelStore } from '@/stores/use-model-store';
+import { useProviderKeysStore } from '@/stores/use-provider-store';
 import { useAvailableModels } from './use-available-models';
 
 type Props = {
@@ -41,63 +43,83 @@ export function ModelSelectorModal({
   const provider = useModelStore((s) => s.selectedProvider) as ModelProvider;
   const setProviderStore = useModelStore((s) => s.setProvider);
   const setProvider = (p: ModelProvider) => setProviderStore(p);
-  const [apiKey, setApiKey] = useState('');
-  const [awsFields, setAwsFields] = useState({
-    region: '',
-    accessKeyId: '',
-    secretAccessKey: '',
-    sessionToken: '',
+  const getKey = useProviderKeysStore((s) => s.getKey);
+  const setKey = useProviderKeysStore((s) => s.setKey);
+
+  const [apiKey, setApiKey] = useState(() => {
+    if (typeof window !== 'undefined' && provider && provider !== 'bedrock') {
+      const stored = useProviderKeysStore.getState().getKey(provider);
+      return typeof stored === 'string' ? stored : '';
+    }
+    return '';
   });
+
+  const [awsFields, setAwsFields] = useState(() => {
+    if (typeof window !== 'undefined' && provider === 'bedrock') {
+      const stored = useProviderKeysStore.getState().getKey(provider);
+      if (stored && typeof stored === 'object') {
+        return {
+          region: stored.region || '',
+          accessKeyId: stored.accessKeyId || '',
+          secretAccessKey: stored.secretAccessKey || '',
+          sessionToken: stored.sessionToken || '',
+        };
+      }
+    }
+    return {
+      region: '',
+      accessKeyId: '',
+      secretAccessKey: '',
+      sessionToken: '',
+    };
+  });
+
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (!open) {
-      setApiKey('');
-      setAwsFields({
-        region: '',
-        accessKeyId: '',
-        secretAccessKey: '',
-        sessionToken: '',
-      });
-    }
-  }, [open]);
+  // Reset form when modal closes
+  if (!open && (apiKey || awsFields.region || awsFields.accessKeyId)) {
+    setApiKey('');
+    setAwsFields({
+      region: '',
+      accessKeyId: '',
+      secretAccessKey: '',
+      sessionToken: '',
+    });
+  }
 
-  useEffect(() => {
-    // Load stored key for current provider
-    (async () => {
-      try {
-        if (provider === 'bedrock') {
-          const val = await getProviderKey<{
-            region: string;
-            accessKeyId: string;
-            secretAccessKey: string;
-            sessionToken?: string;
-          }>(provider);
-          if (val) {
-            setAwsFields({
-              region: val.region ?? '',
-              accessKeyId: val.accessKeyId ?? '',
-              secretAccessKey: val.secretAccessKey ?? '',
-              sessionToken: val.sessionToken ?? '',
-            });
-          } else {
-            setAwsFields({
-              region: '',
-              accessKeyId: '',
-              secretAccessKey: '',
-              sessionToken: '',
-            });
-          }
-          setApiKey('');
-        } else {
-          const token = await getProviderKey<string>(provider);
-          setApiKey(token ?? '');
+  // Load stored key when provider changes
+  if (typeof window !== 'undefined' && provider) {
+    const storedKey = getKey(provider);
+    if (provider === 'bedrock') {
+      if (storedKey && typeof storedKey === 'object') {
+        const currentFields = {
+          region: storedKey.region || '',
+          accessKeyId: storedKey.accessKeyId || '',
+          secretAccessKey: storedKey.secretAccessKey || '',
+          sessionToken: storedKey.sessionToken || '',
+        };
+        if (JSON.stringify(currentFields) !== JSON.stringify(awsFields)) {
+          setAwsFields(currentFields);
         }
-      } catch {
-        // ignore
       }
-    })();
-  }, [provider]);
+      if (apiKey) {
+        setApiKey('');
+      }
+    } else {
+      const tokenValue = typeof storedKey === 'string' ? storedKey : '';
+      if (apiKey !== tokenValue) {
+        setApiKey(tokenValue);
+      }
+      if (awsFields.region || awsFields.accessKeyId) {
+        setAwsFields({
+          region: '',
+          accessKeyId: '',
+          secretAccessKey: '',
+          sessionToken: '',
+        });
+      }
+    }
+  }
 
   const grouped = useMemo(() => {
     const map = new Map<
@@ -131,13 +153,14 @@ export function ModelSelectorModal({
 
   const providers = useMemo(() => PROVIDERS, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: incorrect suggestion
-  useEffect(() => {
-    const valid = providers.includes(provider);
-    if (providers.length && !valid) {
-      setProvider(providers[0] as ModelProvider);
-    }
-  }, [providers, provider]);
+  // Ensure valid provider is selected
+  if (
+    typeof window !== 'undefined' &&
+    providers.length &&
+    !providers.includes(provider)
+  ) {
+    setProvider(providers[0] as ModelProvider);
+  }
 
   const currentModels = grouped.get(provider) ?? [];
 
@@ -146,12 +169,12 @@ export function ModelSelectorModal({
 
   const schema = PROVIDER_KEY_SCHEMAS[provider];
 
-  async function onSave(e: React.FormEvent<HTMLFormElement>) {
+  function onSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       setSaving(true);
       if (schema.type === 'token') {
-        await setProviderKey(provider, apiKey.trim() || null);
+        setKey(provider, apiKey.trim() || null);
       } else {
         const payload = {
           region: awsFields.region.trim(),
@@ -159,7 +182,7 @@ export function ModelSelectorModal({
           secretAccessKey: awsFields.secretAccessKey.trim(),
           sessionToken: awsFields.sessionToken.trim() || undefined,
         };
-        await setProviderKey(provider, payload);
+        setKey(provider, payload);
       }
       toast.success('Saved', {
         description: `Your API key for ${provider} has been saved.`,
@@ -178,7 +201,6 @@ export function ModelSelectorModal({
       title="Model Selector"
     >
       <div className="flex h-[60vh] min-h-[420px] w-full flex-col md:flex-row">
-        {/* Providers List */}
         <aside className="w-full border-b p-4 md:w-56 md:border-r md:border-b-0">
           <div className="mb-3 flex items-center gap-2 text-muted-foreground text-xs">
             <LayersIcon className="size-4" />
@@ -212,7 +234,6 @@ export function ModelSelectorModal({
           </div>
         </aside>
 
-        {/* Models and API Key */}
         <section className="flex min-w-0 flex-1 flex-col">
           <div className="border-b px-4 py-3">
             <CommandInput

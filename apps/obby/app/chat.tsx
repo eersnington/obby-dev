@@ -7,20 +7,18 @@ import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { toast } from '@repo/design-system/sonner';
 import { log } from '@repo/observability/log';
 import { MessageCircleIcon, SendIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { MoonLoader } from 'react-spinners';
 import { mutate } from 'swr';
 import { DEFAULT_MODEL, TEST_PROMPTS } from '@/ai/constants';
 import { Message } from '@/components/chat/message';
 import type { ChatUIMessage } from '@/components/chat/types';
-import {
-  getSelectedModelId,
-  setSelectedModelId,
-} from '@/components/model-selector/model-selection';
 import { ModelSelector } from '@/components/model-selector/model-selector';
-import { ModelSelectorModal } from '@/components/model-selector/model-selector-modal';
+import { ModelSelectorModal } from '@/components/model-selector/model-selector-cmdk';
 import { Panel, PanelHeader } from '@/components/panels/panels';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
+import { useModelStore } from '@/stores/use-model-store';
+import { useProviderKeysStore } from '@/stores/use-provider-store';
 import { useDataStateMapper } from './state';
 
 type Props = {
@@ -29,7 +27,17 @@ type Props = {
 };
 
 export function Chat({ className }: Props) {
-  const [modelId, setModelId] = useState<string>(DEFAULT_MODEL);
+  const setModel = useModelStore((s) => s.setModel);
+  const getAllKeys = useProviderKeysStore((s) => s.keys);
+  
+  const [modelId, setModelId] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = useModelStore.getState().selectedModelId;
+      return stored || DEFAULT_MODEL;
+    }
+    return DEFAULT_MODEL;
+  });
+  
   const [modelModalOpen, setModelModalOpen] = useState(false);
   const [input, setInput] = useLocalStorageValue('prompt-input');
   const mapDataToState = useDataStateMapper();
@@ -43,24 +51,15 @@ export function Chat({ className }: Props) {
     },
   });
 
-  useEffect(() => {
-    if (messages.length >= 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages.length]);
-
-  useEffect(() => {
-    (async () => {
-      const stored = await getSelectedModelId();
-      if (stored) {
-        setModelId(stored);
-      }
-    })();
-  }, []);
+  // Auto-scroll to bottom when new messages arrive
+  if (messages.length > 0) {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const validateAndSubmitMessage = (text: string) => {
     if (text.trim()) {
-      sendMessage({ text }, { body: { modelId } });
+      const userApiKeys = getAllKeys;
+      sendMessage({ text }, { body: { modelId, userApiKeys } });
       setInput('');
     }
   };
@@ -126,9 +125,9 @@ export function Chat({ className }: Props) {
         </Button>
         <ModelSelector
           modelId={modelId}
-          onModelChange={async (newModelId: string) => {
+          onModelChange={(newModelId: string) => {
             setModelId(newModelId);
-            await setSelectedModelId(newModelId);
+            setModel(newModelId);
           }}
         />
         <Input
@@ -147,9 +146,9 @@ export function Chat({ className }: Props) {
         </Button>
       </form>
       <ModelSelectorModal
-        onChange={async (newId) => {
+        onChange={(newId) => {
           setModelId(newId);
-          await setSelectedModelId(newId);
+          setModel(newId);
         }}
         onOpenChange={setModelModalOpen}
         open={modelModalOpen}

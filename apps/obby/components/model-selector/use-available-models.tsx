@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ModelProvider } from '@/ai/constants';
 
-interface DisplayModel {
+type DisplayModel = {
   id: string;
   label: string;
   provider?: ModelProvider;
-}
+  byokOnly?: boolean;
+};
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MILLIS = 5000;
@@ -35,11 +36,13 @@ export function useAvailableModels() {
             id: string;
             name: string;
             provider?: ModelProvider;
+            byokOnly?: boolean;
           }>
         ).map((model) => ({
           id: model.id,
           label: model.name,
           provider: model.provider,
+          byokOnly: model.byokOnly,
         }));
         setModels(newModels);
         setError(null);

@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@repo/design-system/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -12,13 +13,13 @@ import {
 import { Loader2Icon } from 'lucide-react';
 import { memo, useMemo } from 'react';
 import { PROVIDER_LOGOS } from '@/ai/constants';
-import { useModelStore } from './models-store';
+import { useModelStore } from '@/stores/use-model-store';
 import { useAvailableModels } from './use-available-models';
 
-interface Props {
+type Props = {
   modelId: string;
   onModelChange: (modelId: string) => void;
-}
+};
 
 const providerIconSrc: Record<string, string> = PROVIDER_LOGOS as Record<
   string,
@@ -32,7 +33,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
   const { models, isLoading, error } = useAvailableModels();
   const selectedProvider = useModelStore((s) => s.selectedProvider);
   const setProvider = useModelStore((s) => s.setProvider);
-  const isDisabled = isLoading || !!error || !models?.length;
+  const isDisabled = isLoading || Boolean(error) || !models?.length;
   const triggerContent = useMemo(() => {
     if (isLoading) {
       return (
@@ -143,6 +144,11 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
                       ? `${model.provider} / ${model.displayName}`
                       : model.label}
                   </span>
+                  {model.byokOnly && (
+                    <Badge className="ml-auto text-xs" variant="secondary">
+                      BYOK
+                    </Badge>
+                  )}
                 </span>
               </SelectItem>
             );
