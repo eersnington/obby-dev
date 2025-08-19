@@ -14,7 +14,7 @@ const securityHeaders = env.FLAGS_SECRET
 const authMiddleware = authkitMiddleware({
   middlewareAuth: {
     enabled: true,
-    unauthenticatedPaths: ['/'],
+    unauthenticatedPaths: ['/', '/pricing'],
   },
 });
 
