@@ -9,9 +9,9 @@ import { SignInButton } from '@/components/layout/sign-in-button';
 import { SignUpButton } from '@/components/layout/sign-up-button';
 import { UserNav } from '@/components/layout/user-nav';
 
-interface Props {
+type Props = {
   className?: string;
-}
+};
 
 export async function Header({ className }: Props) {
   const { user, role } = await withAuth();
@@ -19,10 +19,12 @@ export async function Header({ className }: Props) {
   return (
     <header className={cn('flex items-center justify-between', className)}>
       <div className="flex items-center">
-        <ObbyLogo className="mr-1.5 ml-1 md:ml-2.5" />
-        <span className="hidden font-bold font-mono text-md tracking-tight md:inline">
-          0bby
-        </span>
+        <Link className="flex items-center" href="/" prefetch>
+          <ObbyLogo className="mr-1.5 ml-1 md:ml-2.5" />
+          <span className="hidden font-bold font-mono text-md tracking-tight md:inline">
+            0bby
+          </span>
+        </Link>
       </div>
       <div className="ml-auto flex items-center space-x-1.5">
         {!user && (
