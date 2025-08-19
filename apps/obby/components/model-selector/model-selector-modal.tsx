@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@repo/design-system/components/ui/badge';
 import { Button } from '@repo/design-system/components/ui/button';
 import {
   CommandDialog,
@@ -13,7 +14,7 @@ import { Input } from '@repo/design-system/components/ui/input';
 import { Label } from '@repo/design-system/components/ui/label';
 import { cn } from '@repo/design-system/lib/utils';
 import { toast } from '@repo/design-system/sonner';
-import { CheckIcon, KeyIcon, LayersIcon, XIcon } from 'lucide-react';
+import { CheckIcon, KeyIcon, LayersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import {
   type ModelProvider,
@@ -21,16 +22,14 @@ import {
   PROVIDER_LOGOS,
   PROVIDERS,
 } from '@/ai/constants';
-import { useModelStore } from './models-store';
-import { getProviderKey, setProviderKey } from './provider-keys';
 import { useAvailableModels } from './use-available-models';
 
-interface Props {
+type Props = {
   open: boolean;
   onOpenChange(open: boolean): void;
   value?: string;
   onChange(modelId: string): void;
-}
+};
 
 export function ModelSelectorModal({
   open,
@@ -103,7 +102,7 @@ export function ModelSelectorModal({
   const grouped = useMemo(() => {
     const map = new Map<
       string,
-      { id: string; name: string; provider?: string }[]
+      { id: string; name: string; provider?: string; byokOnly?: boolean }[]
     >();
     // initialize all known providers to keep the left list stable
     for (const p of PROVIDERS) {
@@ -117,7 +116,12 @@ export function ModelSelectorModal({
       if (!list) {
         continue;
       }
-      list.push({ id: m.id, name: m.label, provider: m.provider });
+      list.push({
+        id: m.id,
+        name: m.label,
+        provider: m.provider,
+        byokOnly: m.byokOnly,
+      });
     }
     for (const list of map.values()) {
       list.sort((a, b) => a.name.localeCompare(b.name));
@@ -167,45 +171,42 @@ export function ModelSelectorModal({
 
   return (
     <CommandDialog
-      contentClassName="sm:max-w-[940px]"
+      contentClassName="sm:max-w-4xl"
       description="Pick a provider and model, and optionally set your own API key."
       onOpenChange={onOpenChange}
       open={open}
       title="Model Selector"
     >
-      <div className="grid h-[60vh] min-h-[420px] w-[980px] max-w-[min(95vw,1100px)] grid-cols-[220px_1fr]">
+      <div className="flex h-[60vh] min-h-[420px] w-full flex-col md:flex-row">
         {/* Providers List */}
-        <aside className="min-w-[220px] overflow-y-auto border-r p-2">
-          <div className="mb-2 flex items-center gap-2 px-1 text-muted-foreground text-xs">
-            <LayersIcon className="size-4" /> Providers
+        <aside className="w-full border-b p-4 md:w-56 md:border-r md:border-b-0">
+          <div className="mb-3 flex items-center gap-2 text-muted-foreground text-xs">
+            <LayersIcon className="size-4" />
+            Providers
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="grid grid-cols-2 gap-1 md:flex md:flex-col">
             {providers.map((p) => (
               <Button
                 className={cn(
-                  'justify-start px-8',
-                  provider === p && 'bg-primary/40 text-primary-foreground'
+                  'justify-start gap-2 px-3 py-2',
+                  provider === p && 'bg-primary/10 text-primary'
                 )}
                 key={p}
                 onClick={() => setProvider(p)}
+                size="sm"
                 variant="ghost"
               >
-                <span
-                  aria-hidden
-                  className="inline-block size-[14px] text-primary"
+                <div
+                  aria-hidden="true"
+                  className="size-4 shrink-0 bg-current"
                   style={{
-                    backgroundColor: 'currentColor',
-                    WebkitMaskImage: `url(${iconFor(p)})`,
                     maskImage: `url(${iconFor(p)})`,
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskRepeat: 'no-repeat',
-                    WebkitMaskSize: 'contain',
                     maskSize: 'contain',
-                    WebkitMaskPosition: 'center',
+                    maskRepeat: 'no-repeat',
                     maskPosition: 'center',
                   }}
                 />
-                <span className="truncate">{p}</span>
+                <span className="truncate text-sm">{p}</span>
               </Button>
             ))}
           </div>
@@ -213,48 +214,59 @@ export function ModelSelectorModal({
 
         {/* Models and API Key */}
         <section className="flex min-w-0 flex-1 flex-col">
-          <div className="px-3 py-2">
+          <div className="border-b px-4 py-3">
             <CommandInput
               placeholder={isLoading ? 'Loading models...' : 'Search models...'}
             />
           </div>
-          {/* <CommandSeparator /> */}
-          <CommandList className="flex-1 overflow-y-auto" key={provider}>
-            <CommandEmpty>No models found.</CommandEmpty>
-            <CommandGroup heading={`${provider} models`}>
-              {currentModels.map((m) => (
-                <CommandItem
-                  key={`${m.provider ?? 'unknown'}:${m.id}`}
-                  onSelect={() => {
-                    // Update model id and also remember the provider choice
-                    onChange(m.id);
-                    setProvider((m.provider as ModelProvider) ?? provider);
-                    onOpenChange(false);
-                  }}
-                  value={`${m.name} ${m.id}`}
-                >
-                  <span className="truncate">{m.name}</span>
-                  {value === m.id && <CheckIcon className="ml-auto size-4" />}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
 
-          <div className="flex items-center gap-2 border-t p-3">
-            <Label className="shrink-0 text-xs">
-              <span className="inline-flex items-center gap-1">
-                <KeyIcon className="size-3" /> API key
-              </span>
-            </Label>
-            <form className="flex w-full items-center gap-2" onSubmit={onSave}>
-              <input hidden name="provider" readOnly value={provider} />
+          <div className="flex-1 overflow-hidden">
+            <CommandList className="h-full overflow-y-auto" key={provider}>
+              <CommandEmpty>No models found.</CommandEmpty>
+              <CommandGroup className="p-2" heading={`${provider} models`}>
+                {currentModels.map((m) => (
+                  <CommandItem
+                    className="flex items-center gap-2 px-3 py-2"
+                    key={`${m.provider ?? 'unknown'}:${m.id}`}
+                    onSelect={() => {
+                      onChange(m.id);
+                      setProvider((m.provider as ModelProvider) ?? provider);
+                      onOpenChange(false);
+                    }}
+                    value={`${m.name} ${m.id}`}
+                  >
+                    <span className="flex-1 truncate">{m.name}</span>
+                    {m.byokOnly && (
+                      <Badge className="text-xs" variant="secondary">
+                        BYOK
+                      </Badge>
+                    )}
+                    {value === m.id && (
+                      <CheckIcon className="size-4 text-primary" />
+                    )}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </div>
+
+          <div className="border-t p-4">
+            <div className="mb-3 flex items-center gap-2">
+              <KeyIcon className="size-4" />
+              <Label className="font-medium text-sm">API Configuration</Label>
+            </div>
+
+            <form className="space-y-4" onSubmit={onSave}>
+              <input name="provider" type="hidden" value={provider} />
+
               {schema.type === 'token' ? (
-                <>
+                <div className="flex gap-2">
                   <Input
                     autoComplete="off"
+                    className="flex-1"
                     name="apiKey"
                     onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={`Set ${provider} API key`}
+                    placeholder={`Enter ${provider} API key`}
                     type="password"
                     value={apiKey}
                   />
@@ -263,51 +275,47 @@ export function ModelSelectorModal({
                     type="submit"
                     variant="outline"
                   >
-                    Save
+                    {saving ? 'Saving...' : 'Save'}
                   </Button>
-                </>
+                </div>
               ) : (
-                <div className="grid w-full grid-cols-2 gap-2">
-                  {schema.fields.map((f) => (
-                    <div className="flex items-center gap-2" key={f.name}>
-                      <Label className="w-28 text-xs">{f.label}</Label>
-                      <Input
-                        autoComplete="off"
-                        name={f.name}
-                        onChange={(e) =>
-                          setAwsFields((prev) => ({
-                            ...prev,
-                            [f.name]: e.target.value,
-                          }))
-                        }
-                        placeholder={f.label}
-                        type={
-                          f.name.toLowerCase().includes('key')
-                            ? 'password'
-                            : 'text'
-                        }
-                        value={
-                          (awsFields as Record<string, string>)[f.name] ?? ''
-                        }
-                      />
-                    </div>
-                  ))}
-                  <div className="col-span-2 flex justify-end gap-2">
+                <div className="space-y-3">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {schema.fields.map((f) => (
+                      <div className="space-y-1" key={f.name}>
+                        <Label className="text-xs" htmlFor={f.name}>
+                          {f.label}
+                        </Label>
+                        <Input
+                          autoComplete="off"
+                          id={f.name}
+                          name={f.name}
+                          onChange={(e) =>
+                            setAwsFields((prev) => ({
+                              ...prev,
+                              [f.name]: e.target.value,
+                            }))
+                          }
+                          placeholder={f.label}
+                          type={
+                            f.name.toLowerCase().includes('key')
+                              ? 'password'
+                              : 'text'
+                          }
+                          value={
+                            (awsFields as Record<string, string>)[f.name] ?? ''
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-end">
                     <Button disabled={saving} type="submit" variant="outline">
                       Save
                     </Button>
                   </div>
                 </div>
               )}
-              <Button
-                className="text-muted-foreground"
-                onClick={() => onOpenChange(false)}
-                size="icon"
-                type="button"
-                variant="ghost"
-              >
-                <XIcon className="size-4" />
-              </Button>
             </form>
           </div>
         </section>
