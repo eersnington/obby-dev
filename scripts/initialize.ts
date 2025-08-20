@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/nursery/noAwaitInLoop: this is just for script */
 import { copyFile, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
