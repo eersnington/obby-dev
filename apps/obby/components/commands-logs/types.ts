@@ -1,4 +1,4 @@
-export interface Command {
+export type Command = {
   sandboxId: string;
   cmdId: string;
   startedAt: number;
@@ -6,10 +6,10 @@ export interface Command {
   args: string[];
   exitCode?: number;
   logs?: CommandLog[];
-}
+};
 
-export interface CommandLog {
+export type CommandLog = {
   data: string;
   stream: 'stdout' | 'stderr';
   timestamp: number;
-}
+};

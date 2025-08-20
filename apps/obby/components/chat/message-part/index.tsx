@@ -10,9 +10,9 @@ import { RunCommand } from './run-command';
 import { Text } from './text';
 import { WaitCommand } from './wait-command';
 
-interface Props {
+type Props = {
   part: UIMessage<Metadata, DataPart, ToolSet>['parts'][number];
-}
+};
 
 export function MessagePart({ part }: Props) {
   if (part.type === 'data-generating-files') {

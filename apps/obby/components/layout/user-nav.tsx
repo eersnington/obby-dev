@@ -98,7 +98,12 @@ export function UserNav({ user }: { user: User }) {
             <div className="h-1.5 w-full rounded-full bg-secondary">
               <div
                 className="h-1.5 rounded-full bg-primary transition-all duration-300"
-                style={{ width: `${(creditsUsed / creditsTotal) * 100}%` }}
+                style={{
+                  width: `${
+                    // biome-ignore lint/style/noMagicNumbers: this is obvious.
+                    (creditsUsed / creditsTotal) * 100
+                  }%`,
+                }}
               />
             </div>
             <p className="text-muted-foreground text-xs">

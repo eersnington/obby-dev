@@ -10,7 +10,7 @@ type DisplayModel = {
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 5000; // 5 seconds
-// biome-ignore lint/style/noMagicNumbers: not magic numbers
+// biome-ignore lint/style/noMagicNumbers: not magic numbers. this is obvious.
 const STALE_TIME_MS = 5 * 60 * 1000; // 5 minutes
 
 async function fetchModels(): Promise<DisplayModel[]> {

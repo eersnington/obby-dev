@@ -1,10 +1,10 @@
 import { Sandbox } from '@vercel/sandbox';
 import { type NextRequest, NextResponse } from 'next/server';
 
-interface Params {
+type Params = {
   sandboxId: string;
   cmdId: string;
-}
+};
 
 export async function GET(
   _request: NextRequest,

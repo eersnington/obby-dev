@@ -4,7 +4,7 @@ import { cn } from '@repo/design-system/lib/utils';
 import type { ReactNode } from 'react';
 import { useTabState } from './use-tab-state';
 
-interface Props {
+type Props = {
   className?: string;
   children: ReactNode;
   tabId: string;

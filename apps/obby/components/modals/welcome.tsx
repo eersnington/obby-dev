@@ -6,10 +6,10 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 
-interface State {
+type State = {
   open: boolean | undefined;
   setOpen: (open: boolean) => void;
-}
+};
 
 type SetState<T> = (partial: Partial<T> | ((state: T) => Partial<T>)) => void;
 
@@ -47,7 +47,7 @@ export function Welcome(props: {
       />
       <div className="relative flex h-full w-full items-center justify-center">
         <div className="mx-4 max-w-xl overflow-hidden rounded-lg bg-background shadow">
-          <div className="space-y-4 p-6 ">
+          <div className="space-y-4 p-6">
             <h1 className="sans-serif mb-7 font-semibold text-2xl tracking-tight">
               OSS Vibe Coding Platform
             </h1>

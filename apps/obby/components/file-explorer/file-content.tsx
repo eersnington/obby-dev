@@ -2,10 +2,10 @@ import { PulseLoader } from 'react-spinners';
 import useSWR from 'swr';
 import { SyntaxHighlighter } from './syntax-highlighter';
 
-interface Props {
+type Props = {
   sandboxId: string;
   path: string;
-}
+};
 
 export function FileContent({ sandboxId, path }: Props) {
   const searchParams = new URLSearchParams({ path });

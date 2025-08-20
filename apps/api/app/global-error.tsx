@@ -11,16 +11,16 @@ type GlobalErrorProperties = {
   readonly reset: () => void;
 };
 
-const GlobalError = ({ error, reset }: GlobalErrorProperties) => {
+const GlobalError = (props: GlobalErrorProperties) => {
   useEffect(() => {
-    captureException(error);
-  }, [error]);
+    captureException(props.error);
+  }, [props.error]);
 
   return (
     <html className={fonts} lang="en">
       <body>
         <h1>Oops, something went wrong</h1>
-        <Button onClick={() => reset()}>Try again</Button>
+        <Button onClick={() => props.reset()}>Try again</Button>
       </body>
     </html>
   );

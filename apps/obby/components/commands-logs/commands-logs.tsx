@@ -7,12 +7,12 @@ import { Panel, PanelHeader } from '@/components/panels/panels';
 import { CommandLogs } from './command-logs';
 import type { Command, CommandLog } from './types';
 
-interface Props {
+type Props = {
   className?: string;
   commands: Command[];
   onLog: (data: { sandboxId: string; cmdId: string; log: CommandLog }) => void;
   onCompleted: (data: Command) => void;
-}
+};
 
 export function CommandsLogs(props: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);

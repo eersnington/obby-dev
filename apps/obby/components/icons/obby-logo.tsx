@@ -1,8 +1,9 @@
 import Image from 'next/image';
 
-interface Props {
+type Props = {
   className?: string;
-}
+};
+
 export function ObbyLogo({ className }: Props) {
   return (
     <Image

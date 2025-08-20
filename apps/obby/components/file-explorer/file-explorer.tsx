@@ -16,12 +16,15 @@ import { FileContent } from '@/components/file-explorer/file-content';
 import { Panel, PanelHeader } from '@/components/panels/panels';
 import { buildFileTree, type FileNode } from './build-file-tree';
 
-interface Props {
+type Props = {
   className: string;
   disabled?: boolean;
   paths: string[];
   sandboxId?: string;
-}
+};
+
+const PADDING_LEFT = 16;
+const PADDING_LEFT_DEPTH = 8;
 
 export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
   const fileTree = useMemo(() => buildFileTree(paths), [paths]);
@@ -68,7 +71,9 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
               selectFile(node);
             }
           }}
-          style={{ paddingLeft: `${depth * 16 + 8}px` }}
+          style={{
+            paddingLeft: `${depth * PADDING_LEFT + PADDING_LEFT_DEPTH}px`,
+          }}
           type="button"
         >
           {node.type === 'folder' ? (
@@ -83,7 +88,7 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
           ) : (
             <>
               <div className="mr-1 w-4" />
-              <FileIcon className="mr-2 w-4 " />
+              <FileIcon className="mr-2 w-4" />
             </>
           )}
           <span className="">{node.name}</span>

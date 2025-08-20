@@ -1,10 +1,10 @@
 import { cn } from '@repo/design-system/lib/utils';
 import type { ReactNode } from 'react';
 
-interface Props {
+type Props = {
   className?: string;
   children: ReactNode;
-}
+};
 
 export function Panel({ className, children }: Props) {
   return (

@@ -3,11 +3,11 @@ import { useEffect, useRef } from 'react';
 import z from 'zod/v3';
 import type { Command, CommandLog } from './types';
 
-interface Props {
+type Props = {
   command: Command;
   onLog: (data: { sandboxId: string; cmdId: string; log: CommandLog }) => void;
   onCompleted: (data: Command) => void;
-}
+};
 
 export function CommandLogs({ command, onLog, onCompleted }: Props) {
   const ref = useRef<Awaited<ReturnType<typeof getCommandLogs>>>(null);
@@ -79,8 +79,8 @@ async function* getCommandLogs(sandboxId: string, cmdId: string) {
   const decoder = new TextDecoder();
   let line = '';
 
+  // biome-ignore lint/nursery/noUnnecessaryConditions: work on this later
   while (true) {
-    // biome-ignore lint/nursery/noAwaitInLoop: this is intended
     const { done, value } = await reader.read();
     if (done) {
       break;

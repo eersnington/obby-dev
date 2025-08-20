@@ -3,9 +3,9 @@ import { BotIcon, UserIcon } from 'lucide-react';
 import { MessagePart } from './message-part';
 import type { ChatUIMessage } from './types';
 
-interface Props {
+type Props = {
   message: ChatUIMessage;
-}
+};
 
 export function Message({ message }: Props) {
   return (

@@ -4,10 +4,10 @@ import { cn } from '@repo/design-system/lib/utils';
 import type { ReactNode } from 'react';
 import { useTabState } from './use-tab-state';
 
-interface Props {
+type Props = {
   children: ReactNode;
   tabId: string;
-}
+};
 
 export function TabItem({ children, tabId }: Props) {
   const [activeTabId, setTabId] = useTabState();

@@ -3,10 +3,10 @@
 import { XIcon } from 'lucide-react';
 import { useState } from 'react';
 
-interface Props {
+type Props = {
   defaultOpen: boolean;
   onDismiss: () => void;
-}
+};
 
 export function Banner({ defaultOpen, onDismiss }: Props) {
   const [open, setOpen] = useState(defaultOpen);

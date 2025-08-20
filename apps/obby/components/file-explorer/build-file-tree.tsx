@@ -1,20 +1,20 @@
-export interface FileNode {
+export type FileNode = {
   children?: FileNode[];
   content?: string;
   expanded?: boolean;
   name: string;
   path: string;
   type: 'file' | 'folder';
-}
+};
 
-interface FileNodeBuilder {
+type FileNodeBuilder = {
   children?: { [key: string]: FileNodeBuilder };
   content?: string;
   expanded?: boolean;
   name: string;
   path: string;
   type: 'file' | 'folder';
-}
+};
 
 export function buildFileTree(paths: string[]): FileNode[] {
   type NodeMap = Record<string, FileNodeBuilder>;

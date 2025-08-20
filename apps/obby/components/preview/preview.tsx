@@ -7,11 +7,11 @@ import { useEffect, useRef, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { Panel, PanelHeader } from '@/components/panels/panels';
 
-interface Props {
+type Props = {
   className?: string;
   disabled?: boolean;
   url?: string;
-}
+};
 
 export function Preview({ className, disabled, url }: Props) {
   const [currentUrl, setCurrentUrl] = useState(url);
@@ -104,7 +104,9 @@ export function Preview({ className, disabled, url }: Props) {
         {currentUrl && !disabled && (
           <>
             <ScrollArea className="w-full">
+              {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: this loads in the sandbox output */}
               <iframe
+                aria-label="Browser content"
                 className="h-full w-full"
                 onError={handleIframeError}
                 onLoad={handleIframeLoad}

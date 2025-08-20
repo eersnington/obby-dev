@@ -4,7 +4,7 @@ import { cn } from '@repo/design-system/lib/utils';
 import type { ReactNode } from 'react';
 import { useTabState } from './use-tab-state';
 
-interface Props {
+type Props = {
   className?: string;
   children: ReactNode;
   tabId: string;
@@ -15,7 +15,7 @@ export function TabContent({ children, tabId, className }: Props) {
   return (
     <div
       className={cn(
-        'hidden h-full min-h-0 lg:flex ',
+        'hidden h-full min-h-0 lg:flex',
         { flex: activeTabId === tabId },
         className
       )}

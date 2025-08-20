@@ -6,10 +6,10 @@ import { getSandboxURL } from './get-sandbox-url';
 import { runCommand } from './run-command';
 import { waitCommand } from './wait-command';
 
-interface Params {
+type Params = {
   modelId: string;
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
-}
+};
 
 export function tools({ modelId, writer }: Params) {
   return {

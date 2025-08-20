@@ -1,9 +1,10 @@
+import { log } from '@repo/observability/log';
 import type { DataUIPart } from 'ai';
 import { create } from 'zustand';
 import type { DataPart } from '@/ai/messages/data-parts';
 import type { Command, CommandLog } from '@/components/commands-logs/types';
 
-interface SandboxStore {
+type SandboxStore = {
   addLog: (data: { sandboxId: string; cmdId: string; log: CommandLog }) => void;
   addPaths: (paths: string[]) => void;
   commands: Command[];
@@ -15,14 +16,14 @@ interface SandboxStore {
   status?: 'running' | 'stopped';
   upsertCommand: (command: Command) => void;
   url?: string;
-}
+};
 
 export const useSandboxStore = create<SandboxStore>()((set) => ({
   addLog: (data) => {
     set((state) => {
       const idx = state.commands.findIndex((c) => c.cmdId === data.cmdId);
       if (idx === -1) {
-        console.warn(`Command with ID ${data.cmdId} not found.`);
+        log.warn(`Command with ID ${data.cmdId} not found.`);
         return state;
       }
       const updatedCmds = [...state.commands];
@@ -61,10 +62,10 @@ export const useSandboxStore = create<SandboxStore>()((set) => ({
   },
 }));
 
-interface FileExplorerStore {
+type FileExplorerStore = {
   paths: string[];
   addPath: (path: string) => void;
-}
+};
 
 export const useFileExplorerStore = create<FileExplorerStore>()((set) => ({
   paths: [],

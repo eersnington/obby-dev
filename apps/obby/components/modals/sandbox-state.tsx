@@ -41,10 +41,10 @@ export function SandboxState() {
   ) : null;
 }
 
-interface DirtyCheckerProps {
+type DirtyCheckerProps = {
   sandboxId: string;
   setStatus: (status: 'running' | 'stopped') => void;
-}
+};
 
 function DirtyChecker({ sandboxId, setStatus }: DirtyCheckerProps) {
   const content = useSWR<'ok' | 'stopped'>(
