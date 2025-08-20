@@ -3,6 +3,9 @@
   "extends": ["ultracite"],
   "linter": {
     "enabled": true,
+    "domains": {
+      "solid": "none"
+    },
     "rules": {
       "complexity": {
         "noExcessiveLinesPerFunction": "off"
@@ -18,6 +21,7 @@
       }
     }
   },
+
   "files": {
     "includes": [
       "**",
