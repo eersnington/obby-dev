@@ -36,6 +36,9 @@ export async function POST(req: Request) {
     userApiKeys,
   } = (await req.json()) as BodyData;
 
+  log.info('modelId', { modelId });
+  log.info('userApiKeys', { userApiKeys });
+
   try {
     const factory = createModelFactory({
       userKeys: userApiKeys,

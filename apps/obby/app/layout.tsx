@@ -7,6 +7,7 @@ import { SandboxState } from '@/components/modals/sandbox-state';
 
 import './styles.css';
 
+
 export const metadata: Metadata = {
   title: 'Obby - OSS v0',
   description: 'Open Source v0 alternative. Prompt to build your Next.js app.',

@@ -92,5 +92,13 @@ export async function GET() {
     ...gateway,
   ];
 
-  return NextResponse.json({ models });
+  // Map to frontend format with byokOnly flag
+  const responseModels = models.map((model) => ({
+    id: model.id,
+    name: model.name,
+    provider: model.provider,
+    byokOnly: model.byokOnly,
+  }));
+
+  return NextResponse.json({ models: responseModels });
 }

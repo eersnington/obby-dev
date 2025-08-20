@@ -82,7 +82,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
 
   const makeComposite = useMemo(
     () => (provider: string | undefined, id: string) =>
-      `${provider ?? 'unknown'}:${id}`,
+      `${provider ?? 'unknown'}>${id}`,
     []
   );
 

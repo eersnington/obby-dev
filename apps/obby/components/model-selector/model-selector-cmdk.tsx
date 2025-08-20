@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: will refactor later */
 'use client';
 
 import { Badge } from '@repo/design-system/components/ui/badge';
@@ -46,6 +47,8 @@ export function ModelSelectorModal({
   const getKey = useProviderKeysStore((s) => s.getKey);
   const setKey = useProviderKeysStore((s) => s.setKey);
 
+  const providers = useMemo(() => PROVIDERS, []);
+
   const [apiKey, setApiKey] = useState(() => {
     if (typeof window !== 'undefined' && provider && provider !== 'bedrock') {
       const stored = useProviderKeysStore.getState().getKey(provider);
@@ -75,6 +78,59 @@ export function ModelSelectorModal({
   });
 
   const [saving, setSaving] = useState(false);
+
+  const grouped = useMemo(() => {
+    const map = new Map<
+      string,
+      { id: string; name: string; provider?: string; byokOnly?: boolean }[]
+    >();
+    // initialize all known providers to keep the left list stable
+    for (const p of PROVIDERS) {
+      map.set(p, []);
+    }
+
+    for (const m of models) {
+      const providerForGroup =
+        (m.provider as string | undefined) ?? m.id.split('/')?.[0] ?? '';
+      const list = map.get(providerForGroup);
+      if (!list) {
+        continue;
+      }
+      list.push({
+        id: m.id,
+        name: m.label,
+        provider: m.provider,
+        byokOnly: m.byokOnly,
+      });
+    }
+    for (const list of map.values()) {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return map;
+  }, [models]);
+
+  // Early return if no provider is selected yet
+  if (!provider) {
+    return (
+      <CommandDialog
+        contentClassName="sm:max-w-4xl"
+        description="Pick a provider and model, and optionally set your own API key."
+        onOpenChange={onOpenChange}
+        open={open}
+        title="Model Selector"
+      >
+        <div className="flex h-[60vh] min-h-[420px] w-full items-center justify-center">
+          <div className="text-muted-foreground">Loading providers...</div>
+        </div>
+      </CommandDialog>
+    );
+  }
+
+  // Ensure valid provider is selected
+  if (providers.length && !providers.includes(provider)) {
+    setProvider(providers[0] as ModelProvider);
+    return null; // Re-render with valid provider
+  }
 
   // Reset form when modal closes
   if (!open && (apiKey || awsFields.region || awsFields.accessKeyId)) {
@@ -119,47 +175,6 @@ export function ModelSelectorModal({
         });
       }
     }
-  }
-
-  const grouped = useMemo(() => {
-    const map = new Map<
-      string,
-      { id: string; name: string; provider?: string; byokOnly?: boolean }[]
-    >();
-    // initialize all known providers to keep the left list stable
-    for (const p of PROVIDERS) {
-      map.set(p, []);
-    }
-
-    for (const m of models) {
-      const providerForGroup =
-        (m.provider as string | undefined) ?? m.id.split('/')?.[0] ?? '';
-      const list = map.get(providerForGroup);
-      if (!list) {
-        continue;
-      }
-      list.push({
-        id: m.id,
-        name: m.label,
-        provider: m.provider,
-        byokOnly: m.byokOnly,
-      });
-    }
-    for (const list of map.values()) {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    return map;
-  }, [models]);
-
-  const providers = useMemo(() => PROVIDERS, []);
-
-  // Ensure valid provider is selected
-  if (
-    typeof window !== 'undefined' &&
-    providers.length &&
-    !providers.includes(provider)
-  ) {
-    setProvider(providers[0] as ModelProvider);
   }
 
   const currentModels = grouped.get(provider) ?? [];
@@ -237,6 +252,7 @@ export function ModelSelectorModal({
         <section className="flex min-w-0 flex-1 flex-col">
           <div className="border-b px-4 py-3">
             <CommandInput
+              className="border-none"
               placeholder={isLoading ? 'Loading models...' : 'Search models...'}
             />
           </div>
