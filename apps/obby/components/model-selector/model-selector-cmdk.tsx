@@ -109,7 +109,6 @@ export function ModelSelectorModal({
     return map;
   }, [models]);
 
-  // Early return if no provider is selected yet
   if (!provider) {
     return (
       <CommandDialog

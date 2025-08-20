@@ -41,21 +41,17 @@ const queryClient = new QueryClient({
 });
 
 export function Chat({ className }: Props) {
-  const setModel = useModelStore((s) => s.setModel);
-  const getAllKeys = useProviderKeysStore((s) => s.keys);
+  const { selectedModelId, selectedProvider, setModel } = useModelStore();
+  const { getKey } = useProviderKeysStore();
 
-  const [modelId, setModelId] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = useModelStore.getState().selectedModelId;
-      return stored || DEFAULT_MODEL;
-    }
-    return DEFAULT_MODEL;
-  });
+  const modelId = selectedModelId || DEFAULT_MODEL;
+  const provider = selectedProvider;
 
   const [modelModalOpen, setModelModalOpen] = useState(false);
   const [input, setInput] = useLocalStorageValue('prompt-input');
   const mapDataToState = useDataStateMapper();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const { messages, sendMessage, status } = useChat<ChatUIMessage>({
     onToolCall: () => mutate('/api/auth/info'),
     onData: mapDataToState,
@@ -72,8 +68,8 @@ export function Chat({ className }: Props) {
 
   const validateAndSubmitMessage = (text: string) => {
     if (text.trim()) {
-      const userApiKeys = getAllKeys;
-      sendMessage({ text }, { body: { modelId, userApiKeys } });
+      const providerApiKey = provider ? getKey(provider) : null;
+      sendMessage({ text }, { body: { modelId, provider, providerApiKey } });
       setInput('');
     }
   };
@@ -140,10 +136,7 @@ export function Chat({ className }: Props) {
           </Button>
           <ModelSelector
             modelId={modelId}
-            onModelChange={(newModelId: string) => {
-              setModelId(newModelId);
-              setModel(newModelId);
-            }}
+            onModelChange={setModel}
           />
           <Input
             className="w-full rounded-sm border-0 bg-background font-mono text-sm"
@@ -161,10 +154,7 @@ export function Chat({ className }: Props) {
           </Button>
         </form>
         <ModelSelectorModal
-          onChange={(newId) => {
-            setModelId(newId);
-            setModel(newId);
-          }}
+          onChange={setModel}
           onOpenChange={setModelModalOpen}
           open={modelModalOpen}
           value={modelId}

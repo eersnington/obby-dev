@@ -14,12 +14,14 @@ import { DEFAULT_MODEL } from '@/ai/constants';
 import { createModelFactory, type UserApiKeys } from '@/ai/factory';
 import { getModelOptions } from '@/ai/gateway';
 import { tools } from '@/ai/tools';
+import type { ProviderKeyValue } from '@/stores/use-provider-store';
 import prompt from './prompt.md';
 
 type BodyData = {
   messages: UIMessage[];
   modelId?: string;
-  userApiKeys?: UserApiKeys;
+  provider?: string;
+  providerApiKey?: ProviderKeyValue;
 };
 
 const STEP_COUNT = 20;
@@ -33,17 +35,24 @@ export async function POST(req: Request) {
   const {
     messages,
     modelId = DEFAULT_MODEL,
-    userApiKeys,
+    provider,
+    providerApiKey,
   } = (await req.json()) as BodyData;
 
   log.info('modelId', { modelId });
-  log.info('userApiKeys', { userApiKeys });
+  log.info('provider', { provider });
+  log.info('providerApiKey', { providerApiKey });
 
   try {
+    const userApiKeys: UserApiKeys =
+      provider && providerApiKey ? { [provider]: providerApiKey } : {};
+
     const factory = createModelFactory({
       userKeys: userApiKeys,
       preferUserKeys: true,
     });
+
+    log.info('userApiKeys', { userApiKeys });
 
     const availableModels = factory.listAvailableModels();
     const model = availableModels.find((m) => m.id === modelId);
