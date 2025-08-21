@@ -12,7 +12,7 @@ import {
 } from '@repo/design-system/components/ui/select';
 import { Loader2Icon } from 'lucide-react';
 import { memo, useMemo } from 'react';
-import { PROVIDER_LOGOS } from '@/ai/constants';
+import { type ModelProvider, PROVIDER_LOGOS } from '@/ai/constants';
 import { useModelStore } from '@/stores/use-model-store';
 import { useAvailableModels } from '../use-available-models';
 
@@ -32,6 +32,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
 }: Props) {
   const { models, isLoading, error } = useAvailableModels();
   const selectedProvider = useModelStore((s) => s.selectedProvider);
+  const hasHydrated = useModelStore((s) => s._hasHydrated);
   const selectModel = useModelStore((s) => s.selectModel);
 
   const isDisabled = isLoading || Boolean(error) || !models?.length;
@@ -84,18 +85,25 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
   }, [models]);
 
   const currentValue = useMemo(() => {
+    // Don't try to match provider before hydration to avoid flickering
+    if (!hasHydrated) {
+      const candidate = models.find((m) => m.id === modelId);
+      return candidate
+        ? `${candidate.provider ?? 'unknown'}>${candidate.id}`
+        : modelId;
+    }
+
     const candidates = models.filter((m) => m.id === modelId);
     const chosen =
       candidates.find((m) => m.provider === selectedProvider) || candidates[0];
     return chosen ? `${chosen.provider ?? 'unknown'}>${chosen.id}` : modelId;
-  }, [models, modelId, selectedProvider]);
-
+  }, [models, modelId, selectedProvider, hasHydrated]);
   const handleValueChange = (compositeValue: string) => {
     const separatorIndex = compositeValue.indexOf('>');
     if (separatorIndex >= 0) {
       const provider = compositeValue.slice(0, separatorIndex);
       const modelOnlyId = compositeValue.slice(separatorIndex + 1);
-      selectModel(provider, modelOnlyId);
+      selectModel(provider as ModelProvider, modelOnlyId);
       onModelChange(modelOnlyId);
     } else {
       onModelChange(compositeValue);
@@ -108,7 +116,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
       onValueChange={handleValueChange}
       value={currentValue}
     >
-      <SelectTrigger className="w-[180px] bg-background">
+      <SelectTrigger className="bg-background">
         {triggerContent}
       </SelectTrigger>
 

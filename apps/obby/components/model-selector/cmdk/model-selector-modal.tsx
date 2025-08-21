@@ -22,11 +22,14 @@ export function ModelSelectorModal({
 }: Props) {
   const { isLoading } = useAvailableModels();
   const selectedProvider = useModelStore((s) => s.selectedProvider);
+  const hasHydrated = useModelStore((s) => s._hasHydrated);
   const selectModel = useModelStore((s) => s.selectModel);
   const setProvider = useModelStore((s) => s.setProvider);
 
-  // Ensure we have a provider selected, default to first one if none
-  const currentProvider = selectedProvider || PROVIDERS[0];
+  // Ensure we have a provider selected, default to first one only after hydration
+  const currentProvider = hasHydrated
+    ? selectedProvider || PROVIDERS[0]
+    : selectedProvider;
 
   const handleProviderSelect = (provider: ModelProvider) => {
     setProvider(provider);
@@ -37,7 +40,6 @@ export function ModelSelectorModal({
     onChange(modelId);
     onOpenChange(false);
   };
-
 
   return (
     <CommandDialog
