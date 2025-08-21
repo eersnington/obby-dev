@@ -41,12 +41,16 @@ const queryClient = new QueryClient({
 });
 
 export function Chat({ className }: Props) {
-  const selectedModelId = useModelStore(s => s.selectedModelId);
-  const selectedProvider = useModelStore(s => s.selectedProvider);
-  const setModel = useModelStore(s => s.setModel);
+  const selectedModelId = useModelStore((s) => s.selectedModelId);
+  const selectedProvider = useModelStore((s) => s.selectedProvider);
+  const hasHydrated = useModelStore((s) => s._hasHydrated);
+  const setModel = useModelStore((s) => s.setModel);
   const { getKey } = useProviderKeysStore();
 
-  const modelId = selectedModelId || DEFAULT_MODEL;
+  // Only use fallback after hydration to avoid race conditions
+  const modelId = hasHydrated
+    ? selectedModelId || DEFAULT_MODEL
+    : DEFAULT_MODEL;
   const provider = selectedProvider;
 
   const [modelModalOpen, setModelModalOpen] = useState(false);
@@ -123,38 +127,47 @@ export function Chat({ className }: Props) {
         </div>
 
         <form
-          className="flex items-center space-x-1 border-primary/18 border-t bg-background p-2"
+          className="flex flex-col gap-y-1 border-primary/18 border-t bg-background p-2"
           onSubmit={(event) => {
             event.preventDefault();
             validateAndSubmitMessage(input);
           }}
         >
-          <Button
-            onClick={() => setModelModalOpen(true)}
-            type="button"
-            variant="outline"
-          >
-            Models
-          </Button>
-          <ModelSelector
-            modelId={modelId}
-            onModelChange={setModel}
-          />
-          <Input
-            className="w-full rounded-sm border-0 bg-background font-mono text-sm"
-            disabled={status === 'streaming' || status === 'submitted'}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            value={input}
-          />
-          <Button disabled={status !== 'ready' || !input.trim()} type="submit">
-            {status === 'streaming' || status === 'submitted' ? (
-              <MoonLoader color="currentColor" size={16} />
-            ) : (
-              <SendIcon className="h-4 w-4" />
-            )}
-          </Button>
+          <div>
+            <Input
+              className="w-full rounded-sm border-0 bg-background font-mono text-sm"
+              disabled={status === 'streaming' || status === 'submitted'}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              value={input}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-1">
+              <Button
+                onClick={() => setModelModalOpen(true)}
+                type="button"
+                variant="outline"
+              >
+                Models
+              </Button>
+              <ModelSelector modelId={modelId} onModelChange={setModel} />
+            </div>
+
+            <Button
+              disabled={status !== 'ready' || !input.trim()}
+              type="submit"
+            >
+              {status === 'streaming' || status === 'submitted' ? (
+                <MoonLoader color="currentColor" size={16} />
+              ) : (
+                <SendIcon className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </form>
+
         <ModelSelectorModal
           onChange={setModel}
           onOpenChange={setModelModalOpen}
