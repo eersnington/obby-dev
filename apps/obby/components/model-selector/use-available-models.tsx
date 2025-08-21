@@ -10,8 +10,7 @@ type DisplayModel = {
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 5000; // 5 seconds
-// biome-ignore lint/style/noMagicNumbers: not magic numbers. this is obvious.
-const STALE_TIME_MS = 5 * 60 * 1000; // 5 minutes
+const STALE_TIME_MS = 30_000; // 5 minutes
 
 async function fetchModels(): Promise<DisplayModel[]> {
   const response = await fetch('/api/models');
@@ -20,7 +19,6 @@ async function fetchModels(): Promise<DisplayModel[]> {
   }
   const data = await response.json();
 
-  // Use the models exactly as returned by the API without altering ids or providers
   return (
     data.models as Array<{
       id: string;
