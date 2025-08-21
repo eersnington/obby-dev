@@ -1,3 +1,4 @@
+import { unstable_cacheLife as cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import {
   ANTHROPIC_MODELS,
@@ -15,6 +16,9 @@ import { getAvailableModels } from '@/ai/gateway';
 type OpenRouterRaw = Record<string, unknown>;
 
 async function fetchOpenRouterModels(): Promise<Model[]> {
+  'use cache';
+  cacheLife('default');
+
   try {
     const res = await fetch('https://openrouter.ai/api/v1/models');
 
@@ -58,6 +62,9 @@ async function fetchOpenRouterModels(): Promise<Model[]> {
 }
 
 async function fetchGatewayModels(): Promise<Model[]> {
+  'use cache';
+  cacheLife('default');
+
   const response = await getAvailableModels();
   return response
     .filter((m) => SUPPORTED_MODELS_GATEWAY.some((id) => id === m.id))
