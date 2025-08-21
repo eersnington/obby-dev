@@ -66,6 +66,8 @@ export async function POST(req: Request) {
       );
     }
 
+    log.info('model', model);
+
     const wrappedModel = factory.getModel(modelId) as LanguageModel;
 
     return createUIMessageStreamResponse({
