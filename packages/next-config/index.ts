@@ -8,6 +8,10 @@ const otelRegex = /@opentelemetry\/instrumentation/;
 const mdRegex = /\.md/;
 
 export const config: NextConfig = {
+  experimental: {
+    useCache: true,
+    cacheComponents: true,
+  },
   turbopack: {
     rules: {
       '*.md': {
