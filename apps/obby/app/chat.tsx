@@ -41,7 +41,9 @@ const queryClient = new QueryClient({
 });
 
 export function Chat({ className }: Props) {
-  const { selectedModelId, selectedProvider, setModel } = useModelStore();
+  const selectedModelId = useModelStore(s => s.selectedModelId);
+  const selectedProvider = useModelStore(s => s.selectedProvider);
+  const setModel = useModelStore(s => s.setModel);
   const { getKey } = useProviderKeysStore();
 
   const modelId = selectedModelId || DEFAULT_MODEL;

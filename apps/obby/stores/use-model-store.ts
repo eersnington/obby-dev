@@ -1,11 +1,14 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { createIndexedDbStorage } from '@/lib/use-index-db-storage';
 
 type ModelState = {
   selectedProvider?: string;
   selectedModelId?: string;
-  setProvider: (p: string) => void;
-  setModel: (id: string) => void;
+  
+  setProvider: (provider: string) => void;
+  setModel: (modelId: string) => void;
+  selectModel: (provider: string, modelId: string) => void;
 };
 
 export const useModelStore = create<ModelState>()(
@@ -13,11 +16,25 @@ export const useModelStore = create<ModelState>()(
     (set) => ({
       selectedProvider: undefined,
       selectedModelId: undefined,
-      setProvider: (p) => set({ selectedProvider: p }),
-      setModel: (id) => set({ selectedModelId: id }),
+      
+      setProvider: (provider) => {
+        set({ selectedProvider: provider });
+      },
+      
+      setModel: (modelId) => {
+        set({ selectedModelId: modelId });
+      },
+      
+      selectModel: (provider, modelId) => {
+        set({
+          selectedProvider: provider,
+          selectedModelId: modelId
+        });
+      },
     }),
     {
       name: 'model-selection',
+      storage: createJSONStorage(() => createIndexedDbStorage('model-selection')),
     }
   )
 );
