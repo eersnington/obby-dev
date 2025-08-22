@@ -1,6 +1,6 @@
 import { Button } from '@repo/design-system/components/ui/button';
 import { Input } from '@repo/design-system/components/ui/input';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import type { ModelProvider } from '@/ai/constants';
 import { useProviderKey } from './use-provider-key';
@@ -56,6 +56,13 @@ export function TokenKeyForm({ provider }: Props) {
     }
   };
 
+  const handleClear = () => {
+    setValue('');
+    setKey(null);
+  };
+
+  const hasValue = Boolean(key && typeof key === 'string' && key.trim());
+
   return (
     <form className="flex gap-2" onSubmit={handleSubmit}>
       <div className="relative flex-1">
@@ -81,13 +88,20 @@ export function TokenKeyForm({ provider }: Props) {
           )}
         </Button>
       </div>
-      <Button
-        disabled={!value.trim() || saving}
-        type="submit"
-        variant="outline"
-      >
-        {saving ? 'Saving...' : 'Save'}
-      </Button>
+      <div className="flex gap-2">
+        {hasValue && (
+          <Button onClick={handleClear} type="button" variant="outline">
+            <TrashIcon className="size-4" />
+          </Button>
+        )}
+        <Button
+          disabled={!value.trim() || saving}
+          type="submit"
+          variant="outline"
+        >
+          {saving ? 'Saving...' : 'Save'}
+        </Button>
+      </div>
     </form>
   );
 }
