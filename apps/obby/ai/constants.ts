@@ -242,17 +242,24 @@ export const GROQ_MODELS: Model[] = [
 
 export const BEDROCK_MODELS: Model[] = [
   {
-    id: 'anthropic.claude-sonnet-4-20250514-v1:0',
+    id: 'us.anthropic.claude-sonnet-4-20250514-v1:0',
     name: 'Claude 4 Sonnet',
     provider: 'bedrock',
     byokOnly: false,
     new: false,
   },
   {
-    id: 'anthropic.claude-3-7-sonnet-20250219-v1:0',
+    id: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
     name: 'Claude 3.7 Sonnet',
     provider: 'bedrock',
     byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'us.anthropic.claude-opus-4-1-20250805-v1:0',
+    name: 'Claude Opus 4.1',
+    provider: 'bedrock',
+    byokOnly: true,
     new: false,
   },
 ];
