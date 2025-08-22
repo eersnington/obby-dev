@@ -85,8 +85,8 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
   }, [models]);
 
   const currentValue = useMemo(() => {
-    // Don't try to match provider before hydration to avoid flickering
-    if (!hasHydrated) {
+    const noModels = models.length === 0;
+    if (!hasHydrated || noModels) {
       const candidate = models.find((m) => m.id === modelId);
       return candidate
         ? `${candidate.provider ?? 'unknown'}>${candidate.id}`
@@ -94,9 +94,18 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
     }
 
     const candidates = models.filter((m) => m.id === modelId);
-    const chosen =
-      candidates.find((m) => m.provider === selectedProvider) || candidates[0];
-    return chosen ? `${chosen.provider ?? 'unknown'}>${chosen.id}` : modelId;
+
+    if (candidates.length === 0) {
+      return modelId;
+    }
+
+    const exactMatch = candidates.find((m) => m.provider === selectedProvider);
+    if (exactMatch) {
+      return `${exactMatch.provider}>${exactMatch.id}`;
+    }
+
+    const fallback = candidates[0];
+    return `${fallback.provider}>${fallback.id}`;
   }, [models, modelId, selectedProvider, hasHydrated]);
   const handleValueChange = (compositeValue: string) => {
     const separatorIndex = compositeValue.indexOf('>');
@@ -116,9 +125,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
       onValueChange={handleValueChange}
       value={currentValue}
     >
-      <SelectTrigger className="bg-background">
-        {triggerContent}
-      </SelectTrigger>
+      <SelectTrigger className="bg-background">{triggerContent}</SelectTrigger>
 
       <SelectContent className="max-h-[320px]">
         <SelectGroup>
