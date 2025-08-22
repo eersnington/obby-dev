@@ -1,25 +1,31 @@
 import { createAmazonBedrock } from '@ai-sdk/amazon-bedrock';
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGatewayProvider } from '@ai-sdk/gateway';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createGroq } from '@ai-sdk/groq';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createVercel } from '@ai-sdk/vercel';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import {
   customProvider,
   defaultSettingsMiddleware,
+  type LanguageModel,
   wrapLanguageModel,
 } from 'ai';
 import {
   ANTHROPIC_MODELS,
   BEDROCK_MODELS,
+  GATEWAY_MODELS,
   GOOGLE_MODELS,
   GROQ_MODELS,
   type Model,
   type ModelProvider,
   OPENAI_MODELS,
+  OPENROUTER_MODELS,
   VERCEL_MODELS,
 } from '@/ai/constants';
 import { env } from '@/env';
+import type { ProviderKeyValue } from '@/stores/use-provider-store';
 
 export type BedrockCredentials = {
   region?: string;
@@ -41,24 +47,9 @@ export type UserApiKeys = {
 
 export type CreateFactoryOptions = {
   userKeys?: UserApiKeys;
-  /** If true (default), prefer user-supplied keys over app keys when both are present. */
   preferUserKeys?: boolean;
-  /** Fallback region for Bedrock if none is supplied. */
   defaultBedrockRegion?: string;
 };
-
-type ProviderClients = {
-  openai: ReturnType<typeof createOpenAI>;
-  anthropic: ReturnType<typeof createAnthropic>;
-  google: ReturnType<typeof createGoogleGenerativeAI>;
-  groq: ReturnType<typeof createGroq>;
-  vercel: ReturnType<typeof createVercel>;
-  bedrock: ReturnType<typeof createAmazonBedrock>;
-};
-
-// -----------------------------
-// Model Registry
-// -----------------------------
 
 const ALL_MODELS: readonly Model[] = [
   ...OPENAI_MODELS,
@@ -67,181 +58,276 @@ const ALL_MODELS: readonly Model[] = [
   ...GROQ_MODELS,
   ...BEDROCK_MODELS,
   ...VERCEL_MODELS,
+  ...GATEWAY_MODELS,
+  ...OPENROUTER_MODELS,
 ] as const;
 
 function toKey(model: Model): string {
   return `${model.provider}/${model.id}`;
 }
 
-// -----------------------------
-// Credentials resolution
-// -----------------------------
-
-function coalesce(
-  userValue: string | undefined,
-  appValue: string | undefined,
-  preferUser: boolean
-): string | undefined {
-  return preferUser ? (userValue ?? appValue) : (appValue ?? userValue);
-}
-
 function getAppKeys() {
   return {
-    openai: env.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY,
-    anthropic: process.env.ANTHROPIC_API_KEY,
-    google:
-      process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GOOGLE_API_KEY,
-    groq: process.env.GROQ_API_KEY,
-    openrouter: process.env.OPENROUTER_API_KEY,
-    vercel: process.env.VERCEL_API_KEY ?? process.env.VERCEL_AI_API_KEY,
-    gateway: env.AI_GATEWAY_API_KEY ?? process.env.AI_GATEWAY_API_KEY,
+    openai: env.OPENAI_API_KEY,
+    anthropic: env.ANTHROPIC_API_KEY,
+    google: env.GOOGLE_GENERATIVE_AI_API_KEY,
+    groq: env.GROQ_API_KEY,
+    openrouter: env.OPENROUTER_API_KEY,
+    vercel: env.VERCEL_API_KEY,
+    gateway: env.AI_GATEWAY_API_KEY,
     bedrock: {
-      region: process.env.AMAZON_BEDROCK_REGION ?? process.env.AWS_REGION,
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: env.AWS_REGION,
+      accessKeyId: env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       sessionToken: process.env.AWS_SESSION_TOKEN,
     } as BedrockCredentials,
   } as const;
 }
 
-function createClients(options: CreateFactoryOptions): ProviderClients {
-  const preferUser = options.preferUserKeys ?? true;
-  const app = getAppKeys();
-  const user = options.userKeys ?? {};
-
-  const bedrockRegion =
-    coalesce(user.bedrock?.region, app.bedrock.region, preferUser) ??
-    options.defaultBedrockRegion ??
-    'us-east-1';
-
-  return {
-    openai: createOpenAI({
-      apiKey: coalesce(user.openai, app.openai, preferUser),
-    }),
-    anthropic: createAnthropic({
-      apiKey: coalesce(user.anthropic, app.anthropic, preferUser),
-    }),
-    google: createGoogleGenerativeAI({
-      apiKey: coalesce(user.google, app.google, preferUser),
-    }),
-    groq: createGroq({ apiKey: coalesce(user.groq, app.groq, preferUser) }),
-    vercel: createVercel({
-      apiKey: coalesce(user.vercel, app.vercel, preferUser),
-    }),
-    bedrock: createAmazonBedrock({
-      region: bedrockRegion,
-      accessKeyId: coalesce(
-        user.bedrock?.accessKeyId,
-        app.bedrock.accessKeyId,
-        preferUser
-      ),
-      secretAccessKey: coalesce(
-        user.bedrock?.secretAccessKey,
-        app.bedrock.secretAccessKey,
-        preferUser
-      ),
-      sessionToken: coalesce(
-        user.bedrock?.sessionToken,
-        app.bedrock.sessionToken,
-        preferUser
-      ),
-    }),
-  };
-}
-
-function hasUsableKey(
-  provider: ModelProvider,
-  byokOnly: boolean,
-  userKeys: UserApiKeys | undefined,
-  appKeys: ReturnType<typeof getAppKeys>
-): boolean {
-  const user = userKeys ?? {};
-  if (provider === 'bedrock') {
-    const creds = byokOnly ? user.bedrock : (user.bedrock ?? appKeys.bedrock);
-    return Boolean(
-      creds &&
-        (creds.accessKeyId ?? appKeys.bedrock.accessKeyId) &&
-        (creds.secretAccessKey ?? appKeys.bedrock.secretAccessKey)
-    );
+function normalizeUserKeys(
+  providerKeyValue: ProviderKeyValue | undefined,
+  provider: ModelProvider
+): string | BedrockCredentials | null {
+  if (!providerKeyValue) {
+    return null;
   }
 
-  const key = (user as Record<string, unknown>)[provider];
-  const app = (appKeys as Record<string, unknown>)[provider];
-  return byokOnly ? Boolean(key) : Boolean(key ?? app);
+  if (provider === 'bedrock') {
+    if (typeof providerKeyValue === 'object' && 'region' in providerKeyValue) {
+      return providerKeyValue as BedrockCredentials;
+    }
+    return null;
+  }
+
+  return typeof providerKeyValue === 'string' ? providerKeyValue : null;
 }
 
-function getLanguageModel(clients: ProviderClients, model: Model): unknown {
-  const wrapLM = wrapLanguageModel as unknown as (arg: unknown) => unknown;
-  const middleware = (
-    defaultSettingsMiddleware as unknown as (arg: unknown) => unknown
-  )({
+function resolveModel(
+  modelId: string,
+  provider?: ModelProvider
+): Model | undefined {
+  if (provider) {
+    const compositeKey = `${provider}/${modelId}`;
+    return ALL_MODELS.find((m) => toKey(m) === compositeKey);
+  }
+
+  return ALL_MODELS.find((m) => m.id === modelId || toKey(m) === modelId);
+}
+
+function validateBedrockAccess(
+  model: Model,
+  userCreds: BedrockCredentials | undefined,
+  appCreds: BedrockCredentials
+): { accessible: boolean; reason?: string } {
+  if (model.byokOnly) {
+    const hasUserCreds = userCreds?.accessKeyId && userCreds?.secretAccessKey;
+    if (!hasUserCreds) {
+      return {
+        accessible: false,
+        reason: `Model ${model.name} requires your own AWS credentials`,
+      };
+    }
+    return { accessible: true };
+  }
+
+  const hasUserCreds = userCreds?.accessKeyId && userCreds?.secretAccessKey;
+  const hasAppCreds = appCreds?.accessKeyId && appCreds?.secretAccessKey;
+  const hasValidCreds = hasUserCreds || hasAppCreds;
+
+  if (!hasValidCreds) {
+    return {
+      accessible: false,
+      reason: `No valid AWS credentials available for ${model.provider}`,
+    };
+  }
+
+  return { accessible: true };
+}
+
+function validateModelAccess(
+  model: Model,
+  userKeys: UserApiKeys,
+  appKeys: ReturnType<typeof getAppKeys>
+): { accessible: boolean; reason?: string } {
+  const userKey = userKeys[model.provider as keyof UserApiKeys];
+  const appKey = appKeys[model.provider as keyof typeof appKeys];
+
+  if (model.provider === 'bedrock') {
+    const userCreds = userKey as BedrockCredentials | undefined;
+    const appCreds = appKey as BedrockCredentials;
+    return validateBedrockAccess(model, userCreds, appCreds);
+  }
+
+  if (model.byokOnly) {
+    if (!userKey) {
+      return {
+        accessible: false,
+        reason: `Model ${model.name} requires your own API key for ${model.provider}`,
+      };
+    }
+    return { accessible: true };
+  }
+
+  const hasAnyKey = Boolean(userKey) || Boolean(appKey);
+  if (!hasAnyKey) {
+    return {
+      accessible: false,
+      reason: `No API key available for ${model.provider}`,
+    };
+  }
+
+  return { accessible: true };
+}
+
+type ProviderClient =
+  | ReturnType<typeof createOpenAI>
+  | ReturnType<typeof createAnthropic>
+  | ReturnType<typeof createGoogleGenerativeAI>
+  | ReturnType<typeof createGroq>
+  | ReturnType<typeof createVercel>
+  | ReturnType<typeof createAmazonBedrock>
+  | ReturnType<typeof createGatewayProvider>
+  | ReturnType<typeof createOpenRouter>;
+
+type ClientConfig = {
+  provider: ModelProvider;
+  userKeys: UserApiKeys;
+  appKeys: ReturnType<typeof getAppKeys>;
+  preferUserKeys: boolean;
+  defaultBedrockRegion?: string;
+};
+
+function createProviderClient(config: ClientConfig): ProviderClient | null {
+  const { provider, userKeys, appKeys, preferUserKeys, defaultBedrockRegion } =
+    config;
+  const userKey = userKeys[provider as keyof UserApiKeys];
+  const appKey = appKeys[provider as keyof typeof appKeys];
+
+  if (provider === 'bedrock') {
+    const userCreds = userKey as BedrockCredentials | undefined;
+    const appCreds = appKey as BedrockCredentials;
+
+    const creds = preferUserKeys
+      ? (userCreds ?? appCreds)
+      : (appCreds ?? userCreds);
+
+    const hasValidCreds = creds?.accessKeyId && creds?.secretAccessKey;
+    if (!hasValidCreds) {
+      return null;
+    }
+
+    return createAmazonBedrock({
+      region: creds.region ?? defaultBedrockRegion ?? 'us-east-1',
+      accessKeyId: creds.accessKeyId,
+      secretAccessKey: creds.secretAccessKey,
+      sessionToken: creds.sessionToken,
+    });
+  }
+
+  const keyToUse = preferUserKeys ? (userKey ?? appKey) : (appKey ?? userKey);
+  if (!keyToUse || typeof keyToUse !== 'string') {
+    return null;
+  }
+
+  switch (provider) {
+    case 'openai':
+      return createOpenAI({ apiKey: keyToUse });
+    case 'anthropic':
+      return createAnthropic({ apiKey: keyToUse });
+    case 'google':
+      return createGoogleGenerativeAI({ apiKey: keyToUse });
+    case 'groq':
+      return createGroq({ apiKey: keyToUse });
+    case 'vercel':
+      return createVercel({ apiKey: keyToUse });
+    case 'gateway':
+      return createGatewayProvider({ apiKey: keyToUse });
+    case 'openrouter':
+      return createOpenRouter({ apiKey: keyToUse });
+    default:
+      return null;
+  }
+}
+
+function getWrappedModel(client: ProviderClient, model: Model): LanguageModel {
+  const rawModel = client(model.id);
+  const middleware = defaultSettingsMiddleware({
     settings: {},
   });
 
-  switch (model.provider) {
-    case 'openai':
-      return wrapLM({ model: clients.openai(model.id), middleware });
-    case 'anthropic':
-      return wrapLM({ model: clients.anthropic(model.id), middleware });
-    case 'google':
-      return wrapLM({ model: clients.google(model.id), middleware });
-    case 'groq':
-      return wrapLM({ model: clients.groq(model.id), middleware });
-    case 'vercel':
-      return wrapLM({ model: clients.vercel(model.id), middleware });
-    case 'bedrock':
-      return wrapLM({ model: clients.bedrock(model.id), middleware });
-    default: {
-      // openrouter/gateway are not part of the Model lists defined in constants
-      throw new Error(`Unsupported provider: ${model.provider}`);
-    }
-  }
+  return wrapLanguageModel({
+    // biome-ignore lint/suspicious/noExplicitAny: AI SDK version compatibility
+    model: rawModel as any,
+    middleware: [middleware],
+  }) as LanguageModel;
 }
 
-// -----------------------------
-// Public Factory API
-// -----------------------------
-
-export function createModelFactory(options: CreateFactoryOptions = {}) {
-  const clients = createClients(options);
+export function createModelFactory(options: CreateFactoryOptions = {}): {
+  isModelAvailable: (modelId: string, provider?: ModelProvider) => boolean;
+  getModel: (modelId: string, provider?: ModelProvider) => LanguageModel;
+  listAvailableModels: () => Array<{
+    id: string;
+    name: string;
+    provider: ModelProvider;
+    byokOnly: boolean;
+  }>;
+  createCustomProvider: () => ReturnType<typeof customProvider>;
+} {
   const appKeys = getAppKeys();
+  const userKeys = options.userKeys ?? {};
+  const preferUserKeys = options.preferUserKeys ?? true;
 
-  function resolveModel(modelKeyValue: string): Model | undefined {
-    return ALL_MODELS.find((m) => toKey(m) === modelKeyValue);
+  const clientCache = new Map<ModelProvider, ProviderClient>();
+
+  function getClient(provider: ModelProvider): ProviderClient | null {
+    if (!clientCache.has(provider)) {
+      const client = createProviderClient({
+        provider,
+        userKeys,
+        appKeys,
+        preferUserKeys,
+        defaultBedrockRegion: options.defaultBedrockRegion,
+      });
+      if (client) {
+        clientCache.set(provider, client);
+      }
+    }
+    return clientCache.get(provider) ?? null;
   }
 
-  function isModelUsable(modelKeyId: string): boolean {
-    const meta = resolveModel(modelKeyId);
-    if (!meta) {
+  function isModelAvailable(
+    modelId: string,
+    provider?: ModelProvider
+  ): boolean {
+    const model = resolveModel(modelId, provider);
+    if (!model) {
       return false;
     }
-    return hasUsableKey(
-      meta.provider as ModelProvider,
-      meta.byokOnly,
-      options.userKeys,
-      appKeys
-    );
+
+    return validateModelAccess(model, userKeys, appKeys).accessible;
   }
 
-  function getWrappedModelInternal(targetModelKey: string): unknown {
-    const modelResolved = resolveModel(targetModelKey);
-    if (!modelResolved) {
-      throw new Error(`Model ${targetModelKey} is not recognized.`);
+  function getModel(modelId: string, provider?: ModelProvider): LanguageModel {
+    const model = resolveModel(modelId, provider);
+    if (!model) {
+      throw new Error(
+        `Model not found: ${modelId}${provider ? ` (provider: ${provider})` : ''}`
+      );
     }
-    if (
-      !hasUsableKey(
-        modelResolved.provider as ModelProvider,
-        modelResolved.byokOnly,
-        options.userKeys,
-        appKeys
-      )
-    ) {
-      const reason = modelResolved.byokOnly
-        ? 'This model requires a user-provided API key.'
-        : 'No usable API key found for this provider.';
-      throw new Error(`Model ${targetModelKey} is not usable. ${reason}`);
+
+    const validation = validateModelAccess(model, userKeys, appKeys);
+    if (!validation.accessible) {
+      throw new Error(
+        validation.reason || `Model ${modelId} is not accessible`
+      );
     }
-    return getLanguageModel(clients, modelResolved);
+
+    const client = getClient(model.provider as ModelProvider);
+    if (!client) {
+      throw new Error(`No client available for provider: ${model.provider}`);
+    }
+
+    return getWrappedModel(client, model);
   }
 
   function listAvailableModels(): Array<{
@@ -250,55 +336,47 @@ export function createModelFactory(options: CreateFactoryOptions = {}) {
     provider: ModelProvider;
     byokOnly: boolean;
   }> {
-    return ALL_MODELS.filter((modelItem) =>
-      hasUsableKey(
-        modelItem.provider as ModelProvider,
-        modelItem.byokOnly,
-        options.userKeys,
-        appKeys
-      )
-    ).map((modelItem) => ({
-      id: toKey(modelItem),
-      name: modelItem.name,
-      provider: modelItem.provider as ModelProvider,
-      byokOnly: modelItem.byokOnly,
+    return ALL_MODELS.filter(
+      (model) => validateModelAccess(model, userKeys, appKeys).accessible
+    ).map((model) => ({
+      id: toKey(model),
+      name: model.name,
+      provider: model.provider as ModelProvider,
+      byokOnly: model.byokOnly,
     }));
   }
 
-  function createCustomProviderInstance(): unknown {
-    // Build languageModels map only for currently-usable models.
+  function createCustomProvider() {
     const languageModels = Object.fromEntries(
-      ALL_MODELS.filter((m) =>
-        hasUsableKey(
-          m.provider as ModelProvider,
-          m.byokOnly,
-          options.userKeys,
-          appKeys
-        )
-      ).map((m) => [toKey(m), getLanguageModel(clients, m)])
+      ALL_MODELS.filter(
+        (model) => validateModelAccess(model, userKeys, appKeys).accessible
+      )
+        .map((model) => {
+          const client = getClient(model.provider as ModelProvider);
+          if (!client) {
+            return null;
+          }
+
+          return [toKey(model), getWrappedModel(client, model)];
+        })
+        .filter((entry): entry is [string, LanguageModel] => entry !== null)
     );
 
-    // Note: We intentionally do not export the provider as a top-level constant to
-    // avoid problematic type exposure. Consumers can call this function when needed.
-    return (customProvider as unknown as (arg: unknown) => unknown)({
-      languageModels: languageModels as unknown,
+    return customProvider({
+      // biome-ignore lint/suspicious/noExplicitAny: AI SDK version compatibility
+      languageModels: languageModels as any,
     });
   }
 
   return {
-    // Function-level check for BYOK gating
-    isModelUsable,
-    // Returns a wrapped LanguageModelV1 for use with streamText
-    getModel: getWrappedModelInternal,
-    // Discovery helpers for UIs
+    isModelAvailable,
+    getModel,
     listAvailableModels,
-    // Optional provider for areas that prefer provider("model") ergonomics
-    createCustomProvider: createCustomProviderInstance,
+    createCustomProvider,
   };
 }
 
-// Convenience helpers for simple scenarios
-export function getWrappedModel(
+export function getWrappedModelByKey(
   modelKey: string,
   options: CreateFactoryOptions = {}
 ) {
@@ -307,4 +385,27 @@ export function getWrappedModel(
 
 export function getUsableModels(options: CreateFactoryOptions = {}) {
   return createModelFactory(options).listAvailableModels();
+}
+
+export function convertProviderKeyToUserKeys(
+  provider: string | undefined,
+  providerApiKey: ProviderKeyValue | undefined
+): UserApiKeys {
+  if (!provider) {
+    return {};
+  }
+
+  if (!providerApiKey) {
+    return {};
+  }
+
+  const normalizedKey = normalizeUserKeys(
+    providerApiKey,
+    provider as ModelProvider
+  );
+  if (!normalizedKey) {
+    return {};
+  }
+
+  return { [provider]: normalizedKey } as UserApiKeys;
 }
