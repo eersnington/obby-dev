@@ -274,6 +274,152 @@ export const VERCEL_MODELS: Model[] = [
   },
 ];
 
+export const GATEWAY_MODELS: Model[] = [
+  {
+    id: 'anthropic/claude-sonnet-4',
+    name: 'Claude Sonnet 4',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'anthropic/claude-3.7-sonnet',
+    name: 'Claude 3.7 Sonnet',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-5',
+    name: 'GPT-5',
+    provider: 'gateway',
+    byokOnly: false,
+    new: true,
+  },
+  {
+    id: 'openai/gpt-5-mini',
+    name: 'GPT-5 Mini',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-5-nano',
+    name: 'GPT-5 Nano',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'openai/o4-mini',
+    name: 'O4 Mini',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-oss-120b',
+    name: 'GPT-OSS 120B',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-oss-20b',
+    name: 'GPT-OSS 20B',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'google/gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+  {
+    id: 'google/gemini-2.5-pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'gateway',
+    byokOnly: false,
+    new: false,
+  },
+];
+
+export const OPENROUTER_MODELS: Model[] = [
+  {
+    id: 'anthropic/claude-sonnet-4',
+    name: 'Claude Sonnet 4',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'anthropic/claude-3.7-sonnet',
+    name: 'Claude 3.7 Sonnet',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-5',
+    name: 'GPT-5',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: true,
+  },
+  {
+    id: 'openai/gpt-5-mini',
+    name: 'GPT-5 Mini',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-5-nano',
+    name: 'GPT-5 Nano',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/o4-mini',
+    name: 'O4 Mini',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-oss-120b',
+    name: 'GPT-OSS 120B',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'openai/gpt-oss-20b',
+    name: 'GPT-OSS 20B',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'google/gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+  {
+    id: 'google/gemini-2.5-pro',
+    name: 'Gemini 2.5 Pro',
+    provider: 'openrouter',
+    byokOnly: true,
+    new: false,
+  },
+];
+
 export const TEST_PROMPTS = [
   'Generate a Next.js app that allows to list and search Pokemons',
   'Create a `golang` server that responds with "Hello World" to any request',
