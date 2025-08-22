@@ -67,7 +67,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json(
         {
-          error: `Model ${modelId} not found or not available with current API keys. Available models: ${availableModels.map((m) => m.id).join(', ')}`,
+          error: `Model ${modelId} not found or not available with current API keys.`,
         },
         { status: 400 }
       );

@@ -15,9 +15,16 @@ export function useProviderKey(provider: ModelProvider) {
     try {
       setSaving(true);
       setKey(provider, value);
-      toast.success('Saved', {
-        description: `Your API key for ${provider} has been saved.`,
-      });
+
+      if (value === null) {
+        toast.success('Cleared', {
+          description: `Your API key for ${provider} has been removed.`,
+        });
+      } else {
+        toast.success('Saved', {
+          description: `Your API key for ${provider} has been saved.`,
+        });
+      }
     } finally {
       setSaving(false);
     }

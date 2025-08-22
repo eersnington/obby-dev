@@ -1,7 +1,7 @@
 import { Button } from '@repo/design-system/components/ui/button';
 import { Input } from '@repo/design-system/components/ui/input';
 import { Label } from '@repo/design-system/components/ui/label';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { type ModelProvider, PROVIDER_KEY_SCHEMAS } from '@/ai/constants';
 import { useProviderKey } from './use-provider-key';
@@ -78,6 +78,22 @@ export function AwsKeyForm({ provider }: Props) {
     setShowKeys((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
   };
 
+  const handleClear = () => {
+    setFields({
+      region: '',
+      accessKeyId: '',
+      secretAccessKey: '',
+      sessionToken: '',
+    });
+    setKey(null);
+  };
+
+  const hasValue = Boolean(
+    key &&
+      typeof key === 'object' &&
+      (key.accessKeyId || key.secretAccessKey || key.region)
+  );
+
   if (schema.type !== 'aws') {
     return null;
   }
@@ -150,7 +166,12 @@ export function AwsKeyForm({ provider }: Props) {
           );
         })}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        {hasValue && (
+          <Button onClick={handleClear} type="button" variant="outline">
+            <TrashIcon className="size-4" />
+          </Button>
+        )}
         <Button disabled={saving} type="submit" variant="outline">
           {saving ? 'Saving...' : 'Save'}
         </Button>
