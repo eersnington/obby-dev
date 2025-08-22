@@ -10,8 +10,8 @@ import {
 } from 'ai';
 import { checkBotId } from 'botid/server';
 import { NextResponse } from 'next/server';
-import { DEFAULT_MODEL } from '@/ai/constants';
-import { createModelFactory, type UserApiKeys } from '@/ai/factory';
+import { DEFAULT_MODEL, type ModelProvider } from '@/ai/constants';
+import { convertProviderKeyToUserKeys, createModelFactory } from '@/ai/factory';
 import { getModelOptions } from '@/ai/gateway';
 import { tools } from '@/ai/tools';
 import type { ProviderKeyValue } from '@/stores/use-provider-store';
@@ -44,8 +44,8 @@ export async function POST(req: Request) {
   log.info('providerApiKey', { providerApiKey });
 
   try {
-    const userApiKeys: UserApiKeys =
-      provider && providerApiKey ? { [provider]: providerApiKey } : {};
+    const validProvider = provider as ModelProvider | undefined;
+    const userApiKeys = convertProviderKeyToUserKeys(provider, providerApiKey);
 
     const factory = createModelFactory({
       userKeys: userApiKeys,
@@ -53,22 +53,37 @@ export async function POST(req: Request) {
     });
 
     log.info('userApiKeys', { userApiKeys });
+    log.info('Checking model availability:', {
+      modelId,
+      provider: validProvider,
+    });
 
-    const availableModels = factory.listAvailableModels();
-    const model = availableModels.find((m) => m.id === modelId);
+    if (!factory.isModelAvailable(modelId, validProvider)) {
+      const availableModels = factory.listAvailableModels();
+      log.info(
+        'Available models:',
+        availableModels.map((m) => m.id)
+      );
 
-    if (!model) {
       return NextResponse.json(
         {
-          error: `Model ${modelId} not found or not available with current API keys.`,
+          error: `Model ${modelId} not found or not available with current API keys. Available models: ${availableModels.map((m) => m.id).join(', ')}`,
         },
         { status: 400 }
       );
     }
 
-    log.info('model', model);
+    const availableModels = factory.listAvailableModels();
+    const modelMeta = availableModels.find(
+      (m) => m.id === modelId || m.id === `${validProvider}/${modelId}`
+    );
 
-    const wrappedModel = factory.getModel(modelId) as LanguageModel;
+    log.info('Using model:', modelMeta);
+
+    const wrappedModel = factory.getModel(
+      modelId,
+      validProvider
+    ) as LanguageModel;
 
     return createUIMessageStreamResponse({
       stream: createUIMessageStream({
@@ -91,7 +106,7 @@ export async function POST(req: Request) {
             result.toUIMessageStream({
               sendStart: false,
               messageMetadata: () => ({
-                model: model.name,
+                model: modelMeta?.name || modelId,
               }),
             })
           );
