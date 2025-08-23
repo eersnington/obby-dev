@@ -100,6 +100,7 @@ export async function POST(req: Request) {
           writer.merge(
             result.toUIMessageStream({
               sendStart: false,
+              sendReasoning: true,
               messageMetadata: () => ({
                 model: modelMeta?.name || modelId,
               }),

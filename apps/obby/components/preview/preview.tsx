@@ -84,7 +84,7 @@ export function Preview({ className, disabled, url }: Props) {
         <div className="m-auto h-6">
           {url && (
             <input
-              className="h-6 min-w-[300px] rounded border border-gray-200 bg-white px-4 font-mono text-xs focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="h-6 min-w-[300px] rounded border border-border bg-background px-4 font-mono text-xs focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               onChange={(event) => setInputValue(event.target.value)}
               onClick={(event) => event.currentTarget.select()}
               onKeyDown={(event) => {
