@@ -2,7 +2,7 @@
 
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { cn } from '@repo/design-system/lib/utils';
-import { CompassIcon, RefreshCwIcon } from 'lucide-react';
+import { ExternalLink, RefreshCwIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { Panel, PanelHeader } from '@/components/panels/panels';
@@ -68,7 +68,7 @@ export function Preview({ className, disabled, url }: Props) {
       <PanelHeader>
         <div className="absolute flex items-center space-x-1">
           <a className="cursor-pointer px-1" href={currentUrl} target="_blank">
-            <CompassIcon className="w-4" />
+            <ExternalLink className="size-4" />
           </a>
           <button
             className={cn('cursor-pointer px-1', {
@@ -77,7 +77,7 @@ export function Preview({ className, disabled, url }: Props) {
             onClick={refreshIframe}
             type="button"
           >
-            <RefreshCwIcon className="w-4" />
+            <RefreshCwIcon className="size-4" />
           </button>
         </div>
 

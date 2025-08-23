@@ -23,7 +23,7 @@ export function PanelHeader({ className, children }: Props) {
   return (
     <div
       className={cn(
-        'flex items-center border-primary/18 border-b bg-secondary px-2.5 py-1.5 text-secondary-foreground text-sm',
+        'flex items-center border-border border-b bg-secondary px-2.5 py-1.5 text-secondary-foreground text-sm',
         className
       )}
     >
