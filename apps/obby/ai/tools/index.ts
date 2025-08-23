@@ -1,4 +1,5 @@
 import type { InferUITools, UIMessage, UIMessageStreamWriter } from 'ai';
+import type { ModelProvider } from '../constants';
 import type { DataPart } from '../messages/data-parts';
 import { createSandbox } from './create-sandbox';
 import { generateFiles } from './generate-files';
@@ -7,14 +8,15 @@ import { runCommand } from './run-command';
 import { waitCommand } from './wait-command';
 
 type Params = {
+  provider: ModelProvider | undefined;
   modelId: string;
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 };
 
-export function tools({ modelId, writer }: Params) {
+export function tools({ provider, modelId, writer }: Params) {
   return {
     createSandbox: createSandbox({ writer }),
-    generateFiles: generateFiles({ writer, modelId }),
+    generateFiles: generateFiles({ writer, modelId, provider }),
     getSandboxURL: getSandboxURL({ writer }),
     runCommand: runCommand({ writer }),
     waitCommand: waitCommand({ writer }),

@@ -1,7 +1,9 @@
+import { log } from '@repo/observability/log';
 import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
 import z from 'zod/v3';
+import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
 import description from './run-command.md';
 
@@ -24,7 +26,7 @@ export const runCommand = ({ writer }: Params) =>
       args: z
         .array(z.string())
         .optional()
-        .describe(  
+        .describe(
           "Array of arguments for the command. Each argument should be a separate string (e.g., ['install', '--verbose'] for npm install --verbose, or ['src/index.js'] to run a file, or ['-la', './src'] to list files). IMPORTANT: Use relative paths (e.g., 'src/file.js') or absolute paths instead of trying to change directories with 'cd' first, since each command runs in a fresh shell session."
         ),
       sudo: z
@@ -42,32 +44,50 @@ export const runCommand = ({ writer }: Params) =>
         data: { command, args, status: 'loading', sandboxId },
       });
 
-      const sandbox = await Sandbox.get({ sandboxId });
-      const cmd = await sandbox.runCommand({
-        detached: true,
-        cmd: command,
+      const sandbox = await Sandbox.get({
+        sandboxId,
+        teamId: env.VERCEL_TEAM_ID ?? '',
+        projectId: env.VERCEL_PROJECT_ID ?? '',
+        token: env.VERCEL_TOKEN ?? '',
+      });
+
+      log.info('[Run Command Tool] Running command', {
+        command,
         args,
         sudo,
       });
 
-      writer.write({
-        id: toolCallId,
-        type: 'data-run-command',
-        data: {
-          command,
-          args,
-          status: 'done',
-          sandboxId,
-          commandId: cmd.cmdId,
-        },
-      });
+      log.info('[Run Command Tool]Sandbox', { sandbox });
 
-      return `The command \`${command} ${args.join(
-        ' '
-      )}\` has been started in the sandbox with ID \`${sandboxId}\`. You can use the command ID \`${
-        cmd.cmdId
-      }\` to wait for its completion or check its status later. Remember, each command runs in a fresh shell session, so you cannot rely on previous commands' state. If this command need to finish before running anything else you must use the \`waitCommand\` tool with the command ID \`${
-        cmd.cmdId
-      }\`. If you want to run this command in the background, you can ignore the command ID.`;
+      try {
+        const cmd = await sandbox.runCommand({
+          detached: true,
+          cmd: command,
+          args,
+          sudo,
+        });
+        log.info('[Run Command Tool] Command started', { cmd });
+        writer.write({
+          id: toolCallId,
+          type: 'data-run-command',
+          data: {
+            command,
+            args,
+            status: 'done',
+            sandboxId,
+            commandId: cmd.cmdId,
+          },
+        });
+
+        return `The command \`${command} ${args.join(
+          ' '
+        )}\` has been started in the sandbox with ID \`${sandboxId}\`. You can use the command ID \`${
+          cmd.cmdId
+        }\` to wait for its completion or check its status later. Remember, each command runs in a fresh shell session, so you cannot rely on previous commands' state. If this command need to finish before running anything else you must use the \`waitCommand\` tool with the command ID \`${
+          cmd.cmdId
+        }\`. If you want to run this command in the background, you can ignore the command ID.`;
+      } catch (error) {
+        log.error('[Run Command Tool] Error running command', { error });
+      }
     },
   });

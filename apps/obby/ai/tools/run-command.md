@@ -6,16 +6,16 @@ Use this tool to run a command inside an existing Vercel Sandbox. This tool exec
 
 Use Run Command when:
 
-1. You need to install dependencies (e.g., `pnpm install`).
-2. You want to run a build or test process (e.g., `pnpm build`, `vite build`)
+1. You need to install dependencies (e.g., `npm install`).
+2. You want to run a build or test process (e.g., `npm build`, `vite build`)
 3. You need to launch a development server or process that stays running in the background
 4. You need to compile or execute code within the sandbox environment
-5. You want to start a long-lived command (e.g., `pnpm dev`) without blocking the session
+5. You want to start a long-lived command (e.g., `npm dev`) without blocking the session
 
 ## Sequencing Rules
 
 - If two commands depend on each other, **you MUST wait for the first to finish before starting the second** using `Wait Command`
-  - ✅ Good: Run `pnpm install` → Wait → Run `pnpm dev`
+  - ✅ Good: Run `npm install` → Wait → Run `npm dev`
   - ❌ Bad: Run both without waiting
 - Do **not** issue multiple sequential commands in one call
   - ❌ `cd src && node index.js`
@@ -25,8 +25,8 @@ Use Run Command when:
 ## Command Format
 
 - You must separate the base command from its arguments
-  - ✅ `{ command: "pnpm", args: ["install", "--verbose"] }`
-  - ❌ `{ command: "pnpm install --verbose" }`
+  - ✅ `{ command: "npm", args: ["install", "--verbose"] }`
+  - ❌ `{ command: "npm install --verbose" }`
 - Avoid shell syntax like pipes, redirections, or `&&`. If unavoidable, ensure it works in a stateless single-session execution
 
 ## When to Wait
@@ -45,9 +45,9 @@ Use Run Command when:
 <example>
 User: Install dependencies and then run the dev server
 Assistant:
-1. Run Command: `pnpm install`
+1. Run Command: `npm install`
 2. Wait Command: for completion
-3. Run Command: `pnpm run dev` (this will stay running and does not require waiting again)
+3. Run Command: `npm run dev` (this will stay running and does not require waiting again)
 </example>
 
 <example>

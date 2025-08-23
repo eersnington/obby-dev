@@ -1,3 +1,4 @@
+import { log } from '@repo/observability/log';
 import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
@@ -35,6 +36,12 @@ export const createSandbox = ({ writer }: Params) =>
         data: { status: 'loading' },
       });
 
+      log.info('Creating sandbox');
+      log.info('Sandbox env', {
+        timeout,
+        ports,
+      });
+
       const sandbox = await Sandbox.create({
         teamId: env.VERCEL_TEAM_ID ?? '',
         projectId: env.VERCEL_PROJECT_ID ?? '',
@@ -46,6 +53,7 @@ export const createSandbox = ({ writer }: Params) =>
         resources: { vcpus: 2 },
         timeout,
         ports,
+        runtime: 'node22',
       });
 
       // await sandbox.runCommand({

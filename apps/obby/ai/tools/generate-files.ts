@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/suspicious/noConsole: this is just for script */
+
+import { log } from '@repo/observability/log';
 import { Sandbox } from '@vercel/sandbox';
-import type { UIMessage, UIMessageStreamWriter } from 'ai';
+import type { LanguageModel, UIMessage, UIMessageStreamWriter } from 'ai';
 import { streamObject, tool } from 'ai';
 import z from 'zod/v3';
+import { env } from '@/env';
+import type { ModelProvider } from '../constants';
+import { createModelFactory } from '../factory';
 import { getModelOptions } from '../gateway';
 import type { DataPart } from '../messages/data-parts';
 import description from './generate-files.md';
@@ -10,6 +15,7 @@ import prompt from './generate-files-prompt.md';
 
 type Params = {
   modelId: string;
+  provider: ModelProvider | undefined;
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 };
 
@@ -26,7 +32,7 @@ const fileSchema = z.object({
     ),
 });
 
-export const generateFiles = ({ writer, modelId }: Params) =>
+export const generateFiles = ({ writer, modelId, provider }: Params) =>
   tool({
     description,
     inputSchema: z.object({
@@ -44,8 +50,26 @@ export const generateFiles = ({ writer, modelId }: Params) =>
        * we use a nested AI call, otherwise all files must be generated before
        * calling the tool which provides a worse experience.
        */
+
+      const factory = createModelFactory({
+        preferUserKeys: false,
+      });
+
+      if (!factory.isModelAvailable(modelId, provider)) {
+        const availableModels = factory.listAvailableModels();
+        log.info(
+          'Available models:',
+          availableModels.map((m) => m.id)
+        );
+
+        return `Model ${modelId} not found or not available with current API keys.`;
+      }
+
+      const wrappedModel = factory.getModel(modelId, provider) as LanguageModel;
+
       const result = streamObject({
         ...getModelOptions(modelId),
+        model: wrappedModel,
         messages: [...messages, { role: 'user', content: prompt }],
         schema: z.object({ files: z.array(fileSchema) }),
         onError: (error) => {
@@ -55,7 +79,12 @@ export const generateFiles = ({ writer, modelId }: Params) =>
       });
 
       const written: string[] = [];
-      const sandbox = await Sandbox.get({ sandboxId });
+      const sandbox = await Sandbox.get({
+        sandboxId,
+        teamId: env.VERCEL_TEAM_ID ?? '',
+        projectId: env.VERCEL_PROJECT_ID ?? '',
+        token: env.VERCEL_TOKEN ?? '',
+      });
       const writeFiles = getWriteFiles({ sandbox, toolCallId, writer });
 
       for await (const items of result.partialObjectStream) {

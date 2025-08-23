@@ -2,6 +2,7 @@ import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
 import z from 'zod/v3';
+import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
 import description from './wait-command.md';
 
@@ -34,7 +35,12 @@ export const waitCommand = ({ writer }: Params) =>
         data: { command, args, commandId, sandboxId, status: 'loading' },
       });
 
-      const sandbox = await Sandbox.get({ sandboxId });
+      const sandbox = await Sandbox.get({
+        sandboxId,
+        teamId: env.VERCEL_TEAM_ID ?? '',
+        projectId: env.VERCEL_PROJECT_ID ?? '',
+        token: env.VERCEL_TOKEN ?? '',
+      });
       const cmd = await sandbox.getCommand(commandId);
       const done = await cmd.wait();
       const [stdout, stderr] = await Promise.all([

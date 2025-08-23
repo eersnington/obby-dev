@@ -106,7 +106,7 @@ const cmdSchema = z.object({
 });
 
 async function getCommand(sandboxId: string, cmdId: string) {
-  const response = await fetch(`/api/sandboxes/${sandboxId}/cmds/${cmdId}`);
+  const response = await fetch(`/api/sandboxes/${sandboxId}/cmds/${cmdId}`); // this apparently throws errors. i need effectts
   const json = await response.json();
   return cmdSchema.parse(json);
 }

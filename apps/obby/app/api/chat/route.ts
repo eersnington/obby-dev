@@ -6,23 +6,15 @@ import {
   type LanguageModel,
   stepCountIs,
   streamText,
-  type UIMessage,
 } from 'ai';
 import { checkBotId } from 'botid/server';
 import { NextResponse } from 'next/server';
-import { DEFAULT_MODEL, type ModelProvider } from '@/ai/constants';
+import { DEFAULT_MODEL } from '@/ai/constants';
 import { convertProviderKeyToUserKeys, createModelFactory } from '@/ai/factory';
 import { getModelOptions } from '@/ai/gateway';
 import { tools } from '@/ai/tools';
-import type { ProviderKeyValue } from '@/stores/use-provider-store';
+import { ChatBodySchema } from '@/ai/validation';
 import prompt from './prompt.md';
-
-type BodyData = {
-  messages: UIMessage[];
-  modelId?: string;
-  provider?: string;
-  providerApiKey?: ProviderKeyValue;
-};
 
 const STEP_COUNT = 20;
 
@@ -32,19 +24,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Bot detected' }, { status: 403 });
   }
 
+  const body = await req.json();
+
+  const validation = ChatBodySchema.safeParse(body);
+  if (!validation.success) {
+    log.error('Invalid request body:', validation.error.format());
+    return NextResponse.json(
+      {
+        error: 'Invalid request format',
+        details: validation.error.format(),
+      },
+      { status: 400 }
+    );
+  }
+
   const {
     messages,
     modelId = DEFAULT_MODEL,
     provider,
     providerApiKey,
-  } = (await req.json()) as BodyData;
-
-  log.info('modelId', { modelId });
-  log.info('provider', { provider });
-  log.info('providerApiKey', { providerApiKey });
+  } = validation.data;
 
   try {
-    const validProvider = provider as ModelProvider | undefined;
     const userApiKeys = convertProviderKeyToUserKeys(provider, providerApiKey);
 
     const factory = createModelFactory({
@@ -52,13 +53,12 @@ export async function POST(req: Request) {
       preferUserKeys: true,
     });
 
-    log.info('userApiKeys', { userApiKeys });
     log.info('Checking model availability:', {
       modelId,
-      provider: validProvider,
+      provider,
     });
 
-    if (!factory.isModelAvailable(modelId, validProvider)) {
+    if (!factory.isModelAvailable(modelId, provider)) {
       const availableModels = factory.listAvailableModels();
       log.info(
         'Available models:',
@@ -74,16 +74,11 @@ export async function POST(req: Request) {
     }
 
     const availableModels = factory.listAvailableModels();
-    const modelMeta = availableModels.find(
-      (m) => m.id === modelId || m.id === `${validProvider}/${modelId}`
-    );
+    const modelMeta = availableModels.find((m) => m.id === modelId);
 
     log.info('Using model:', modelMeta);
 
-    const wrappedModel = factory.getModel(
-      modelId,
-      validProvider
-    ) as LanguageModel;
+    const wrappedModel = factory.getModel(modelId, provider) as LanguageModel;
 
     return createUIMessageStreamResponse({
       stream: createUIMessageStream({
@@ -95,7 +90,7 @@ export async function POST(req: Request) {
             system: prompt,
             messages: convertToModelMessages(messages),
             stopWhen: stepCountIs(STEP_COUNT),
-            tools: tools({ modelId, writer }),
+            tools: tools({ provider, modelId, writer }),
             onError: (error) => {
               log.error('Error communicating with AI');
               log.error(JSON.stringify(error, null, 2));

@@ -197,8 +197,8 @@ importers:
         specifier: 15.5.13
         version: 15.5.13
       '@vercel/sandbox':
-        specifier: 0.0.15
-        version: 0.0.15
+        specifier: 0.0.17
+        version: 0.0.17
       ai:
         specifier: 5.0.0-beta.29
         version: 5.0.0-beta.29(zod@3.25.76)
@@ -4850,8 +4850,8 @@ packages:
     resolution: {integrity: sha512-U0hncpXof7gC9xtmSrjz6vrDqdwJXi8z/zSc9FyS80AoXKfCZtpkBz9gtL3x30Agmpxpwe35P1W2dP9Epa/RGA==}
     engines: {node: '>= 18'}
 
-  '@vercel/sandbox@0.0.15':
-    resolution: {integrity: sha512-RxflAN6YUnM5tVVbcSNmS5F4bjHeJeNt9ybpQjcs3NF26sr0rk/W4ElikzYfWbgtouRffPU4myVhmEBrXJiY8Q==}
+  '@vercel/sandbox@0.0.17':
+    resolution: {integrity: sha512-oLfYqYKMjwNopjO2BKbVd0uA1dL43jk6yqaeIgquLJG/Jo01FZb5sd6XfGIfFa21XDxXGM61eomX7fSps/hvYg==}
 
   '@vercel/toolbar@0.1.37':
     resolution: {integrity: sha512-upGpxs2922rURbgfFEE6Fhn0C4TpApJc4zlXPFpghHekbL8jVrbjMPQtL10lt0FWEte+RkpMHa0bzLVHAMcJcA==}
@@ -6292,10 +6292,6 @@ packages:
   form-data-encoder@1.7.2:
     resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
 
-  form-data@3.0.0:
-    resolution: {integrity: sha512-CKMFDglpbMi6PyN+brwB9Q/GOw0eAnsrEZDgcsH5Krhz5Od/haKHAX0NmQfha2zPPz0JpWzA7GJHGSnvCRLWsg==}
-    engines: {node: '>= 6'}
-
   form-data@4.0.2:
     resolution: {integrity: sha512-hGfm/slu0ZabnNt4oaRZ6uREyfCj6P4fT/n6A1rGV+Z0VdGXjfOhVUpkn6qVQONHGIFwmveGXyDs75+nr6FM8w==}
     engines: {node: '>= 6'}
@@ -7563,15 +7559,6 @@ packages:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
     deprecated: Use your platform's native DOMException instead
-
-  node-fetch@2.6.11:
-    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
 
   node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -13434,18 +13421,14 @@ snapshots:
 
   '@vercel/oidc@2.0.0': {}
 
-  '@vercel/sandbox@0.0.15':
+  '@vercel/sandbox@0.0.17':
     dependencies:
       '@vercel/oidc': 2.0.0
       async-retry: 1.3.3
-      form-data: 3.0.0
       jsonlines: 0.1.1
       ms: 2.1.3
-      node-fetch: 2.6.11
       tar-stream: 3.1.7
       zod: 3.24.4
-    transitivePeerDependencies:
-      - encoding
 
   '@vercel/toolbar@0.1.37(@vercel/analytics@1.5.0(next@15.1.7(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0))(next@15.1.7(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vite@6.2.4(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.0))':
     dependencies:
@@ -15005,12 +14988,6 @@ snapshots:
 
   form-data-encoder@1.7.2: {}
 
-  form-data@3.0.0:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      mime-types: 2.1.35
-
   form-data@4.0.2:
     dependencies:
       asynckit: 0.4.0
@@ -16538,10 +16515,6 @@ snapshots:
       lower-case: 1.1.4
 
   node-domexception@1.0.0: {}
-
-  node-fetch@2.6.11:
-    dependencies:
-      whatwg-url: 5.0.0
 
   node-fetch@2.6.7:
     dependencies:

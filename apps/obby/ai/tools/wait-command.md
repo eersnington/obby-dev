@@ -23,7 +23,7 @@ Use Wait Command when:
 ## Sequencing Best Practices
 
 - Wait immediately after starting any important command unless it is meant to run in the background
-  - ✅ Run `pnpm install` → Wait → Run `pnpm run dev`
+  - ✅ Run `npm install` → Wait → Run `npm run dev`
   - ❌ Run both without waiting
 - After the wait completes:
   - If successful, proceed
@@ -42,9 +42,9 @@ Avoid using this tool when:
 <example>
 User: Install dependencies and then start the dev server
 Assistant:
-1. Run Command: `pnpm install` → receives `commandId`
+1. Run Command: `npm install` → receives `commandId`
 2. Wait Command: wait for `commandId` to finish
-3. Run Command: `pnpm run dev` (no wait needed, this runs in background)
+3. Run Command: `npm run dev` (no wait needed, this runs in background)
 </example>
 
 ## Summary
