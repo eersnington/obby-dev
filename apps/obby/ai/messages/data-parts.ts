@@ -28,6 +28,13 @@ export const dataPartSchema = z.object({
     url: z.string().optional(),
     status: z.enum(['loading', 'done']),
   }),
+  'web-crawl': z.object({
+    url: z.string().optional(),
+    status: z.enum(['loading', 'done', 'error']),
+    content: z.string().optional(),
+    title: z.string().optional(),
+    error: z.string().optional(),
+  }),
 });
 
 export type DataPart = z.infer<typeof dataPartSchema>;

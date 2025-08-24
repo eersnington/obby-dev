@@ -6,6 +6,7 @@ import { generateFiles } from './generate-files';
 import { getSandboxURL } from './get-sandbox-url';
 import { runCommand } from './run-command';
 import { waitCommand } from './wait-command';
+import { webCrawl } from './web-crawl';
 
 type Params = {
   provider: ModelProvider | undefined;
@@ -20,6 +21,7 @@ export function tools({ provider, modelId, writer }: Params) {
     getSandboxURL: getSandboxURL({ writer }),
     runCommand: runCommand({ writer }),
     waitCommand: waitCommand({ writer }),
+    webCrawl: webCrawl({ writer }),
   };
 }
 
