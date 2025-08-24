@@ -114,7 +114,7 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
       </PanelHeader>
 
       <div className="flex h-[calc(100%-2rem-1px)] text-sm">
-        <ScrollArea className="w-1/4 flex-shrink-0 border-primary/18 border-r">
+        <ScrollArea className="w-1/4 flex-shrink-0 border-primary/10 border-r">
           <div>{renderFileTree(fs)}</div>
         </ScrollArea>
         {selected && sandboxId && !disabled && (
