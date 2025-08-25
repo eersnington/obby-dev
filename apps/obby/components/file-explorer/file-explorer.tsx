@@ -61,8 +61,8 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
       <div key={node.path}>
         <button
           className={cn(
-            'flex w-full items-center px-1 py-0.5 text-left hover:bg-gray-100',
-            { 'bg-gray-200/80': selected?.path === node.path }
+            'flex w-full items-center px-1 py-0.5 text-left hover:bg-primary/10',
+            { 'bg-primary/40': selected?.path === node.path }
           )}
           onClick={() => {
             if (node.type === 'folder') {
@@ -114,7 +114,7 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
       </PanelHeader>
 
       <div className="flex h-[calc(100%-2rem-1px)] text-sm">
-        <ScrollArea className="w-1/4 flex-shrink-0 border-primary/10 border-r">
+        <ScrollArea className="w-1/4 flex-shrink-0 border-border border-r">
           <div>{renderFileTree(fs)}</div>
         </ScrollArea>
         {selected && sandboxId && !disabled && (
