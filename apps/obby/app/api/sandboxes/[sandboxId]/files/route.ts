@@ -1,6 +1,7 @@
 import { Sandbox } from '@vercel/sandbox';
 import { type NextRequest, NextResponse } from 'next/server';
 import z from 'zod/v3';
+import { env } from '@/env';
 
 const FileParamsSchema = z.object({
   sandboxId: z.string(),
@@ -24,7 +25,12 @@ export async function GET(
     );
   }
 
-  const sandbox = await Sandbox.get(fileParams.data);
+  const sandbox = await Sandbox.get({
+    ...fileParams.data,
+    teamId: env.VERCEL_TEAM_ID ?? '',
+    projectId: env.VERCEL_PROJECT_ID ?? '',
+    token: env.VERCEL_TOKEN ?? '',
+  });
   const stream = await sandbox.readFile(fileParams.data);
   if (!stream) {
     return NextResponse.json(
