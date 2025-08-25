@@ -8,7 +8,7 @@ const otelRegex = /@opentelemetry\/instrumentation/;
 const mdRegex = /\.md/;
 
 export const config: NextConfig = {
-  serverExternalPackages: ['shiki'],
+  transpilePackages: ['shiki'],
 
   experimental: {
     useCache: true,
