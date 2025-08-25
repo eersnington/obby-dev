@@ -1,8 +1,11 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import {
+  PromptInput,
+  PromptInputTextarea,
+} from '@repo/design-system/components/ai-elements/prompt-input';
 import { Button } from '@repo/design-system/components/ui/button';
-import { Input } from '@repo/design-system/components/ui/input';
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { toast } from '@repo/design-system/sonner';
 import { log } from '@repo/observability/log';
@@ -16,7 +19,6 @@ import { Message } from '@/components/chat/message';
 import type { ChatUIMessage } from '@/components/chat/types';
 import { ModelSelector } from '@/components/model-selector/model-selector';
 import { ModelSelectorModal } from '@/components/model-selector/model-selector-cmdk';
-
 import { Panel, PanelHeader } from '@/components/panels/panels';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
 import { useModelStore } from '@/stores/use-model-store';
@@ -126,23 +128,22 @@ export function Chat({ className }: Props) {
           )}
         </div>
 
-        <form
-          className="flex flex-col gap-y-1 border-primary/18 border-t bg-background p-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            validateAndSubmitMessage(input);
-          }}
-        >
-          <div>
-            <Input
-              className="w-full rounded-sm border-0 bg-background font-mono text-sm"
+        <div className="flex flex-col gap-y-1 border-primary/18 border-t bg-background p-2">
+          <PromptInput
+            className="relative rounded-none"
+            onSubmit={(event) => {
+              event.preventDefault();
+              validateAndSubmitMessage(input);
+            }}
+          >
+            <PromptInputTextarea
+              className="w-full bg-background font-mono text-sm"
               disabled={status === 'streaming' || status === 'submitted'}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               value={input}
             />
-          </div>
-
+          </PromptInput>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1">
               <Button
@@ -166,7 +167,7 @@ export function Chat({ className }: Props) {
               )}
             </Button>
           </div>
-        </form>
+        </div>
 
         <ModelSelectorModal
           onChange={setModel}
