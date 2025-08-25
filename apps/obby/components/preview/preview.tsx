@@ -2,22 +2,31 @@
 
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { cn } from '@repo/design-system/lib/utils';
-import { ExternalLink, RefreshCwIcon } from 'lucide-react';
+import {
+  CodeIcon,
+  ExternalLink,
+  PanelTopIcon,
+  RefreshCwIcon,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { BarLoader } from 'react-spinners';
+import { FileExplorer } from '@/components/file-explorer/file-explorer';
 import { Panel, PanelHeader } from '@/components/panels/panels';
 
 type Props = {
   className?: string;
   disabled?: boolean;
   url?: string;
+  sandboxId?: string;
+  paths?: string[];
 };
 
-export function Preview({ className, disabled, url }: Props) {
+export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
   const [currentUrl, setCurrentUrl] = useState(url);
   const [error, setError] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState(url || '');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'web' | 'code'>('web');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const loadStartTime = useRef<number | null>(null);
 
@@ -82,7 +91,7 @@ export function Preview({ className, disabled, url }: Props) {
         </div>
 
         <div className="m-auto h-6">
-          {url && (
+          {url && activeTab === 'web' && (
             <input
               className="h-6 min-w-[300px] rounded border border-border bg-background px-4 font-mono text-xs focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               onChange={(event) => setInputValue(event.target.value)}
@@ -98,10 +107,41 @@ export function Preview({ className, disabled, url }: Props) {
             />
           )}
         </div>
+
+        {/* Tab group - desktop only */}
+        <div className="absolute right-0 mr-2 hidden items-center rounded border border-border lg:flex">
+          <button
+            className={cn(
+              'flex items-center space-x-1 rounded-none border-none px-3 py-1 text-sm transition-colors',
+              activeTab === 'web'
+                ? 'bg-primary text-primary-foreground'
+                : 'hover:bg-muted'
+            )}
+            onClick={() => setActiveTab('web')}
+            type="button"
+          >
+            <PanelTopIcon className="size-3" />
+            <span>Web</span>
+          </button>
+          <button
+            className={cn(
+              'flex items-center space-x-1 rounded-none border-none px-3 py-1 text-sm transition-colors',
+              activeTab === 'code'
+                ? 'bg-primary text-primary-foreground'
+                : 'hover:bg-muted'
+            )}
+            onClick={() => setActiveTab('code')}
+            type="button"
+          >
+            <CodeIcon className="size-3" />
+            <span>Code</span>
+          </button>
+        </div>
       </PanelHeader>
 
       <div className="relative flex h-[calc(100%-2rem-1px)]">
-        {currentUrl && !disabled && (
+        {/* Web Preview Mode */}
+        {activeTab === 'web' && currentUrl && !disabled && (
           <>
             <ScrollArea className="w-full">
               {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: this loads in the sandbox output */}
@@ -144,6 +184,18 @@ export function Preview({ className, disabled, url }: Props) {
               </div>
             )}
           </>
+        )}
+
+        {/* Code View Mode - shows file explorer */}
+        {activeTab === 'code' && (
+          <div className="w-full">
+            <FileExplorer
+              className="h-full w-full"
+              disabled={disabled}
+              paths={paths || []}
+              sandboxId={sandboxId}
+            />
+          </div>
         )}
       </div>
     </Panel>
