@@ -23,12 +23,16 @@ export default function Page() {
           <Chat className="flex-1 overflow-hidden" />
         </TabContent>
         <TabGroup tabId="chat">
-          <TabContent className="lg:h-1/3" tabId="preview">
+          {/* Preview - now contains both web preview and code view */}
+          <TabContent className="lg:h-2/3" tabId="preview">
             <Preview className="flex-1 overflow-hidden" />
           </TabContent>
-          <TabContent className="lg:h-1/3" tabId="file-explorer">
+
+          {/* File Explorer - ONLY visible on mobile */}
+          <TabContent className="lg:hidden" tabId="file-explorer">
             <FileExplorer className="flex-1 overflow-hidden" />
           </TabContent>
+
           <TabContent className="lg:h-1/3" tabId="logs">
             <Logs className="flex-1 overflow-hidden" />
           </TabContent>
