@@ -8,11 +8,13 @@ type Props = {
 };
 
 export function Preview({ className }: Props) {
-  const { status, url } = useSandboxStore();
+  const { status, url, sandboxId, paths } = useSandboxStore();
   return (
     <PreviewComponent
       className={className}
       disabled={status === 'stopped'}
+      paths={paths}
+      sandboxId={sandboxId}
       url={url}
     />
   );
