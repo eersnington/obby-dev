@@ -7,6 +7,7 @@ import { getSandboxURL } from './get-sandbox-url';
 import { runCommand } from './run-command';
 import { waitCommand } from './wait-command';
 import { webCrawl } from './web-crawl';
+import { webSearch } from './web-search';
 
 type Params = {
   provider: ModelProvider | undefined;
@@ -22,6 +23,7 @@ export function tools({ provider, modelId, writer }: Params) {
     runCommand: runCommand({ writer }),
     waitCommand: waitCommand({ writer }),
     webCrawl: webCrawl({ writer }),
+    webSearch: webSearch({ writer }),
   };
 }
 

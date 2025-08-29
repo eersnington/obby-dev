@@ -15,6 +15,7 @@ import { RunCommand } from './run-command';
 import { Text } from './text';
 import { WaitCommand } from './wait-command';
 import { WebCrawl } from './web-crawl';
+import { WebSearch } from './web-search';
 
 type Props = {
   part: UIMessage<Metadata, DataPart, ToolSet>['parts'][number];
@@ -38,6 +39,9 @@ export function MessagePart({ part }: Props) {
   }
   if (part.type === 'data-web-crawl') {
     return <WebCrawl message={part.data} />;
+  }
+  if (part.type === 'data-web-search') {
+    return <WebSearch message={part.data} />;
   }
   if (part.type === 'reasoning') {
     return (

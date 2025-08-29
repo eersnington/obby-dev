@@ -35,6 +35,19 @@ export const dataPartSchema = z.object({
     title: z.string().optional(),
     error: z.string().optional(),
   }),
+  'web-search': z.object({
+    query: z.string().optional(),
+    status: z.enum(['loading', 'done', 'error']),
+    results: z.array(z.object({
+      title: z.string(),
+      url: z.string(),
+      description: z.string(),
+      date: z.string().optional(),
+      rank: z.number(),
+    })).optional(),
+    resultsCount: z.number().optional(),
+    error: z.string().optional(),
+  }),
 });
 
 export type DataPart = z.infer<typeof dataPartSchema>;
