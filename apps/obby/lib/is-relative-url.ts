@@ -1,13 +1,13 @@
-import { log } from '@repo/observability/log';
+import { Effect } from 'effect';
 
 export function isRelativeUrl(url: string): boolean {
   try {
     new URL(url);
     return false;
   } catch (error: unknown) {
-    log.error('Error parsing URL');
+    Effect.log('Error parsing URL');
     const message = error instanceof Error ? error.message : String(error);
-    log.error(message);
+    Effect.log(message);
     return true;
   }
 }

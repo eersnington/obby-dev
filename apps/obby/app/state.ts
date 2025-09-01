@@ -1,5 +1,5 @@
-import { log } from '@repo/observability/log';
 import type { DataUIPart } from 'ai';
+import { Effect } from 'effect';
 import { create } from 'zustand';
 import type { DataPart } from '@/ai/messages/data-parts';
 import type { Command, CommandLog } from '@/components/commands-logs/types';
@@ -23,7 +23,7 @@ export const useSandboxStore = create<SandboxStore>()((set) => ({
     set((state) => {
       const idx = state.commands.findIndex((c) => c.cmdId === data.cmdId);
       if (idx === -1) {
-        log.warn(`Command with ID ${data.cmdId} not found.`);
+        Effect.log(`Command with ID ${data.cmdId} not found.`);
         return state;
       }
       const updatedCmds = [...state.commands];

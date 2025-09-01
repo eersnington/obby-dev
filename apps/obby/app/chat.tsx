@@ -8,8 +8,8 @@ import {
 import { Button } from '@repo/design-system/components/ui/button';
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { toast } from '@repo/design-system/sonner';
-import { log } from '@repo/observability/log';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Effect } from 'effect';
 import { MessageCircleIcon, SendIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { MoonLoader } from 'react-spinners';
@@ -65,7 +65,7 @@ export function Chat({ className }: Props) {
     onData: mapDataToState,
     onError: (error) => {
       toast.error(`Communication error with the AI: ${error.message}`);
-      log.error('Error sending message:', error);
+      Effect.log('Error sending message:', error);
     },
   });
 

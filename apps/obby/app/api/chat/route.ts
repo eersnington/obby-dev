@@ -1,4 +1,3 @@
-import { log } from '@repo/observability/log';
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -8,6 +7,7 @@ import {
   streamText,
 } from 'ai';
 import { checkBotId } from 'botid/server';
+import { Effect } from 'effect';
 import { NextResponse } from 'next/server';
 import { DEFAULT_MODEL } from '@/ai/constants';
 import { convertProviderKeyToUserKeys, createModelFactory } from '@/ai/factory';
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
   const validation = ChatBodySchema.safeParse(body);
   if (!validation.success) {
-    log.error('Invalid request body:', validation.error.format());
+    Effect.log('Invalid request body:', validation.error.format());
     return NextResponse.json(
       {
         error: 'Invalid request format',
@@ -53,14 +53,14 @@ export async function POST(req: Request) {
       preferUserKeys: true,
     });
 
-    log.info('Checking model availability:', {
+    Effect.log('Checking model availability:', {
       modelId,
       provider,
     });
 
     if (!factory.isModelAvailable(modelId, provider)) {
       const availableModels = factory.listAvailableModels();
-      log.info(
+      Effect.log(
         'Available models:',
         availableModels.map((m) => m.id)
       );
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     const availableModels = factory.listAvailableModels();
     const modelMeta = availableModels.find((m) => m.id === modelId);
 
-    log.info('Using model:', modelMeta);
+    Effect.log('Using model:', modelMeta);
 
     const wrappedModel = factory.getModel(modelId, provider) as LanguageModel;
 
@@ -92,8 +92,8 @@ export async function POST(req: Request) {
             stopWhen: stepCountIs(STEP_COUNT),
             tools: tools({ provider, modelId, writer }),
             onError: (error) => {
-              log.error('Error communicating with AI');
-              log.error(JSON.stringify(error, null, 2));
+              Effect.log('Error communicating with AI');
+              Effect.log(JSON.stringify(error, null, 2));
             },
           });
           result.consumeStream();
@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       }),
     });
   } catch (error) {
-    log.error(
+    Effect.log(
       'Error creating model factory or getting model:',
       error instanceof Error
         ? { error: error.message, stack: error.stack }

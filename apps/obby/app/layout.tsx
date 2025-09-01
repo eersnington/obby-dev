@@ -1,12 +1,11 @@
 import { DesignSystemProvider } from '@repo/design-system';
-import { Toolbar } from '@repo/feature-flags/components/toolbar';
+import { VercelToolbar } from '@vercel/toolbar/next';
 import type { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
 import { SandboxState } from '@/components/modals/sandbox-state';
 
 import './styles.css';
-
 
 export const metadata: Metadata = {
   title: 'Obby - OSS v0',
@@ -22,8 +21,8 @@ export default function RootLayout({
         <DesignSystemProvider>
           <NuqsAdapter>{children}</NuqsAdapter>
           <SandboxState />
+          <VercelToolbar />
         </DesignSystemProvider>
-        <Toolbar />
       </body>
     </html>
   );

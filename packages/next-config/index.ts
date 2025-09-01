@@ -10,10 +10,6 @@ const mdRegex = /\.md/;
 export const config: NextConfig = {
   transpilePackages: ['shiki'],
 
-  experimental: {
-    useCache: true,
-    cacheComponents: true,
-  },
   turbopack: {
     rules: {
       '*.md': {

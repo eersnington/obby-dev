@@ -1,6 +1,6 @@
-import { log } from '@repo/observability/log';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
+import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
@@ -30,11 +30,11 @@ export const webCrawl = ({ writer }: Params) =>
         data: { url, status: 'loading' },
       });
 
-      log.info('Starting web crawl', { url, toolCallId });
+      Effect.log('Starting web crawl', { url, toolCallId });
 
       if (!env.JINA_API_KEY) {
         const error = 'JINA_API_KEY is not configured';
-        log.error('Web crawl failed: missing API key', { url });
+        Effect.log('Web crawl failed: missing API key', { url });
 
         writer.write({
           id: toolCallId,
@@ -70,7 +70,7 @@ export const webCrawl = ({ writer }: Params) =>
           content.match(TITLE_FIRST_LINE_REGEX);
         const title = titleMatch ? titleMatch[1].trim() : new URL(url).hostname;
 
-        log.info('Web crawl successful', {
+        Effect.log('Web crawl successful', {
           url,
           contentLength: content.length,
           title: title.substring(0, TITLE_MAX_LENGTH),
@@ -86,7 +86,7 @@ export const webCrawl = ({ writer }: Params) =>
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error occurred';
-        log.error('Web crawl failed', { url, error: errorMessage });
+        Effect.log('Web crawl failed', { url, error: errorMessage });
 
         writer.write({
           id: toolCallId,

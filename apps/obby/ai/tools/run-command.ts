@@ -1,7 +1,7 @@
-import { log } from '@repo/observability/log';
 import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
+import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
@@ -51,13 +51,13 @@ export const runCommand = ({ writer }: Params) =>
         token: env.VERCEL_TOKEN ?? '',
       });
 
-      log.info('[Run Command Tool] Running command', {
+      Effect.log('[Run Command Tool] Running command', {
         command,
         args,
         sudo,
       });
 
-      log.info('[Run Command Tool]Sandbox', { sandbox });
+      Effect.log('[Run Command Tool]Sandbox', { sandbox });
 
       try {
         const cmd = await sandbox.runCommand({
@@ -66,7 +66,7 @@ export const runCommand = ({ writer }: Params) =>
           args,
           sudo,
         });
-        log.info('[Run Command Tool] Command started', { cmd });
+        Effect.log('[Run Command Tool] Command started', { cmd });
         writer.write({
           id: toolCallId,
           type: 'data-run-command',
@@ -87,7 +87,7 @@ export const runCommand = ({ writer }: Params) =>
           cmd.cmdId
         }\`. If you want to run this command in the background, you can ignore the command ID.`;
       } catch (error) {
-        log.error('[Run Command Tool] Error running command', { error });
+        Effect.log('[Run Command Tool] Error running command', { error });
       }
     },
   });

@@ -1,6 +1,6 @@
-import { log } from '@repo/observability/log';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
+import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
 import type { DataPart } from '../messages/data-parts';
@@ -23,7 +23,11 @@ type Params = {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>;
 };
 
-function addResultToArray(results: SearchResult[], currentResult: Partial<SearchResult>, rank: number): void {
+function addResultToArray(
+  results: SearchResult[],
+  currentResult: Partial<SearchResult>,
+  rank: number
+): void {
   if (currentResult.title && currentResult.url) {
     results.push({
       title: currentResult.title,
@@ -35,7 +39,11 @@ function addResultToArray(results: SearchResult[], currentResult: Partial<Search
   }
 }
 
-function processResultField(currentResult: Partial<SearchResult>, field: string, value: string): void {
+function processResultField(
+  currentResult: Partial<SearchResult>,
+  field: string,
+  value: string
+): void {
   const fieldLower = field.toLowerCase();
   if (fieldLower === 'title') {
     currentResult.title = value;
@@ -86,14 +94,14 @@ function handleSearchError(
   query: string,
   error: string
 ): string {
-  log.error('Web search failed', { query, error });
-  
+  Effect.log('Web search failed', { query, error });
+
   writer.write({
     id: toolCallId,
     type: 'data-web-search',
     data: { query, status: 'error', error },
   });
-  
+
   return `Failed to search for "${query}": ${error}`;
 }
 
@@ -105,7 +113,7 @@ function handleSearchSuccess(
 ): string {
   const limitedResults = results.slice(0, MAX_RESULTS);
 
-  log.info('Web search successful', {
+  Effect.log('Web search successful', {
     query,
     resultsCount: limitedResults.length,
     firstResultTitle: limitedResults[0]?.title?.substring(0, TITLE_MAX_LENGTH),
@@ -118,7 +126,7 @@ function handleSearchSuccess(
       query,
       status: 'done',
       results: limitedResults,
-      resultsCount: limitedResults.length
+      resultsCount: limitedResults.length,
     },
   });
 
@@ -134,7 +142,9 @@ export const webSearch = ({ writer }: Params) =>
   tool({
     description,
     inputSchema: z.object({
-      query: z.string().describe('The search query to find relevant web content'),
+      query: z
+        .string()
+        .describe('The search query to find relevant web content'),
     }),
     execute: async ({ query }, { toolCallId }) => {
       writer.write({
@@ -143,10 +153,11 @@ export const webSearch = ({ writer }: Params) =>
         data: { query, status: 'loading' },
       });
 
-      log.info('Starting web search', { query, toolCallId });
+      Effect.log('Starting web search', { query, toolCallId });
 
       if (!env.JINA_API_KEY) {
-        const error = 'JINA_API_KEY is not configured. Please configure JINA_API_KEY environment variable.';
+        const error =
+          'JINA_API_KEY is not configured. Please configure JINA_API_KEY environment variable.';
         return handleSearchError(writer, toolCallId, query, error);
       }
 
@@ -155,7 +166,7 @@ export const webSearch = ({ writer }: Params) =>
         const response = await fetch(`https://s.jina.ai/?q=${encodedQuery}`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${env.JINA_API_KEY}`,
+            Authorization: `Bearer ${env.JINA_API_KEY}`,
             'X-Respond-With': 'no-content',
             'User-Agent': 'Obby-AI-Web-Search/1.0',
           },
@@ -166,21 +177,21 @@ export const webSearch = ({ writer }: Params) =>
         }
 
         const content = await response.text();
-        
+
         if (!content || content.trim().length === 0) {
           throw new Error('No search results found');
         }
 
         const results = parseSearchResults(content);
-        
+
         if (results.length === 0) {
           throw new Error('Could not parse search results');
         }
 
         return handleSearchSuccess(writer, toolCallId, query, results);
-
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error occurred';
         return handleSearchError(writer, toolCallId, query, errorMessage);
       }
     },

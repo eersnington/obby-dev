@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/suspicious/noConsole: this is just for script */
 
-import { log } from '@repo/observability/log';
 import { Sandbox } from '@vercel/sandbox';
 import type { LanguageModel, UIMessage, UIMessageStreamWriter } from 'ai';
 import { streamObject, tool } from 'ai';
+import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
 import type { ModelProvider } from '../constants';
@@ -57,7 +57,7 @@ export const generateFiles = ({ writer, modelId, provider }: Params) =>
 
       if (!factory.isModelAvailable(modelId, provider)) {
         const availableModels = factory.listAvailableModels();
-        log.info(
+        Effect.log(
           'Available models:',
           availableModels.map((m) => m.id)
         );
@@ -73,8 +73,8 @@ export const generateFiles = ({ writer, modelId, provider }: Params) =>
         messages: [...messages, { role: 'user', content: prompt }],
         schema: z.object({ files: z.array(fileSchema) }),
         onError: (error) => {
-          console.error('Error communicating with AI');
-          console.error(JSON.stringify(error, null, 2));
+          Effect.log('Error communicating with AI');
+          Effect.log(JSON.stringify(error, null, 2));
         },
       });
 
