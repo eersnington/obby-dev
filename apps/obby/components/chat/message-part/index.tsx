@@ -14,7 +14,7 @@ import { GetSandboxURL } from './get-sandbox-url';
 import { RunCommand } from './run-command';
 import { Text } from './text';
 import { WaitCommand } from './wait-command';
-import { WebCrawl } from './web-crawl';
+import { WebScrape } from './web-scrape';
 import { WebSearch } from './web-search';
 
 type Props = {
@@ -37,8 +37,8 @@ export function MessagePart({ part }: Props) {
   if (part.type === 'data-wait-command') {
     return <WaitCommand message={part.data} />;
   }
-  if (part.type === 'data-web-crawl') {
-    return <WebCrawl message={part.data} />;
+  if (part.type === 'data-web-scrape') {
+    return <WebScrape message={part.data} />;
   }
   if (part.type === 'data-web-search') {
     return <WebSearch message={part.data} />;

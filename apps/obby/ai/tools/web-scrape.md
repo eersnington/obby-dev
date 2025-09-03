@@ -26,6 +26,7 @@ Only the requested format keys plus metadata. Screenshot (if requested) is a URL
 - Use markdown for detailed analysis, summary for quick context
 - Validate the URL (must include protocol)
 - If summary feels thin, also request markdown
+- Do not EVER reply with the screenshot URL directly in your response
 
 ## Examples
 <example>
