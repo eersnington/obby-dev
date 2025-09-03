@@ -1,4 +1,4 @@
-import type { SearchResultWeb } from '@mendable/firecrawl-js';
+import type { Document, SearchResultWeb } from '@mendable/firecrawl-js';
 import z from 'zod/v3';
 
 export const dataPartSchema = z.object({
@@ -29,11 +29,10 @@ export const dataPartSchema = z.object({
     url: z.string().optional(),
     status: z.enum(['loading', 'done']),
   }),
-  'web-crawl': z.object({
+  'web-scrape': z.object({
     url: z.string().optional(),
     status: z.enum(['loading', 'done', 'error']),
-    content: z.string().optional(),
-    title: z.string().optional(),
+    result: z.custom<Document>().optional(),
     error: z.string().optional(),
   }),
   'web-search': z.object({
