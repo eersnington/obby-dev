@@ -1,6 +1,5 @@
 import { cn } from '@repo/design-system/lib/utils';
 import { AlertTriangleIcon, ExternalLinkIcon, SearchIcon } from 'lucide-react';
-import Markdown from 'react-markdown';
 import type { DataPart } from '@/ai/messages/data-parts';
 import { MessageSpinner } from '../message-spinner';
 import { ToolHeader } from '../tool-header';
@@ -27,59 +26,58 @@ export function WebSearch(props: {
 
       <div className="space-y-3">
         {props.message.query && (
-          <div className="text-muted-foreground text-sm">
-            <Markdown>{`Query: **${props.message.query}**`}</Markdown>
+          <div className="font-mono text-sm">
+            <span className="text-muted-foreground">query:</span>{' '}
+            <span className="text-foreground">{props.message.query}</span>
           </div>
         )}
 
         {props.message.status === 'loading' && <MessageSpinner />}
 
         {props.message.status === 'error' && props.message.error && (
-          <div className="text-destructive text-sm">
-            <Markdown>{`Error: ${props.message.error}`}</Markdown>
+          <div className="border-destructive border-l-2 py-2 pl-3">
+            <div className="font-mono text-destructive text-sm">
+              {props.message.error}
+            </div>
           </div>
         )}
 
         {props.message.status === 'done' && props.message.results && (
-          <div className="space-y-2">
-            {props.message.results.slice(0, 10).map((result, index) => (
+          <div className="space-y-1">
+            {props.message.results.map((result, index) => (
               <div
-                className="border-muted border-l-2 py-1 pl-3"
+                className="group border-muted border-l-2 py-2 pl-3 transition-colors hover:border-primary"
                 key={`${result.url}-${index}`}
               >
-                <div className="flex items-start gap-2">
-                  <span className="font-mono text-muted-foreground text-xs">
-                    [{result.rank}]
-                  </span>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 shrink-0 text-right font-mono text-muted-foreground text-xs">
+                    {result.category}
+                  </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1">
+                    <div className="mb-1 flex items-center gap-2">
+                      <span className="font-mono text-muted-foreground text-xs">
+                        {result.url}
+                      </span>
+                    </div>
+                    <div className="mb-1">
                       <a
-                        className="truncate font-medium text-sm hover:underline"
+                        className="line-clamp-2 font-mono text-foreground text-sm leading-tight transition-colors hover:text-primary"
                         href={result.url}
                         rel="noopener noreferrer"
                         target="_blank"
+                        title={result.title}
                       >
                         {result.title}
+                        <ExternalLinkIcon className="ml-1 inline h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
                       </a>
-                      <ExternalLinkIcon className="h-3 w-3 shrink-0 text-muted-foreground" />
                     </div>
-                    <p className="mt-1 line-clamp-2 text-muted-foreground text-xs">
+                    <p className="line-clamp-2 text-muted-foreground text-xs">
                       {result.description}
                     </p>
-                    {result.date && (
-                      <p className="mt-1 text-muted-foreground text-xs">
-                        {result.date}
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
-            ))}
-            {props.message.results.length > 10 && (
-              <div className="pt-2 text-center text-muted-foreground text-xs">
-                ... and {props.message.results.length - 10} more results
-              </div>
-            )}
+            ))}{' '}
           </div>
         )}
       </div>
