@@ -1,9 +1,9 @@
 import { TabContent, TabGroup, TabItem } from '@/components/tabs';
-import { Chat } from './main/chat';
-import { FileExplorer } from './main/file-explorer';
-import { Header } from './main/header';
-import { Logs } from './main/logs';
-import { Preview } from './main/preview';
+import { Chat } from './chat';
+import { FileExplorer } from './file-explorer';
+import { Header } from './header';
+import { Logs } from './logs';
+import { Preview } from './preview';
 
 export default function Page() {
   return (
