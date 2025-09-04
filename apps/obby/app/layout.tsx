@@ -3,7 +3,6 @@ import { VercelToolbar } from '@vercel/toolbar/next';
 import type { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { ReactNode } from 'react';
-import { SandboxState } from '@/components/modals/sandbox-state';
 
 import './styles.css';
 
@@ -20,7 +19,6 @@ export default function RootLayout({
       <body className="antialiased">
         <DesignSystemProvider>
           <NuqsAdapter>{children}</NuqsAdapter>
-          <SandboxState />
           <VercelToolbar />
         </DesignSystemProvider>
       </body>
