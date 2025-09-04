@@ -16,7 +16,7 @@ import { tools } from '@/ai/tools';
 import { ChatBodySchema } from '@/ai/validation';
 import prompt from './prompt.md';
 
-const STEP_COUNT = 20;
+const STEP_COUNT = 10;
 
 export async function POST(req: Request) {
   const checkResult = await checkBotId();
@@ -43,6 +43,7 @@ export async function POST(req: Request) {
     modelId = DEFAULT_MODEL,
     provider,
     providerApiKey,
+    tools: toolOptions,
   } = validation.data;
 
   try {
@@ -77,6 +78,7 @@ export async function POST(req: Request) {
     const modelMeta = availableModels.find((m) => m.id === modelId);
 
     Effect.log('Using model:', modelMeta);
+    Effect.log('Tool options provided:', toolOptions);
 
     const wrappedModel = factory.getModel(modelId, provider) as LanguageModel;
 
@@ -90,7 +92,12 @@ export async function POST(req: Request) {
             system: prompt,
             messages: convertToModelMessages(messages),
             stopWhen: stepCountIs(STEP_COUNT),
-            tools: tools({ provider, modelId, writer }),
+            tools: tools({
+              provider,
+              modelId,
+              writer,
+              options: { tools: toolOptions },
+            }),
             onError: (error) => {
               Effect.log('Error communicating with AI');
               Effect.log(JSON.stringify(error, null, 2));
