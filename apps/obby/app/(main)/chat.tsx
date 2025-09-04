@@ -6,7 +6,6 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from '@repo/design-system/components/ai-elements/conversation';
-
 import {
   PromptInput,
   PromptInputTextarea,
@@ -24,9 +23,11 @@ import type { ChatUIMessage } from '@/components/chat/types';
 import { ModelSelector } from '@/components/model-selector/model-selector';
 import { ModelSelectorModal } from '@/components/model-selector/model-selector-cmdk';
 import { Panel, PanelHeader } from '@/components/panels/panels';
+import { ToolOptionsPopover } from '@/components/tool-options/tool-options-popover';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
 import { useModelStore } from '@/stores/use-model-store';
 import { useProviderKeysStore } from '@/stores/use-provider-store';
+import { useToolOptionsStore } from '@/stores/use-tool-options-store';
 import { useDataStateMapper } from './state';
 
 type Props = {
@@ -41,17 +42,18 @@ export function Chat({ className }: Props) {
   const setModel = useModelStore((s) => s.setModel);
   const { getKey } = useProviderKeysStore();
 
-  // only use fallback after hydration to avoid race conditions
+  const toolsPayload = useToolOptionsStore((s) => s.getRequestTools());
+
+  // Only use fallback after hydration to avoid mismatches
   const modelId = hasHydrated
     ? selectedModelId || DEFAULT_MODEL
     : DEFAULT_MODEL;
-
   const provider = selectedProvider;
 
   const [modelModalOpen, setModelModalOpen] = useState(false);
   const [input, setInput] = useLocalStorageValue('prompt-input');
   const mapDataToState = useDataStateMapper();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const _messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status } = useChat<ChatUIMessage>({
     onToolCall: () => mutate('/api/auth/info'),
@@ -63,16 +65,29 @@ export function Chat({ className }: Props) {
   });
 
   // Auto-scroll to bottom when new messages arrive
-  if (messages.length > 0) {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
+  // if (messages.length > 0) {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // }
 
   const validateAndSubmitMessage = (text: string) => {
-    if (text.trim()) {
-      const providerApiKey = provider ? getKey(provider) : null;
-      sendMessage({ text }, { body: { modelId, provider, providerApiKey } });
-      setInput('');
+    if (!text.trim()) {
+      return;
     }
+    const providerApiKey = provider ? getKey(provider) : null;
+
+    sendMessage(
+      { text },
+      {
+        body: {
+          modelId,
+          // provider may be undefined; backend handles optional
+          provider,
+          providerApiKey,
+          tools: toolsPayload, // only true flags included
+        },
+      }
+    );
+    setInput('');
   };
 
   return (
@@ -85,41 +100,6 @@ export function Chat({ className }: Props) {
         <div className="ml-auto font-mono text-xs opacity-50">[{status}]</div>
       </PanelHeader>
 
-      {/* Messages Area */}
-      {/*<div className="min-h-0 flex-1">
-        {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center font-mono text-muted-foreground text-sm">
-            <p className="flex items-center font-semibold">
-              Click and try one of these prompts:
-            </p>
-            <ul className="space-y-1 p-4 text-center">
-              {TEST_PROMPTS.map((prompt) => (
-                <li key={prompt}>
-                  <button
-                    className="w-full cursor-pointer rounded-sm border border-border border-dashed px-4 py-2 text-left shadow-sm hover:bg-secondary/50 hover:text-primary"
-                    onClick={() => validateAndSubmitMessage(prompt)}
-                    type="button"
-                  >
-                    {prompt}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <ScrollArea className="h-full">
-            <div className="space-y-4 p-4">
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <Message key={message.id} message={message} />
-                ))}
-              </div>
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-        )}
-      </div>*/}
-
       <div className="flex-1 space-y-4 overflow-y-auto p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center font-mono text-muted-foreground text-sm">
@@ -127,14 +107,14 @@ export function Chat({ className }: Props) {
               Click and try one of these prompts:
             </p>
             <ul className="space-y-1 p-4 text-center">
-              {TEST_PROMPTS.map((prompt) => (
-                <li key={prompt}>
+              {TEST_PROMPTS.map((p) => (
+                <li key={p}>
                   <button
                     className="w-full cursor-pointer rounded-sm border border-border border-dashed px-4 py-2 text-left shadow-sm hover:bg-secondary/50 hover:text-primary"
-                    onClick={() => validateAndSubmitMessage(prompt)}
+                    onClick={() => validateAndSubmitMessage(p)}
                     type="button"
                   >
-                    {prompt}
+                    {p}
                   </button>
                 </li>
               ))}
@@ -146,6 +126,7 @@ export function Chat({ className }: Props) {
               {messages.map((message) => (
                 <Message key={message.id} message={message} />
               ))}
+              {/*<div ref={messagesEndRef} />*/}
             </ConversationContent>
             <ConversationScrollButton />
           </Conversation>
@@ -169,7 +150,7 @@ export function Chat({ className }: Props) {
           />
         </PromptInput>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-2">
             <Button
               onClick={() => setModelModalOpen(true)}
               type="button"
@@ -178,6 +159,7 @@ export function Chat({ className }: Props) {
               Models
             </Button>
             <ModelSelector modelId={modelId} onModelChange={setModel} />
+            <ToolOptionsPopover className="ml-2" />
           </div>
 
           <Button disabled={status !== 'ready' || !input.trim()} type="submit">
