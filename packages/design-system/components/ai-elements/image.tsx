@@ -1,5 +1,5 @@
-/** biome-ignore-all lint/performance/noImgElement: this image component is just used in chat. it's not an LCP performance bottleneck. */ /** biome-ignore-all lint/nursery/useImageSize: image sizes cannot be estimated. i'll look into this later. */
-
+/** biome-ignore-all lint/performance/noImgElement: can't pay bills for vercel image */
+/** biome-ignore-all lint/nursery/useImageSize: intended */
 import { cn } from '@repo/design-system/lib/utils';
 import type { Experimental_GeneratedImage } from 'ai';
 
