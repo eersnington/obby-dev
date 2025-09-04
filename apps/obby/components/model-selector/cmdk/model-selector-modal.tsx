@@ -1,6 +1,7 @@
 'use client';
 
 import { CommandDialog } from '@repo/design-system/components/ui/command';
+import { useEffect } from 'react';
 import { type ModelProvider, PROVIDERS } from '@/ai/constants';
 import { useModelStore } from '@/stores/use-model-store';
 import { useAvailableModels } from '../use-available-models';
@@ -40,6 +41,17 @@ export function ModelSelectorModal({
     onChange(modelId);
     onOpenChange(false);
   };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === '.') {
+        e.preventDefault();
+        onOpenChange(!open);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onOpenChange]);
 
   return (
     <CommandDialog
