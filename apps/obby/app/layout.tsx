@@ -8,7 +8,7 @@ import './styles.css';
 
 export const metadata: Metadata = {
   title: 'Obby - OSS v0',
-  description: 'Open Source v0 alternative. Prompt to build your Next.js app.',
+  description: 'Open Source v0 alternative but it can run almost anything.',
 };
 
 export default function RootLayout({
