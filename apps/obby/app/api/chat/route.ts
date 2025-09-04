@@ -7,13 +7,13 @@ import {
   streamText,
 } from 'ai';
 import { checkBotId } from 'botid/server';
-import { Effect } from 'effect';
 import { NextResponse } from 'next/server';
 import { DEFAULT_MODEL } from '@/ai/constants';
 import { convertProviderKeyToUserKeys, createModelFactory } from '@/ai/factory';
 import { getModelOptions } from '@/ai/gateway';
 import { tools } from '@/ai/tools';
 import { ChatBodySchema } from '@/ai/validation';
+import { logger } from '@/lib/logger';
 import prompt from './prompt.md';
 
 const STEP_COUNT = 10;
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
   const validation = ChatBodySchema.safeParse(body);
   if (!validation.success) {
-    Effect.log('Invalid request body:', validation.error.format());
+    logger.info('[Chat] Invalid request body:', validation.error.format());
     return NextResponse.json(
       {
         error: 'Invalid request format',
@@ -54,15 +54,15 @@ export async function POST(req: Request) {
       preferUserKeys: true,
     });
 
-    Effect.log('Checking model availability:', {
+    logger.info('[Chat] Checking model availability:', {
       modelId,
       provider,
     });
 
     if (!factory.isModelAvailable(modelId, provider)) {
       const availableModels = factory.listAvailableModels();
-      Effect.log(
-        'Available models:',
+      logger.error(
+        '[Chat] Available models:',
         availableModels.map((m) => m.id)
       );
 
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
     const availableModels = factory.listAvailableModels();
     const modelMeta = availableModels.find((m) => m.id === modelId);
 
-    Effect.log('Using model:', modelMeta);
-    Effect.log('Tool options provided:', toolOptions);
+    logger.info('[Chat] Using model:', modelMeta);
+    logger.info('[Chat] Tool options provided:', toolOptions);
 
     const wrappedModel = factory.getModel(modelId, provider) as LanguageModel;
 
@@ -99,8 +99,11 @@ export async function POST(req: Request) {
               options: { tools: toolOptions },
             }),
             onError: (error) => {
-              Effect.log('Error communicating with AI');
-              Effect.log(JSON.stringify(error, null, 2));
+              logger.error('[Chat] Error communicating with AI');
+              logger.error(
+                '[Chat] Error details:',
+                JSON.stringify(error, null, 2)
+              );
             },
           });
           result.consumeStream();
@@ -117,8 +120,8 @@ export async function POST(req: Request) {
       }),
     });
   } catch (error) {
-    Effect.log(
-      'Error creating model factory or getting model:',
+    logger.error(
+      '[Chat] Error creating model factory or getting model:',
       error instanceof Error
         ? { error: error.message, stack: error.stack }
         : { error }
