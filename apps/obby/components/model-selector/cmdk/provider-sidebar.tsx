@@ -12,6 +12,12 @@ export function ProviderSidebar({ selected, onSelect }: Props) {
   const iconFor = (provider: ModelProvider) =>
     PROVIDER_LOGOS[provider] ?? '/providers/openai.svg';
 
+  const handleSelect = (p: ModelProvider) => {
+    if (p !== selected) {
+      onSelect(p);
+    }
+  };
+
   return (
     <aside className="w-full border-b p-4 md:w-56 md:border-r md:border-b-0">
       <div className="mb-3 flex items-center gap-2 text-muted-foreground text-xs">
@@ -26,7 +32,14 @@ export function ProviderSidebar({ selected, onSelect }: Props) {
               selected === provider && 'bg-primary/10 text-primary'
             )}
             key={provider}
-            onClick={() => onSelect(provider)}
+            onClick={() => handleSelect(provider)}
+            onFocus={() => handleSelect(provider)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleSelect(provider);
+              }
+            }}
+            onMouseOver={() => handleSelect(provider)}
             size="sm"
             variant="ghost"
           >
