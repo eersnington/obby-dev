@@ -159,7 +159,7 @@ export function Chat({ className }: Props) {
               Models
             </Button>
             <ModelSelector modelId={modelId} onModelChange={setModel} />
-            <ToolOptionsPopover className="ml-2" />
+            <ToolOptionsPopover />
           </div>
 
           <Button disabled={status !== 'ready' || !input.trim()} type="submit">
