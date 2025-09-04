@@ -1,8 +1,3 @@
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from '@repo/design-system/components/ai-elements/reasoning';
 import type { UIMessage } from 'ai';
 import type { DataPart } from '@/ai/messages/data-parts';
 import type { Metadata } from '@/ai/messages/metadata';
@@ -10,7 +5,7 @@ import type { ToolSet } from '@/ai/tools';
 import { CreateSandbox } from './create-sandbox';
 import { GenerateFiles } from './generate-files';
 import { GetSandboxURL } from './get-sandbox-url';
-// import { Reasoning } from './reasoning';
+import { Reasoning } from './reasoning';
 import { RunCommand } from './run-command';
 import { Text } from './text';
 import { WaitCommand } from './wait-command';
@@ -44,12 +39,7 @@ export function MessagePart({ part }: Props) {
     return <WebSearch message={part.data} />;
   }
   if (part.type === 'reasoning') {
-    return (
-      <Reasoning className="w-full" isStreaming={true}>
-        <ReasoningTrigger />
-        <ReasoningContent>{part.text}</ReasoningContent>
-      </Reasoning>
-    );
+    return <Reasoning part={part} />;
   }
   if (part.type === 'text') {
     return <Text part={part} />;

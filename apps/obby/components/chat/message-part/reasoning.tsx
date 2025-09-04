@@ -1,5 +1,9 @@
+import {
+  ReasoningContent,
+  ReasoningTrigger,
+  Reasoning as ReasoningWrapper,
+} from '@repo/design-system/components/ai-elements/reasoning';
 import type { ReasoningUIPart } from 'ai';
-import { MarkdownRenderer } from '@/components/markdown-renderer/markdown-renderer';
 import { MessageSpinner } from '../message-spinner';
 
 export function Reasoning({ part }: { part: ReasoningUIPart }) {
@@ -8,11 +12,15 @@ export function Reasoning({ part }: { part: ReasoningUIPart }) {
   }
 
   return (
-    <div className="rounded-md border border-border bg-background px-3.5 py-3 text-sm">
-      <div className="mb-1 font-mono text-secondary-foreground leading-normal">
-        <MarkdownRenderer content={part.text || '_Thinking_'} />
+    <ReasoningWrapper
+      className="w-full"
+      isStreaming={part.state === 'streaming'}
+    >
+      <ReasoningTrigger />
+      <ReasoningContent>
+        {part.text || '_Thinking_'}
         {part.state === 'streaming' && <MessageSpinner />}
-      </div>
-    </div>
+      </ReasoningContent>
+    </ReasoningWrapper>
   );
 }
