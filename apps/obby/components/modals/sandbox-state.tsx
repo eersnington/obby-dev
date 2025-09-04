@@ -10,7 +10,7 @@ import {
 } from '@repo/design-system/components/ui/dialog';
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { useSandboxStore } from '@/app/state';
+import { useSandboxStore } from '@/app/main/state';
 
 export function SandboxState() {
   const { sandboxId, status, setStatus } = useSandboxStore();
