@@ -33,10 +33,12 @@ export function Message({ message }: Props) {
       {/* Message Content */}
       <div className="space-y-1.5">
         {message.parts.map((part, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: this is not an issue
+          // biome-ignore lint/suspicious/noArrayIndexKey: TODO: i need to add a unique id for each part
           <MessagePart key={index} part={part} />
         ))}
       </div>
+
+      {/* Message Actions: Coming Soon */}
     </div>
   );
 }
