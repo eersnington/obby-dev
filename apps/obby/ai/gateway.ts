@@ -1,8 +1,8 @@
 import { createGatewayProvider, type GatewayModelId } from '@ai-sdk/gateway';
 import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai';
 import type { JSONValue } from 'ai';
-import { Effect } from 'effect';
 import { env } from '@/env';
+import { logger } from '@/lib/logger';
 
 const gateway = createGatewayProvider({
   apiKey: env.AI_GATEWAY_API_KEY ?? '',
@@ -26,7 +26,7 @@ type ModelOptions = {
 };
 
 export function getModelOptions(modelId: string): ModelOptions {
-  Effect.log('getModelOptions', { modelId });
+  logger.info('getModelOptions', { modelId });
 
   if (modelId === 'openai/o4-mini') {
     return {
