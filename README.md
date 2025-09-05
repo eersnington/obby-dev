@@ -1,10 +1,10 @@
 <p align="center">
   <img src="./public/splash-image.png" alt="Screenshot of UI"/>
-  <h1 align="center">Obby – The AI Editor for the Web</h1>
+  <h1 align="center">Obby – OSS v0</h1>
 </p>
 
 <p align="center">
-    Obby is a developer-first web editor powered by AI. It helps you design, build, and ship real apps from scratch.
+    Obby is Open Source implementation of v0 agent by Vercel. It helps you design, build, and ship real apps from scratch.
 </p>
 
 ## Getting started
@@ -37,8 +37,3 @@ pnpm run dev
 
 - Framework: Next.js
 - Database: Convex
-- Authentication: AuthKit by WorkOS
-- Payments: Polar | Dodopayments
-
-
-
