@@ -89,7 +89,7 @@ export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
       }}
     >
       <WebPreviewNavigation className="justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex min-w-0 flex-1 items-center gap-1">
           <WebPreviewNavigationButton
             disabled={!currentUrl}
             onClick={() => {
@@ -117,7 +117,7 @@ export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
 
           {currentUrl ? (
             <WebPreviewUrl
-              className="h-8 w-full text-sm"
+              className="h-8 min-w-0 flex-1 text-sm"
               onChange={(e) => setCurrentUrl(e.currentTarget.value)}
               placeholder="Enter URL..."
               value={currentUrl}
