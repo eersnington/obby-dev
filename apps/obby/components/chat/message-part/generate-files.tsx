@@ -14,7 +14,7 @@ export function GenerateFiles(props: {
       : props.message.paths;
 
   const generating =
-    props.message.status === 'generating' ? props.message.paths[-1] : null;
+    props.message.status === 'generating' ? props.message.paths.at(-1) : null;
 
   return (
     <ToolMessage className={props.className}>

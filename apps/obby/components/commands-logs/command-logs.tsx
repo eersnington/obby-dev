@@ -68,7 +68,7 @@ const logSchema = z.object({
 async function* getCommandLogs(sandboxId: string, cmdId: string) {
   const response = await fetch(
     `/api/sandboxes/${sandboxId}/cmds/${cmdId}/logs`,
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { Accept: 'application/json' } }
   );
 
   if (!response.body) {
@@ -88,13 +88,17 @@ async function* getCommandLogs(sandboxId: string, cmdId: string) {
 
     line += decoder.decode(value, { stream: true });
     const lines = line.split('\n');
-    for (let i = 0; i < lines.length - 1; i++) {
-      if (lines[i]) {
-        const logEntry = JSON.parse(lines[i]);
-        yield logSchema.parse(logEntry);
+    for (const segment of lines.slice(0, -1)) {
+      if (segment) {
+        try {
+          const logEntry = JSON.parse(segment);
+          yield logSchema.parse(logEntry);
+        } catch {
+          // ignore malformed JSON line fragments
+        }
       }
     }
-    line = lines[-1];
+    line = lines.at(-1) ?? '';
   }
 }
 
@@ -106,7 +110,9 @@ const cmdSchema = z.object({
 });
 
 async function getCommand(sandboxId: string, cmdId: string) {
-  const response = await fetch(`/api/sandboxes/${sandboxId}/cmds/${cmdId}`); // this apparently throws errors. i need effectts
+  const response = await fetch(`/api/sandboxes/${sandboxId}/cmds/${cmdId}`, {
+    headers: { Accept: 'application/json' },
+  }); // this apparently throws errors. i need effectts
   const json = await response.json();
   return cmdSchema.parse(json);
 }
