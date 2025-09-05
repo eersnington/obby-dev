@@ -56,7 +56,7 @@
     "recharts": "^2.15.3",
     "server-only": "^0.0.1",
     "sonner": "^2.0.3",
-    "streamdown": "^1.1.6",
+    "streamdown": "^1.2.0",
     "tailwind-merge": "^3.3.0",
     "tw-animate-css": "^1.3.0",
     "use-stick-to-bottom": "^1.1.1",
