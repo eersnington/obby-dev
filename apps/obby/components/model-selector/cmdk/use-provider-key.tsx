@@ -1,8 +1,8 @@
 import { toast } from '@repo/design-system/sonner';
 import { useState } from 'react';
 import type { ModelProvider } from '@/ai/constants';
-import type { ProviderKeyValue } from '@/stores/use-provider-store';
-import { useProviderKeysStore } from '@/stores/use-provider-store';
+import type { ProviderKeyValue } from '@/stores/use-provider-keys-store';
+import { useProviderKeysStore } from '@/stores/use-provider-keys-store';
 
 export function useProviderKey(provider: ModelProvider) {
   const getKey = useProviderKeysStore((s) => s.getKey);

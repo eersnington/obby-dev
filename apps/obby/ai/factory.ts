@@ -25,7 +25,7 @@ import {
   VERCEL_MODELS,
 } from '@/ai/constants';
 import { env } from '@/env';
-import type { ProviderKeyValue } from '@/stores/use-provider-store';
+import type { ProviderKeyValue } from '@/stores/use-provider-keys-store';
 
 export type BedrockCredentials = {
   region?: string;

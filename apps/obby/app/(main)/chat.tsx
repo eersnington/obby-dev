@@ -26,7 +26,7 @@ import { ToolOptionsPopover } from '@/components/tool-options/tool-options-popov
 import { logger } from '@/lib/logger';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
 import { useModelStore } from '@/stores/use-model-store';
-import { useProviderKeysStore } from '@/stores/use-provider-store';
+import { useProviderKeysStore } from '@/stores/use-provider-keys-store';
 import { useToolOptionsStore } from '@/stores/use-tool-options-store';
 import { useDataStateMapper } from './state';
 
