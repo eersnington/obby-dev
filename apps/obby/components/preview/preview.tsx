@@ -1,6 +1,12 @@
 'use client';
 
-import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
+import {
+  WebPreview,
+  WebPreviewBody,
+  WebPreviewNavigation,
+  WebPreviewNavigationButton,
+  WebPreviewUrl,
+} from '@repo/design-system/components/ai-elements/web-preview';
 import { cn } from '@repo/design-system/lib/utils';
 import {
   CodeIcon,
@@ -8,10 +14,9 @@ import {
   PanelTopIcon,
   RefreshCwIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import { FileExplorer } from '@/components/file-explorer/file-explorer';
-import { Panel, PanelHeader } from '@/components/panels/panels';
 
 type Props = {
   className?: string;
@@ -22,43 +27,40 @@ type Props = {
 };
 
 export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
-  const [currentUrl, setCurrentUrl] = useState(url);
+  const [currentUrl, setCurrentUrl] = useState<string>(url ?? '');
   const [error, setError] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState(url || '');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'web' | 'code'>('web');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const loadStartTime = useRef<number | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
-    setCurrentUrl(url);
-    setInputValue(url || '');
-  }, [url]);
-
-  const refreshIframe = () => {
-    if (iframeRef.current && currentUrl) {
+    setCurrentUrl(url ?? '');
+    if (url) {
       setIsLoading(true);
       setError(null);
-      loadStartTime.current = Date.now();
-      iframeRef.current.src = '';
-      setTimeout(() => {
-        if (iframeRef.current) {
-          iframeRef.current.src = currentUrl;
-        }
-      }, 10);
+      setReloadToken((t) => t + 1);
+    }
+  }, [url]);
+
+  const refresh = () => {
+    if (currentUrl) {
+      setIsLoading(true);
+      setError(null);
+      setReloadToken((t) => t + 1);
     }
   };
 
-  const loadNewUrl = () => {
-    if (iframeRef.current && inputValue) {
-      if (inputValue !== currentUrl) {
-        setIsLoading(true);
-        setError(null);
-        loadStartTime.current = Date.now();
-        iframeRef.current.src = inputValue;
-      } else {
-        refreshIframe();
-      }
+  const srcWithToken = (u: string, token: number) => {
+    if (!u) {
+      return '';
+    }
+    try {
+      const next = new URL(u);
+      next.searchParams.set('t', String(token));
+      return next.toString();
+    } catch {
+      const sep = u.includes('?') ? '&' : '?';
+      return `${u}${sep}t=${token}`;
     }
   };
 
@@ -73,43 +75,58 @@ export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
   };
 
   return (
-    <Panel className={className}>
-      <PanelHeader>
-        <div className="absolute flex items-center space-x-1">
-          <a className="cursor-pointer px-1" href={currentUrl} target="_blank">
-            <ExternalLink className="size-4" />
-          </a>
-          <button
-            className={cn('cursor-pointer px-1', {
-              'animate-spin': isLoading,
-            })}
-            onClick={refreshIframe}
+    <WebPreview
+      className={className}
+      defaultUrl={currentUrl}
+      key={currentUrl || 'empty'}
+      onUrlChange={(newUrl) => {
+        setCurrentUrl(newUrl);
+        if (newUrl) {
+          setIsLoading(true);
+          setError(null);
+          setReloadToken((t) => t + 1);
+        }
+      }}
+    >
+      <WebPreviewNavigation className="justify-between">
+        <div className="flex items-center gap-1">
+          <WebPreviewNavigationButton
+            disabled={!currentUrl}
+            onClick={() => {
+              if (currentUrl) {
+                window.open(currentUrl, '_blank', 'noopener,noreferrer');
+              }
+            }}
+            tooltip="Open in new tab"
             type="button"
           >
-            <RefreshCwIcon className="size-4" />
-          </button>
-        </div>
+            <ExternalLink className="size-4" />
+          </WebPreviewNavigationButton>
 
-        <div className="m-auto h-6">
-          {url && activeTab === 'web' && (
-            <input
-              className="h-6 min-w-[300px] rounded border border-border bg-background px-4 font-mono text-xs focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onChange={(event) => setInputValue(event.target.value)}
-              onClick={(event) => event.currentTarget.select()}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.currentTarget.blur();
-                  loadNewUrl();
-                }
-              }}
-              type="text"
-              value={inputValue}
+          <WebPreviewNavigationButton
+            className={cn(isLoading && 'text-foreground')}
+            disabled={!currentUrl}
+            onClick={refresh}
+            tooltip="Refresh"
+            type="button"
+          >
+            <RefreshCwIcon
+              className={cn('size-4', isLoading && 'animate-spin')}
             />
-          )}
+          </WebPreviewNavigationButton>
+
+          {currentUrl ? (
+            <WebPreviewUrl
+              className="h-8 w-full text-sm"
+              onChange={(e) => setCurrentUrl(e.currentTarget.value)}
+              placeholder="Enter URL..."
+              value={currentUrl}
+            />
+          ) : null}
         </div>
 
         {/* Tab group - desktop only */}
-        <div className="absolute right-0 mr-2 hidden items-center rounded border border-border lg:flex">
+        <div className="hidden items-center rounded-none border border-border lg:flex">
           <button
             className={cn(
               'flex items-center space-x-1 rounded-none border-none px-3 py-1 text-sm transition-colors',
@@ -137,67 +154,54 @@ export function Preview({ className, disabled, url, sandboxId, paths }: Props) {
             <span>Code</span>
           </button>
         </div>
-      </PanelHeader>
+      </WebPreviewNavigation>
 
-      <div className="relative flex h-[calc(100%-2rem-1px)]">
-        {/* Web Preview Mode */}
-        {activeTab === 'web' && currentUrl && !disabled && (
-          <>
-            <ScrollArea className="w-full">
-              {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: this loads in the sandbox output */}
-              <iframe
-                aria-label="Browser content"
-                className="h-full w-full"
-                onError={handleIframeError}
-                onLoad={handleIframeLoad}
-                ref={iframeRef}
-                src={currentUrl}
-                title="Browser content"
-              />
-            </ScrollArea>
+      {activeTab === 'web' && !disabled ? (
+        <div className="relative flex h-full w-full flex-col">
+          <WebPreviewBody
+            className="h-full w-full"
+            onError={handleIframeError}
+            onLoad={handleIframeLoad}
+            src={currentUrl ? srcWithToken(currentUrl, reloadToken) : undefined}
+            title="Browser content"
+          />
 
-            {isLoading && !error && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white bg-opacity-90">
-                <BarLoader color="#666" />
-                <span className="text-gray-500 text-xs">Loading...</span>
-              </div>
-            )}
+          {isLoading && !error && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/90">
+              <BarLoader color="#666" />
+              <span className="text-gray-500 text-xs">Loading...</span>
+            </div>
+          )}
 
-            {error && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white">
-                <span className="text-red-500">Failed to load page</span>
-                <button
-                  className="text-blue-500 text-sm hover:underline"
-                  onClick={() => {
-                    if (currentUrl) {
-                      setIsLoading(true);
-                      setError(null);
-                      const newUrl = new URL(currentUrl);
-                      newUrl.searchParams.set('t', Date.now().toString());
-                      setCurrentUrl(newUrl.toString());
-                    }
-                  }}
-                  type="button"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Code View Mode - shows file explorer */}
-        {activeTab === 'code' && (
-          <div className="w-full">
-            <FileExplorer
-              className="h-full w-full"
-              disabled={disabled}
-              paths={paths || []}
-              sandboxId={sandboxId}
-            />
-          </div>
-        )}
-      </div>
-    </Panel>
+          {error && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white">
+              <span className="text-red-500">Failed to load page</span>
+              <button
+                className="text-blue-500 text-sm hover:underline"
+                onClick={() => {
+                  if (currentUrl) {
+                    setIsLoading(true);
+                    setError(null);
+                    setReloadToken((t) => t + 1);
+                  }
+                }}
+                type="button"
+              >
+                Try again
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="h-full w-full">
+          <FileExplorer
+            className="h-full w-full border-none"
+            disabled={disabled}
+            paths={paths || []}
+            sandboxId={sandboxId}
+          />
+        </div>
+      )}
+    </WebPreview>
   );
 }

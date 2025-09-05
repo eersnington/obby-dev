@@ -1,9 +1,5 @@
 'use client';
 
-import {
-  ScrollArea,
-  ScrollBar,
-} from '@repo/design-system/components/ui/scroll-area';
 import { cn } from '@repo/design-system/lib/utils';
 import {
   ChevronDownIcon,
@@ -13,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { FileContent } from '@/components/file-explorer/file-content';
-import { Panel, PanelHeader } from '@/components/panels/panels';
+import { Panel } from '@/components/panels/panels';
 import { buildFileTree, type FileNode } from './build-file-tree';
 
 type Props = {
@@ -103,28 +99,17 @@ export function FileExplorer({ className, disabled, paths, sandboxId }: Props) {
 
   return (
     <Panel className={className}>
-      <PanelHeader>
-        <FileIcon className="mr-2 w-4" />
-        <span className="font-mono font-semibold uppercase">
-          Sandbox Remote Filesystem
-        </span>
-        {selected && !disabled && (
-          <span className="ml-auto text-gray-500">{selected.path}</span>
-        )}
-      </PanelHeader>
-
-      <div className="flex h-[calc(100%-2rem-1px)] text-sm">
-        <ScrollArea className="w-1/4 flex-shrink-0 border-border border-r">
+      <div className="flex h-full min-h-0 text-sm">
+        <div className="h-full min-h-0 w-1/4 flex-shrink-0 overflow-auto border-border border-r">
           <div>{renderFileTree(fs)}</div>
-        </ScrollArea>
+        </div>
         {selected && sandboxId && !disabled && (
-          <ScrollArea className="w-3/4 flex-shrink-0">
+          <div className="h-full min-h-0 min-w-0 flex-1 overflow-auto">
             <FileContent
               path={selected.path.substring(1)}
               sandboxId={sandboxId}
             />
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          </div>
         )}
       </div>
     </Panel>

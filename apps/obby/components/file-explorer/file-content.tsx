@@ -19,15 +19,15 @@ export function FileContent({ sandboxId, path }: Props) {
     { refreshInterval: 500 }
   );
 
-  if (content.isLoading || !content.data) {
-    return (
-      <div className="absolute flex h-full w-full items-center text-center">
-        <div className="flex-1">
+  return (
+    <div className="h-full min-h-0 w-full overflow-auto">
+      {content.isLoading || !content.data ? (
+        <div className="flex h-full w-full items-center justify-center">
           <PulseLoader className="opacity-60" size={8} />
         </div>
-      </div>
-    );
-  }
-
-  return <SyntaxHighlighter code={content.data} path={path} />;
+      ) : (
+        <SyntaxHighlighter code={content.data} path={path} />
+      )}
+    </div>
+  );
 }

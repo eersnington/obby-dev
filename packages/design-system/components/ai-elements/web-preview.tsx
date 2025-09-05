@@ -85,7 +85,7 @@ export const WebPreviewNavigation = ({
   ...props
 }: WebPreviewNavigationProps) => (
   <div
-    className={cn('flex items-center gap-1 border-b p-2', className)}
+    className={cn('flex items-center gap-1 border-b px-2.5 py-0.5', className)}
     {...props}
   >
     {children}

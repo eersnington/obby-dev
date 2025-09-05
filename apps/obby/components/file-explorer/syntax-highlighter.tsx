@@ -1,34 +1,30 @@
-import Prism from 'react-syntax-highlighter';
-import grayscale from 'react-syntax-highlighter/dist/esm/styles/hljs/grayscale';
+import {
+  CodeBlock,
+  CodeBlockCopyButton,
+} from '@repo/design-system/components/ai-elements/code-block';
 
 export function SyntaxHighlighter(props: { path: string; code: string }) {
   const lang = detectLanguageFromFilename(props.path);
   return (
-    <Prism
-      codeTagProps={{
-        style: {
-          whiteSpace: 'pre',
-          overflowX: 'auto',
-        },
-      }}
-      customStyle={{
-        fontSize: '0.875rem',
-        margin: 0,
-        background: 'transparent',
-      }}
-      language={lang ?? 'javascript'}
-      showInlineLineNumbers
-      showLineNumbers
-      style={grayscale}
-    >
-      {props.code}
-    </Prism>
+    <div className="h-full min-h-0 w-full">
+      <CodeBlock
+        className="min-h-full w-full"
+        code={props.code}
+        language={lang ?? 'javascript'}
+        showLineNumbers
+      >
+        <CodeBlockCopyButton />
+      </CodeBlock>
+    </div>
   );
 }
 
 function detectLanguageFromFilename(path: string): string {
   const pathParts = path.split('/');
-  const extension = pathParts[-1]?.split('.').pop()?.toLowerCase();
+  const filename = pathParts.at(-1) || '';
+  const lower = filename.toLowerCase();
+  const rawExt = lower.includes('.') ? lower.split('.').pop() : '';
+  const extension = rawExt || (lower === 'dockerfile' ? 'dockerfile' : '');
 
   const extensionMap: Record<string, string> = {
     // JavaScript/TypeScript
