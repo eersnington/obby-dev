@@ -12,7 +12,6 @@ import {
 } from '@repo/design-system/components/ai-elements/prompt-input';
 import { Button } from '@repo/design-system/components/ui/button';
 import { toast } from '@repo/design-system/sonner';
-import { Effect } from 'effect';
 import { MessageCircleIcon, SendIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { MoonLoader } from 'react-spinners';
@@ -24,6 +23,7 @@ import { ModelSelector } from '@/components/model-selector/model-selector';
 import { ModelSelectorModal } from '@/components/model-selector/model-selector-cmdk';
 import { Panel, PanelHeader } from '@/components/panels/panels';
 import { ToolOptionsPopover } from '@/components/tool-options/tool-options-popover';
+import { logger } from '@/lib/logger';
 import { useLocalStorageValue } from '@/lib/use-local-storage-value';
 import { useModelStore } from '@/stores/use-model-store';
 import { useProviderKeysStore } from '@/stores/use-provider-store';
@@ -60,7 +60,7 @@ export function Chat({ className }: Props) {
     onData: mapDataToState,
     onError: (error) => {
       toast.error(`Communication error with the AI: ${error.message}`);
-      Effect.log('Error sending message:', error);
+      logger.error('Error sending message:', error);
     },
   });
 
