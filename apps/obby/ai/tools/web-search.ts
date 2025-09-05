@@ -6,9 +6,9 @@ import Firecrawl, {
 } from '@mendable/firecrawl-js';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
-import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
+import { logger } from '@/lib/logger';
 import type { DataPart } from '../messages/data-parts';
 import description from './web-search.md';
 
@@ -22,7 +22,7 @@ function handleSearchError(
   query: string,
   error: string
 ): string {
-  Effect.log('Web search failed', { query, error });
+  logger.error('Web search failed', { query, error });
 
   writer.write({
     id: toolCallId,
@@ -46,7 +46,7 @@ function handleSearchSuccess(
   const webResults = results.web as SearchResultWeb[];
   const imagesResults = results.images as SearchResultImages[];
 
-  Effect.log('Web search successful', {
+  logger.info('Web search successful', {
     query,
     webResults,
     imagesResults,
@@ -97,7 +97,7 @@ export const webSearch = ({ writer }: Params) =>
         data: { query, status: 'loading' },
       });
 
-      Effect.log('Starting web search', {
+      logger.info('Starting web search', {
         query,
         toolCallId,
         categories,

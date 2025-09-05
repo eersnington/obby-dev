@@ -1,9 +1,9 @@
 import { Sandbox } from '@vercel/sandbox';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
-import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
+import { logger } from '@/lib/logger';
 import type { DataPart } from '../messages/data-parts';
 import description from './create-sandbox.md';
 
@@ -36,8 +36,8 @@ export const createSandbox = ({ writer }: Params) =>
         data: { status: 'loading' },
       });
 
-      Effect.log('Creating sandbox');
-      Effect.log('Sandbox env', {
+      logger.info('Creating sandbox');
+      logger.info('Sandbox env', {
         timeout,
         ports,
       });

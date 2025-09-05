@@ -1,8 +1,8 @@
 import type { DataUIPart } from 'ai';
-import { Effect } from 'effect';
 import { create } from 'zustand';
 import type { DataPart } from '@/ai/messages/data-parts';
 import type { Command, CommandLog } from '@/components/commands-logs/types';
+import { logger } from '@/lib/logger';
 
 type SandboxStore = {
   addLog: (data: { sandboxId: string; cmdId: string; log: CommandLog }) => void;
@@ -23,7 +23,7 @@ export const useSandboxStore = create<SandboxStore>()((set) => ({
     set((state) => {
       const idx = state.commands.findIndex((c) => c.cmdId === data.cmdId);
       if (idx === -1) {
-        Effect.log(`Command with ID ${data.cmdId} not found.`);
+        logger.warn(`Command with ID ${data.cmdId} not found.`);
         return state;
       }
       const updatedCmds = [...state.commands];

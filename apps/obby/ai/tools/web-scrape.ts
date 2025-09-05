@@ -1,9 +1,9 @@
 import Firecrawl from '@mendable/firecrawl-js';
 import type { UIMessage, UIMessageStreamWriter } from 'ai';
 import { tool } from 'ai';
-import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
+import { logger } from '@/lib/logger';
 import type { DataPart } from '../messages/data-parts';
 import description from './web-scrape.md';
 
@@ -33,11 +33,11 @@ export const webScrape = ({ writer }: Params) =>
         data: { url, status: 'loading' },
       });
 
-      Effect.log('Starting web scrape', { url, toolCallId });
+      logger.info('Starting web scrape', { url, toolCallId });
 
       if (!env.FIRECRAWL_API_KEY) {
         const error = 'FIRECRAWL_API_KEY is not configured';
-        Effect.log('Web crawl failed: missing API key', { url });
+        logger.error('Web crawl failed: missing API key', { url });
 
         writer.write({
           id: toolCallId,
@@ -55,7 +55,7 @@ export const webScrape = ({ writer }: Params) =>
           formats,
         });
 
-        Effect.log('Web crawl successful', {
+        logger.info('Web crawl successful', {
           url,
           content: result,
         });
@@ -70,7 +70,7 @@ export const webScrape = ({ writer }: Params) =>
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error occurred';
-        Effect.log('Web crawl failed', { url, error: errorMessage });
+        logger.error('Web crawl failed', { url, error: errorMessage });
 
         writer.write({
           id: toolCallId,

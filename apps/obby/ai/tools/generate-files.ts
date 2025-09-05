@@ -3,9 +3,9 @@
 import { Sandbox } from '@vercel/sandbox';
 import type { LanguageModel, UIMessage, UIMessageStreamWriter } from 'ai';
 import { streamObject, tool } from 'ai';
-import { Effect } from 'effect';
 import z from 'zod/v3';
 import { env } from '@/env';
+import { logger } from '@/lib/logger';
 import type { ModelProvider } from '../constants';
 import { createModelFactory } from '../factory';
 import { getModelOptions } from '../gateway';
@@ -57,7 +57,7 @@ export const generateFiles = ({ writer, modelId, provider }: Params) =>
 
       if (!factory.isModelAvailable(modelId, provider)) {
         const availableModels = factory.listAvailableModels();
-        Effect.log(
+        logger.info(
           'Available models:',
           availableModels.map((m) => m.id)
         );
@@ -73,8 +73,8 @@ export const generateFiles = ({ writer, modelId, provider }: Params) =>
         messages: [...messages, { role: 'user', content: prompt }],
         schema: z.object({ files: z.array(fileSchema) }),
         onError: (error) => {
-          Effect.log('Error communicating with AI');
-          Effect.log(JSON.stringify(error, null, 2));
+          logger.error('Error communicating with AI');
+          logger.error(JSON.stringify(error, null, 2));
         },
       });
 
