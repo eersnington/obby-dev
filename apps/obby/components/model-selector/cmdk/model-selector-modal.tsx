@@ -1,7 +1,7 @@
 'use client';
 
 import { CommandDialog } from '@repo/design-system/components/ui/command';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { type ModelProvider, PROVIDERS } from '@/ai/constants';
 import { useModelStore } from '@/stores/use-model-store';
 import { useAvailableModels } from '../use-available-models';
@@ -11,16 +11,10 @@ import { ProviderSidebar } from './provider-sidebar';
 type Props = {
   open: boolean;
   onOpenChange(open: boolean): void;
-  value?: string;
   onChange(modelId: string): void;
 };
 
-export function ModelSelectorModal({
-  open,
-  onOpenChange,
-  value,
-  onChange,
-}: Props) {
+export function ModelSelectorModal({ open, onOpenChange, onChange }: Props) {
   const { isLoading } = useAvailableModels();
   const selectedProvider = useModelStore((s) => s.selectedProvider);
   const hasHydrated = useModelStore((s) => s._hasHydrated);
@@ -32,8 +26,18 @@ export function ModelSelectorModal({
     ? selectedProvider || PROVIDERS[0]
     : selectedProvider;
 
-  const handleProviderSelect = (provider: ModelProvider) => {
+  const [uiProvider, setUiProvider] = useState<ModelProvider | undefined>(
+    undefined
+  );
+  const activeProvider = uiProvider ?? currentProvider;
+
+  const handleProviderHover = (provider: ModelProvider) => {
+    setUiProvider(provider);
+  };
+
+  const handleProviderCommit = (provider: ModelProvider) => {
     setProvider(provider);
+    setUiProvider(undefined);
   };
 
   const handleModelSelect = (modelId: string, provider: ModelProvider) => {
@@ -63,15 +67,15 @@ export function ModelSelectorModal({
     >
       <div className="flex h-[60vh] min-h-[420px] w-full flex-col md:flex-row">
         <ProviderSidebar
-          onSelect={handleProviderSelect}
-          selected={currentProvider}
+          onCommit={handleProviderCommit}
+          onHover={handleProviderHover}
+          selected={activeProvider}
         />
 
         <ModelSection
           isLoading={isLoading}
           onModelSelect={handleModelSelect}
-          provider={currentProvider}
-          selectedModelId={value}
+          provider={activeProvider}
         />
       </div>
     </CommandDialog>

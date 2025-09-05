@@ -7,6 +7,7 @@ import {
 } from '@repo/design-system/components/ui/command';
 import { CheckIcon } from 'lucide-react';
 import type { ModelProvider } from '@/ai/constants';
+import { useModelStore } from '@/stores/use-model-store';
 import { useAvailableModels } from '../use-available-models';
 
 type Props = {
@@ -15,8 +16,10 @@ type Props = {
   onModelSelect: (modelId: string, provider: ModelProvider) => void;
 };
 
-export function ModelList({ provider, selectedModelId, onModelSelect }: Props) {
+export function ModelList({ provider, onModelSelect }: Props) {
   const { models, isLoading } = useAvailableModels();
+  const selectedProvider = useModelStore((s) => s.selectedProvider);
+  const selectedModelIdFromStore = useModelStore((s) => s.selectedModelId);
 
   if (!provider) {
     return (
@@ -49,9 +52,10 @@ export function ModelList({ provider, selectedModelId, onModelSelect }: Props) {
                 BYOK
               </Badge>
             )}
-            {selectedModelId === model.id && (
-              <CheckIcon className="size-4 text-primary" />
-            )}
+            {selectedModelIdFromStore === model.id &&
+              selectedProvider === model.provider && (
+                <CheckIcon className="size-4 text-primary" />
+              )}
           </CommandItem>
         ))}
       </CommandGroup>

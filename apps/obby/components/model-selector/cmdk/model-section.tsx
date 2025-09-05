@@ -5,17 +5,11 @@ import { ModelList } from './model-list';
 
 type Props = {
   provider?: ModelProvider;
-  selectedModelId?: string;
   onModelSelect: (modelId: string, provider: ModelProvider) => void;
   isLoading: boolean;
 };
 
-export function ModelSection({
-  provider,
-  selectedModelId,
-  onModelSelect,
-  isLoading,
-}: Props) {
+export function ModelSection({ provider, onModelSelect, isLoading }: Props) {
   if (!provider) {
     return (
       <section className="flex min-w-0 flex-1 flex-col">
@@ -36,11 +30,7 @@ export function ModelSection({
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <ModelList
-          onModelSelect={onModelSelect}
-          provider={provider}
-          selectedModelId={selectedModelId}
-        />
+        <ModelList onModelSelect={onModelSelect} provider={provider} />
       </div>
 
       <ApiKeySection provider={provider} />

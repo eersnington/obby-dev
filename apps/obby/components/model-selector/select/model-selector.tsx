@@ -33,6 +33,7 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
   const { models, isLoading, error } = useAvailableModels();
   const selectedProvider = useModelStore((s) => s.selectedProvider);
   const hasHydrated = useModelStore((s) => s._hasHydrated);
+  const selectedModelIdFromStore = useModelStore((s) => s.selectedModelId);
   const selectModel = useModelStore((s) => s.selectModel);
 
   const isDisabled = isLoading || Boolean(error) || !models?.length;
@@ -85,28 +86,36 @@ export const ModelSelector = memo(function UnMemoizedModelSelector({
   }, [models]);
 
   const currentValue = useMemo(() => {
+    if (hasHydrated && selectedProvider && selectedModelIdFromStore) {
+      return `${selectedProvider}>${selectedModelIdFromStore}`;
+    }
+
     const noModels = models.length === 0;
-    if (!hasHydrated || noModels) {
-      const candidate = models.find((m) => m.id === modelId);
-      return candidate
-        ? `${candidate.provider ?? 'unknown'}>${candidate.id}`
-        : modelId;
+    if (noModels) {
+      return modelId;
     }
 
     const candidates = models.filter((m) => m.id === modelId);
-
     if (candidates.length === 0) {
       return modelId;
     }
 
-    const exactMatch = candidates.find((m) => m.provider === selectedProvider);
+    const exactMatch = selectedProvider
+      ? candidates.find((m) => m.provider === selectedProvider)
+      : undefined;
     if (exactMatch) {
       return `${exactMatch.provider}>${exactMatch.id}`;
     }
 
     const fallback = candidates[0];
-    return `${fallback.provider}>${fallback.id}`;
-  }, [models, modelId, selectedProvider, hasHydrated]);
+    return `${fallback.provider ?? 'unknown'}>${fallback.id}`;
+  }, [
+    models,
+    modelId,
+    selectedProvider,
+    selectedModelIdFromStore,
+    hasHydrated,
+  ]);
   const handleValueChange = (compositeValue: string) => {
     const separatorIndex = compositeValue.indexOf('>');
     if (separatorIndex >= 0) {

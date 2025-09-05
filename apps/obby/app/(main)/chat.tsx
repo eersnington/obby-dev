@@ -44,7 +44,7 @@ export function Chat({ className }: Props) {
 
   const toolsPayload = useToolOptionsStore((s) => s.getRequestTools());
 
-  // Only use fallback after hydration to avoid mismatches
+  // only use fallback after hydration to avoid mismatches
   const modelId = hasHydrated
     ? selectedModelId || DEFAULT_MODEL
     : DEFAULT_MODEL;
@@ -64,7 +64,7 @@ export function Chat({ className }: Props) {
     },
   });
 
-  // Auto-scroll to bottom when new messages arrive
+  // auto-scroll to bottom when new messages arrive
   // if (messages.length > 0) {
   //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   // }
@@ -80,10 +80,9 @@ export function Chat({ className }: Props) {
       {
         body: {
           modelId,
-          // provider may be undefined; backend handles optional
           provider,
           providerApiKey,
-          tools: toolsPayload, // only true flags included
+          tools: toolsPayload,
         },
       }
     );
@@ -150,7 +149,7 @@ export function Chat({ className }: Props) {
           />
         </PromptInput>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <Button
               onClick={() => setModelModalOpen(true)}
               type="button"
@@ -176,7 +175,6 @@ export function Chat({ className }: Props) {
         onChange={setModel}
         onOpenChange={setModelModalOpen}
         open={modelModalOpen}
-        value={modelId}
       />
     </Panel>
   );

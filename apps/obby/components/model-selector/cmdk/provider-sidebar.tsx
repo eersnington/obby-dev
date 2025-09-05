@@ -5,17 +5,20 @@ import { type ModelProvider, PROVIDER_LOGOS, PROVIDERS } from '@/ai/constants';
 
 type Props = {
   selected?: ModelProvider;
-  onSelect: (provider: ModelProvider) => void;
+  onHover: (provider: ModelProvider) => void;
+  onCommit: (provider: ModelProvider) => void;
 };
 
-export function ProviderSidebar({ selected, onSelect }: Props) {
+export function ProviderSidebar({ selected, onHover, onCommit }: Props) {
   const iconFor = (provider: ModelProvider) =>
     PROVIDER_LOGOS[provider] ?? '/providers/openai.svg';
 
-  const handleSelect = (p: ModelProvider) => {
-    if (p !== selected) {
-      onSelect(p);
-    }
+  const handleCommit = (p: ModelProvider) => {
+    onCommit(p);
+  };
+
+  const handleHover = (p: ModelProvider) => {
+    onHover(p);
   };
 
   return (
@@ -32,14 +35,14 @@ export function ProviderSidebar({ selected, onSelect }: Props) {
               selected === provider && 'bg-primary/10 text-primary'
             )}
             key={provider}
-            onClick={() => handleSelect(provider)}
-            onFocus={() => handleSelect(provider)}
+            onClick={() => handleCommit(provider)}
+            onFocus={() => handleHover(provider)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                handleSelect(provider);
+                handleCommit(provider);
               }
             }}
-            onMouseOver={() => handleSelect(provider)}
+            onMouseOver={() => handleHover(provider)}
             size="sm"
             variant="ghost"
           >
