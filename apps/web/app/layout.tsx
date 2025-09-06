@@ -1,5 +1,5 @@
 import "@/app/global.css";
-import { Databuddy } from "@databuddy/sdk";
+import { Databuddy } from "@databuddy/sdk/react";
 import { RootProvider } from "fumadocs-ui/provider";
 import { Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
