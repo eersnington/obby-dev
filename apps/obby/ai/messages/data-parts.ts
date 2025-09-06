@@ -42,6 +42,15 @@ export const dataPartSchema = z.object({
     resultsCount: z.number().optional(),
     error: z.string().optional(),
   }),
+  context7: z.object({
+    query: z.string().optional(),
+    status: z.enum(['loading', 'done', 'error']),
+    libraryId: z.string().optional(),
+    topic: z.string().optional(),
+    tokens: z.number().optional(),
+    result: z.string().optional(),
+    error: z.string().optional(),
+  }),
 });
 
 export type DataPart = z.infer<typeof dataPartSchema>;
