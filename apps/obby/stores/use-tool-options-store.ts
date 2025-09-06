@@ -1,16 +1,22 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const OPTIONAL_TOOL_KEYS = ['webScrape', 'webSearch'] as const;
+export const OPTIONAL_TOOL_KEYS = [
+  "webScrape",
+  "webSearch",
+  "context7",
+] as const;
 export type OptionalToolKey = (typeof OPTIONAL_TOOL_KEYS)[number];
 export const DEFAULT_TOOL_OPTIONS: Record<OptionalToolKey, boolean> = {
   webScrape: true,
   webSearch: true,
+  context7: true,
 };
 
 export type ToolOptionsState = {
   webScrape: boolean;
   webSearch: boolean;
+  context7: boolean;
   _hasHydrated: boolean;
   setOption: (key: OptionalToolKey, value: boolean) => void;
   setOptions: (partial: Partial<Record<OptionalToolKey, boolean>>) => void;
@@ -23,14 +29,14 @@ const sanitize = (partial: Partial<Record<string, unknown>>) => {
   const cleaned: Partial<Record<OptionalToolKey, boolean>> = {};
   for (const k of OPTIONAL_TOOL_KEYS) {
     const v = partial[k];
-    if (typeof v === 'boolean') {
+    if (typeof v === "boolean") {
       cleaned[k] = v;
     }
   }
   return cleaned;
 };
 
-const STORE_NAME = 'tool-options';
+const STORE_NAME = "tool-options";
 
 export const useToolOptionsStore = create<ToolOptionsState>()(
   persist(
@@ -54,7 +60,7 @@ export const useToolOptionsStore = create<ToolOptionsState>()(
         set({ _hasHydrated: value });
       },
       getRequestTools: () => {
-        const { webScrape, webSearch } = get();
+        const { webScrape, webSearch, context7 } = get();
         const out: Record<OptionalToolKey, boolean> = {} as Record<
           OptionalToolKey,
           boolean
@@ -64,6 +70,9 @@ export const useToolOptionsStore = create<ToolOptionsState>()(
         }
         if (webSearch) {
           out.webSearch = true;
+        }
+        if (context7) {
+          out.context7 = true;
         }
         return out;
       },
@@ -81,7 +90,7 @@ export const useToolOptionsStore = create<ToolOptionsState>()(
           ...(persisted ?? {}),
         };
         for (const k of OPTIONAL_TOOL_KEYS) {
-          if (typeof base[k] !== 'boolean') {
+          if (typeof base[k] !== "boolean") {
             base[k] = DEFAULT_TOOL_OPTIONS[k];
           }
         }
@@ -90,6 +99,7 @@ export const useToolOptionsStore = create<ToolOptionsState>()(
       partialize: (state) => ({
         webScrape: state.webScrape,
         webSearch: state.webSearch,
+        context7: state.context7,
       }),
     }
   )

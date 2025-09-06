@@ -1,30 +1,34 @@
-'use client';
+"use client";
 
-import { Button } from '@repo/design-system/components/ui/button';
+import { Button } from "@repo/design-system/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@repo/design-system/components/ui/popover';
-import { Check, Globe, Search, Settings2 } from 'lucide-react';
-import type { ReactNode } from 'react';
-import { useState } from 'react';
+} from "@repo/design-system/components/ui/popover";
+import { Check, CurlyBraces, Globe, Search, Settings2 } from "lucide-react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 import {
   OPTIONAL_TOOL_KEYS,
   type OptionalToolKey,
   useToolOptionsStore,
-} from '@/stores/use-tool-options-store';
+} from "@/stores/use-tool-options-store";
 
 type ToolConfig = Record<OptionalToolKey, { label: string; icon: ReactNode }>;
 
 const TOOL_CONFIG: ToolConfig = {
   webScrape: {
-    label: 'Web Scrape',
+    label: "Web Scrape",
     icon: <Globe aria-hidden className="h-4 w-4 text-primary" />,
   },
   webSearch: {
-    label: 'Web Search',
+    label: "Web Search",
     icon: <Search aria-hidden className="h-4 w-4 text-primary" />,
+  },
+  context7: {
+    label: "Context 7",
+    icon: <CurlyBraces aria-hidden className="h-4 w-4 text-primary" />,
   },
 };
 
@@ -46,18 +50,21 @@ export function ToolOptionsPopover({
   onOpenChange,
 }: ToolOptionsPopoverProps) {
   // Single subscription to the store to avoid multiple re-renders.
-  const { webScrape, webSearch, setOption } = useToolOptionsStore((s) => ({
-    webScrape: s.webScrape,
-    webSearch: s.webSearch,
-    setOption: s.setOption,
-  }));
+  const { webScrape, webSearch, context7, setOption } = useToolOptionsStore(
+    (s) => ({
+      webScrape: s.webScrape,
+      webSearch: s.webSearch,
+      context7: s.context7,
+      setOption: s.setOption,
+    })
+  );
 
   const toolState: Record<OptionalToolKey, boolean> = {
     webScrape,
     webSearch,
+    context7,
   };
 
-  // Simple derived counts (cheap enough; no need for memoization).
   let enabledCount = 0;
   for (const key of OPTIONAL_TOOL_KEYS) {
     if (toolState[key]) {
@@ -66,7 +73,6 @@ export function ToolOptionsPopover({
   }
   const total = OPTIONAL_TOOL_KEYS.length;
 
-  // Support controlled + uncontrolled usage.
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
