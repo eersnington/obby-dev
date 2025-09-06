@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import Image from 'next/image';
 
 /**
  * Shared layout configurations
@@ -12,20 +13,18 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <svg
-            aria-label="Logo"
-            height="24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Logo</title>
-            <circle cx={12} cy={12} fill="currentColor" r={12} />
-          </svg>
-          My App
+          <Image alt="Logo" height={24} src="/obby-logo-min.webp" width={24} />
+          0bby
         </>
       ),
     },
     // see https://fumadocs.dev/docs/ui/navigation/links
-    links: [],
+    links: [
+      {
+        text: 'GitHub',
+        url: 'https://github.com/eersnington/obby-dev',
+        active: 'nested-url',
+      },
+    ],
   };
 }

@@ -1,0 +1,26 @@
+{
+  "title": "Documentation",
+  "icon": "book",
+  "items": [
+    {
+      "title": "Overview",
+      "link": "index"
+    },
+    {
+      "title": "Setup",
+      "link": "setup"
+    },
+    {
+      "title": "Features",
+      "link": "features"
+    },
+    {
+      "title": "Usage",
+      "link": "usage"
+    },
+    {
+      "title": "Components (demo)",
+      "link": "test"
+    }
+  ]
+}

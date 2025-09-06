@@ -1,0 +1,166 @@
+---
+title: Usage
+description: Practical workflows and a tour of the Obby UI
+---
+
+This guide shows how to use Obby day‑to‑day: where everything is in the UI, how to run common workflows, and the small rules that make the sandbox flow reliable.
+
+## UI Tour
+
+### Header and Tabs
+- The app opens to the Chat view.
+- On small screens, use the tab bar to switch between:
+  - Chat
+  - Preview
+  - File Explorer
+  - Logs
+- On large screens, Chat is on the left and the other panels stack on the right.
+
+### Chat
+- This is where you type prompts and watch the agent work.
+- The assistant streams reasoning (when available) and tool activity such as sandbox creation, file uploads, commands, and preview URLs.
+- Tip: Try the built‑in test prompts for a quick demo:
+  - “Generate a Next.js app that allows to list and search Pokemons”
+  - “Create a `golang` server that responds with "Hello World" to any request”
+
+### Models
+- Click “Models” to:
+  - Pick a provider and model (OpenAI, Anthropic, Google, Groq, OpenRouter, Vercel, Gateway, Bedrock).
+  - Optionally add your own API key (BYOK).
+- BYOK models are clearly marked.
+- Keyboard shortcut: Cmd/Ctrl + . to open the model selector.
+
+### Tool Options
+- The “Tools” button toggles optional capabilities:
+  - Web Scrape (Firecrawl)
+  - Web Search (Firecrawl)
+- Enable them when your task needs live web content.
+- Requires `FIRECRAWL_API_KEY` in environment.
+
+### Preview
+- “Web” tab: live iframe of your running app with refresh and “open in new tab.”
+- “Code” tab: an embedded File Explorer for quick browsing and syntax‑highlighted views.
+
+### File Explorer
+- Browse generated files in a tree.
+- Click a file to view its content with syntax highlighting.
+- On desktop, also accessible under Preview → Code tab.
+
+### Logs
+- Streams command logs (stdout/stderr) line‑by‑line.
+- Shows exit codes once a command completes.
+
+---
+
+## Common Workflows
+
+### 1) New Project From Scratch
+1. Create Sandbox
+   - The agent will create a single fresh environment.
+   - Expose the dev server port you’ll need (e.g., 3000).
+2. Generate Files
+   - Ask the agent to scaffold an app. It writes complete, runnable files.
+3. Install → Wait
+   - Run Command: `pnpm install`
+   - Wait Command: until it finishes with exit code 0.
+4. Dev Server (long‑running)
+   - Run Command: `pnpm run dev` (do not wait; it stays running).
+5. Preview
+   - Get Sandbox URL for the exposed port (e.g., 3000).
+   - Open the URL or use the Preview panel.
+6. Iterate
+   - Ask the agent to add features or fix issues; it will generate/modify files.
+   - For Next.js, run the dev server once—HMR handles file updates.
+
+### 2) Fix a Build Error
+1. Check Logs
+   - Identify the missing file/config or exact error message.
+2. Generate Files
+   - Ask the agent to create or update the specific file(s).
+3. Rebuild → Wait
+   - Run Command: `pnpm build`
+   - Wait Command: confirm exit code 0.
+4. Preview
+   - Start the dev server if needed, then refresh the Preview.
+
+### 3) Research‑Assisted Build
+1. Enable Tools
+   - Toggle Web Search/Scrape in Tool Options.
+2. Search
+   - Ask: “Find latest docs/examples for `topic`” to get links and summaries.
+3. Scrape
+   - Ask: “Scrape this page for markdown + summary” for a specific URL.
+4. Implement
+   - Use the findings to generate files or adjust code, then run and preview.
+
+---
+
+## Model & Key Management
+
+- Providers: OpenAI, Anthropic, Google, Groq, OpenRouter, Vercel (v0), Gateway, Bedrock.
+- BYOK:
+  - Add a token per provider (e.g., `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.).
+  - For Bedrock, supply region + AWS credentials.
+- Availability:
+  - Some models are BYOK‑only. Others can use app‑level keys.
+- You can switch providers/models anytime; the agent adapts accordingly.
+
+---
+
+## Tips & Rules for Reliability
+
+- Single Sandbox
+  - One sandbox per session; reuse it unless you explicitly reset.
+- Stateless Commands
+  - Each “Run Command” is a fresh shell session.
+  - Avoid `cd`, `&&`, and shell state. Use full relative paths instead.
+- Sequence With “Wait”
+  - Always wait after installs/builds before running dependent steps.
+- Prefer pnpm
+  - The sandbox has pnpm; use it for installs and scripts.
+- Expose Ports Up Front
+  - You can only preview ports that were exposed during sandbox creation.
+  - Note: Port 8080 is reserved; use a different port (e.g., 3000, 5173, 8000).
+- Web Tools
+  - Enable only if needed; set `FIRECRAWL_API_KEY` in your environment.
+
+---
+
+## Example: Next.js App in Minutes
+
+1. Prompt:
+   - “Create a Next.js app with a `/todos` route that lists items and supports adding new ones.”
+2. Agent flow:
+   - Create Sandbox (expose 3000)
+   - Generate Files (scaffold Next.js + route + UI)
+   - Run Command: `pnpm install` → Wait
+   - Run Command: `pnpm run dev`
+   - Get Sandbox URL (port 3000)
+3. Preview and iterate:
+   - Open the URL, verify it works.
+   - Ask the agent to add validation/tests or persist data.
+
+---
+
+## Troubleshooting
+
+- “Model not available”
+  - Pick a provider and add a valid API key for BYOK models.
+- “No preview URL”
+  - Ensure the port was exposed at sandbox creation and the server is running.
+- “Command failed”
+  - Read the Logs for the error.
+  - Fix via Generate Files or adjust commands, then try again.
+- “Web tools error”
+  - Set `FIRECRAWL_API_KEY` and re‑enable in Tool Options.
+
+---
+
+## See Also
+
+<Cards>
+  <Card title="Overview" href="/docs" />
+  <Card title="Setup" href="/docs/setup" />
+  <Card title="Features" href="/docs/features" />
+  <Card title="Repository" href="https://github.com/eersnington/obby-dev" />
+</Cards>
