@@ -1,7 +1,7 @@
 import { cn } from '@repo/design-system/lib/utils';
 import { AlertTriangleIcon, GlobeIcon } from 'lucide-react';
 import { useState } from 'react';
-import Markdown from 'react-markdown';
+import { Streamdown } from 'streamdown';
 import type { DataPart } from '@/ai/messages/data-parts';
 import { MessageSpinner } from '../message-spinner';
 import { ToolHeader } from '../tool-header';
@@ -123,7 +123,7 @@ function SummarySection(props: {
         Summary
       </div>
       <div className="prose prose-sm max-w-none text-sm">
-        <Markdown>{props.summary}</Markdown>
+        <Streamdown>{props.summary}</Streamdown>
       </div>
     </div>
   );
@@ -180,7 +180,7 @@ function ContentSection(props: {
       </div>
       {props.show ? (
         <div className="prose prose-sm max-w-none text-sm">
-          <Markdown>{props.markdown}</Markdown>
+          <Streamdown>{props.markdown}</Streamdown>
         </div>
       ) : (
         <div className="font-mono text-muted-foreground text-xs">

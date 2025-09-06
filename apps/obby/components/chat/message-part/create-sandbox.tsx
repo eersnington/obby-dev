@@ -1,6 +1,6 @@
 import { cn } from '@repo/design-system/lib/utils';
 import { BoxIcon } from 'lucide-react';
-import Markdown from 'react-markdown';
+import { Streamdown } from 'streamdown';
 import type { DataPart } from '@/ai/messages/data-parts';
 import { MessageSpinner } from '../message-spinner';
 import { ToolHeader } from '../tool-header';
@@ -23,7 +23,7 @@ export function CreateSandbox(props: {
       <div>
         {props.message.status === 'loading' && <MessageSpinner />}
         {props.message.sandboxId && (
-          <Markdown>{`Sandbox created with id \`${props.message.sandboxId}\``}</Markdown>
+          <Streamdown>{`Sandbox created with id \`${props.message.sandboxId}\``}</Streamdown>
         )}
       </div>
     </ToolMessage>

@@ -2,6 +2,7 @@ import type { UIMessage } from 'ai';
 import type { DataPart } from '@/ai/messages/data-parts';
 import type { Metadata } from '@/ai/messages/metadata';
 import type { ToolSet } from '@/ai/tools';
+import { Context7 } from './context7';
 import { CreateSandbox } from './create-sandbox';
 import { GenerateFiles } from './generate-files';
 import { GetSandboxURL } from './get-sandbox-url';
@@ -37,6 +38,9 @@ export function MessagePart({ part }: Props) {
   }
   if (part.type === 'data-web-search') {
     return <WebSearch message={part.data} />;
+  }
+  if (part.type === 'data-context7') {
+    return <Context7 message={part.data} />;
   }
   if (part.type === 'reasoning') {
     return <Reasoning part={part} />;

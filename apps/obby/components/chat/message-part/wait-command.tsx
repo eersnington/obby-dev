@@ -1,6 +1,6 @@
 import { cn } from '@repo/design-system/lib/utils';
 import { SquareChevronRightIcon } from 'lucide-react';
-import Markdown from 'react-markdown';
+import { Streamdown } from 'streamdown';
 import type { DataPart } from '@/ai/messages/data-parts';
 import { MessageSpinner } from '../message-spinner';
 import { ToolHeader } from '../tool-header';
@@ -25,9 +25,9 @@ export function WaitCommand(props: {
         )}
       </ToolHeader>
       <span>
-        <Markdown>{`\`${props.message.command} ${props.message.args.join(
+        <Streamdown>{`\`${props.message.command} ${props.message.args.join(
           ' '
-        )}\``}</Markdown>
+        )}\``}</Streamdown>
         {props.message.status === 'loading' && <MessageSpinner />}
       </span>
     </ToolMessage>
