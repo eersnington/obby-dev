@@ -1,0 +1,183 @@
+---
+title: Features
+description: Comprehensive overview of Obby’s capabilities, tools, and UI
+---
+
+Obby is a full‑stack coding agent that builds and runs apps inside an ephemeral, isolated Vercel Sandbox. It orchestrates models and tools through the Vercel AI SDK and Gateway, with a first‑class developer UI for previewing, file browsing, and logs.
+
+## At a Glance
+
+- Multi‑provider model support (OpenAI, Anthropic, Google, Groq, OpenRouter, Vercel, Gateway, Bedrock)
+- Bring‑Your‑Own‑Key (BYOK) with per‑provider configuration
+- Single‑session Vercel Sandbox for file generation and command execution
+- Web preview, file explorer with syntax highlighting, and live command logs
+- Optional Firecrawl‑powered web scrape and web search tools
+- Built with Next.js App Router and Fumadocs
+
+---
+
+## Core Concepts
+
+- Single sandbox per session
+  - You work in one ephemeral environment per chat session.
+  - Expose ports during sandbox creation to preview servers later.
+- Stateless commands
+  - Each command runs in a fresh shell session; do not rely on `cd` or shell state.
+  - Use full relative paths and sequence dependent commands with “Wait Command.”
+- Prefer pnpm
+  - The sandbox has pnpm available; use pnpm for installs and scripts.
+- BYOK and access rules
+  - Some models require your own key (BYOK).
+  - Bedrock supports region + credentials; other providers use token keys.
+
+---
+
+## Models & Providers
+
+Obby ships with an opinionated set of providers and model metadata. You can pick a provider and model in the UI and (optionally) attach your own API key.
+
+- Providers
+  - OpenAI, Anthropic, Google, Groq, OpenRouter, Vercel (v0), Gateway, Bedrock (AWS)
+- BYOK
+  - Token‑based: e.g., `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `AI_GATEWAY_API_KEY`
+  - AWS Bedrock: `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` (+ optional session token)
+- Availability
+  - Models marked “BYOK” in the UI require your key.
+  - Gateway/OpenRouter proxy models when supported; local app keys can also be configured.
+
+Tip: Use the Model Selector to choose provider/model and set a user‑level key without restarting the app.
+
+---
+
+## Agent Tools
+
+Obby’s agent uses a small, reliable set of tools. They’re invoked in sequence by the chat orchestration logic based on your prompt.
+
+### 1) Create Sandbox
+- Initializes a fresh Amazon Linux 2023 environment.
+- Expose ports up front (e.g., `[3000]`) for dev servers you want to preview.
+- Use once per session unless you explicitly need a reset.
+
+When to use: New project, environment reset, or if you need a clean slate.
+
+### 2) Generate Files
+- Creates or updates files directly inside the sandbox.
+- Produces complete, runnable files (scaffolds apps, adds routes/components/config).
+- Paths must be relative to the sandbox root (e.g., `package.json`, `src/index.ts`).
+
+When to use: Scaffolding, adding features, writing missing config, or fixing build errors caused by missing files.
+
+### 3) Run Command
+- Starts a command asynchronously and returns a `commandId`.
+- Commands are stateless; don’t chain with `&&` or rely on previous `cd`.
+- Prefer `pnpm` for installs and scripts.
+
+Examples:
+```bash
+pnpm install
+pnpm run dev
+pnpm build
+```
+
+### 4) Wait Command
+- Blocks until a previously started command finishes.
+- Required for sequential workflows (e.g., install → build → start).
+
+Best practice:
+1) Run Command: `pnpm install`
+2) Wait Command (expect exit code 0)
+3) Run Command: `pnpm run dev` (long‑running, typically do not wait)
+
+### 5) Get Sandbox URL
+- Returns a public URL for a port exposed during sandbox creation.
+- Only works if the server is running on that port.
+
+Use after `pnpm run dev` to preview the app.
+
+### 6) Web Scrape (optional)
+- Single‑page scrape via Firecrawl with markdown, summary, and/or screenshot.
+- Requires `FIRECRAWL_API_KEY`.
+
+### 7) Web Search (optional)
+- Firecrawl search across web (and GitHub category).
+- Useful for quick research, fact‑checking, or pulling docs links.
+- Requires `FIRECRAWL_API_KEY`.
+
+---
+
+## Developer UI
+
+- Chat
+  - Send prompts, see reasoning (when provided), and structured tool activity messages.
+  - Try sample prompts to scaffold apps quickly.
+- Model Selector
+  - Choose provider/model, mark BYOK models, and store per‑provider keys.
+- Tool Options
+  - Toggle optional tools (Web Scrape, Web Search) per session.
+- Preview
+  - Web tab: live iframe preview with reload and “open in new tab.”
+  - Code tab: embedded file explorer for browsing and reading generated files.
+- File Explorer
+  - Tree view with syntax highlighting; auto‑refreshes content from the sandbox.
+- Logs
+  - Streams command logs and shows exit codes on completion.
+
+---
+
+## Typical Workflow
+
+1. Create Sandbox (expose e.g., `3000`)
+2. Generate Files (scaffold project)
+3. Run Command: `pnpm install` → Wait Command
+4. Run Command: `pnpm run dev` (keep running)
+5. Get Sandbox URL (preview)
+6. Iterate: generate more files, run tests/builds, repeat
+
+---
+
+## Environment & Integrations
+
+- Required (app)
+  - App URLs: `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_DOCS_URL`
+  - Database (if used): `DATABASE_URL`
+- Optional (AI providers)
+  - `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `AI_GATEWAY_API_KEY`
+- Optional (AWS Bedrock)
+  - `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN?`
+- Optional (Web tools)
+  - `FIRECRAWL_API_KEY`
+- Vercel Sandbox
+  - `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`
+
+Never commit secrets. Use a local `.env.local` and your preferred secret manager in production.
+
+---
+
+## Reliability & Safety
+
+- Bot protection enabled on chat API route.
+- Structured error logging with robust, typed validation.
+- Commands are isolated per run to reduce side‑effects.
+- File generation is streamed with progress feedback and path tracking.
+
+---
+
+## Limitations & Tips
+
+- Expose ports during sandbox creation; you cannot expose new ports later.
+- Commands are stateless—avoid `cd` and shell state assumptions.
+- Only one sandbox per session unless you explicitly reset.
+- Prefer `pnpm` for consistency with the sandbox environment.
+- Web tools require `FIRECRAWL_API_KEY`.
+
+---
+
+## See Also
+
+<Cards>
+  <Card title="Repository" href="https://github.com/eersnington/obby-dev" />
+  <Card title="Next.js" href="https://nextjs.org/docs" />
+  <Card title="Fumadocs" href="https://fumadocs.dev" />
+  <Card title="Vercel AI SDK" href="https://sdk.vercel.ai" />
+  <Card title="Vercel Sandbox" href="https://vercel.com/docs/workflow-collaboration/sandboxes" />
+</Cards>

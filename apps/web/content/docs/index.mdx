@@ -1,0 +1,79 @@
+---
+title: Obby — Overview & Quickstart
+description: Features, setup, and usage for the Obby coding agent and docs
+---
+
+Welcome to Obby. Obby is a full‑stack coding agent powered by Vercel AI SDK, AI Gateway, and Vercel Sandbox, shipped in a Turbo monorepo. This docs site is built with Fumadocs.
+
+## Quickstart
+
+1. Clone and install
+   ```bash
+   git clone https://github.com/eersnington/obby-dev
+   cd obby-dev
+   pnpm install
+   ```
+
+2. Configure environment for the app at `apps/obby`
+   - Copy the example file and fill in values:
+     ```bash
+     cp apps/obby/.env.example apps/obby/.env.local
+     ```
+   - Required keys to run core features:
+     - Server: `DATABASE_URL`
+     - Client: `NEXT_PUBLIC_APP_URL=http://localhost:3000`, `NEXT_PUBLIC_DOCS_URL=http://localhost:3001`
+     - Optional AI Providers (BYOK): `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `AI_GATEWAY_API_KEY`
+     - Bedrock (optional): `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`
+     - Web tools (optional): `FIRECRAWL_API_KEY`
+     - Vercel Sandbox: `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`
+
+3. Run the monorepo in dev mode
+   ```bash
+   pnpm dev
+   ```
+   - App: http://localhost:3000
+   - Docs: http://localhost:3001
+
+## Using Obby
+
+- Open the app at http://localhost:3000
+- Pick a model and (optionally) set your own provider API key in the “Models” UI
+- Start chatting. The agent will orchestrate tools to build and run projects inside a Vercel Sandbox
+
+### Key Features
+
+- Models & Providers
+  - Providers: OpenAI, Anthropic, Google, Groq, OpenRouter, Vercel, Gateway, Bedrock
+  - BYOK support with per‑provider key inputs; Bedrock supports region + access keys
+
+- Chat Orchestration & Tools
+  - Create Sandbox: starts an ephemeral Linux environment (expose ports you’ll need)
+  - Generate Files: creates files directly in the sandbox (scaffolds apps, adds features)
+  - Run Command: runs commands asynchronously (stateless; use full paths; prefer pnpm)
+  - Wait Command: waits for command completion; required for sequential workflows
+  - Get Sandbox URL: returns a public preview URL for an exposed port
+  - Web Scrape / Web Search: Firecrawl‑powered enrichment (requires `FIRECRAWL_API_KEY`)
+
+- Preview, Files, and Logs
+  - Web Preview: live app preview with reload
+  - File Explorer: browse generated files and view content with syntax highlighting
+  - Logs Panel: streamed command logs and exit codes
+
+- Helpful Starters
+  - Try the built‑in test prompts on the Chat screen to scaffold and run sample apps
+
+## Typical Workflow
+
+1. Create Sandbox (expose the dev server port, e.g., 3000)
+2. Generate Files (scaffold the project)
+3. Run Command → Wait Command (e.g., `pnpm install`, then `pnpm run dev`)
+4. Get Sandbox URL (preview the running app)
+5. Iterate with more file generation and commands
+
+## Troubleshooting
+
+- “Model not available”: ensure you’ve selected a provider and added a valid API key (BYOK), or configure app‑level keys in `.env.local`
+- No preview URL: the port must be exposed during sandbox creation, and the server must be running
+- Firecrawl errors: set `FIRECRAWL_API_KEY`
+- Commands failing: commands are stateless; avoid `cd`, use full relative paths, and use “Wait Command” before dependent steps
+- Prefer `pnpm` over `npm` for installs and scripts in the sandbox

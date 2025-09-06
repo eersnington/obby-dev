@@ -1,0 +1,116 @@
+---
+title: Setup
+description: Configure environment variables and run the monorepo locally
+---
+
+This page walks you through configuring environment variables and running the monorepo locally. It covers both the Obby app and this docs site.
+
+## Prerequisites
+
+- Node.js 22+ (LTS recommended)
+- pnpm (the monorepo is configured for pnpm workspaces)
+- A GitHub account to clone the repository
+- Optional:
+  - AI provider API keys (BYOK)
+  - AWS credentials for Bedrock
+  - Firecrawl API key for web tools
+  - Vercel team/project/token for Sandbox
+
+## Clone & Install
+
+    git clone https://github.com/eersnington/obby-dev
+    cd obby-dev
+    pnpm install
+
+## Environment Variables
+
+Create and populate the app environment file:
+
+    cp apps/obby/.env.example apps/obby/.env.local
+
+Then edit `apps/obby/.env.local` and fill in values per your needs.
+
+| Name | Scope | Required | Description | Example |
+|---|---|---:|---|---|
+| DATABASE_URL | Server | ◻︎ | Postgres connection URL (if using DB features) | postgres://user:pass@host/db?sslmode=require |
+| NEXT_PUBLIC_APP_URL | Client | ✓ | App base URL (dev) | http://localhost:3000 |
+| NEXT_PUBLIC_DOCS_URL | Client | ✓ | Docs base URL (dev) | http://localhost:3001 |
+| OPENAI_API_KEY | AI | ◻︎ | OpenAI token (BYOK) | sk-... |
+| ANTHROPIC_API_KEY | AI | ◻︎ | Anthropic token (BYOK) | sk-ant-... |
+| GOOGLE_GENERATIVE_AI_API_KEY | AI | ◻︎ | Google Generative AI token (BYOK) | AIza... |
+| GROQ_API_KEY | AI | ◻︎ | Groq token (BYOK) | gsk_... |
+| OPENROUTER_API_KEY | AI | ◻︎ | OpenRouter token (BYOK) | sk-or-... |
+| AI_GATEWAY_API_KEY | AI | ◻︎ | Vercel AI Gateway token (proxy to models) | agw_... |
+| AWS_ACCESS_KEY_ID | Bedrock | ◻︎ | AWS access key id | AKIA... |
+| AWS_SECRET_ACCESS_KEY | Bedrock | ◻︎ | AWS secret access key | ******** |
+| AWS_REGION | Bedrock | ◻︎ | AWS region for Bedrock (default `us-east-1`) | us-east-1 |
+| AWS_SESSION_TOKEN | Bedrock | ◻︎ | Temporary session token (optional) | ******** |
+| FIRECRAWL_API_KEY | Web Tools | ◻︎ | Firecrawl key for web scrape/search tools | fc-... |
+| VERCEL_TEAM_ID | Sandbox | ★ | Required for Vercel Sandbox tools | team_... |
+| VERCEL_PROJECT_ID | Sandbox | ★ | Required for Vercel Sandbox tools | prj_... |
+| VERCEL_TOKEN | Sandbox | ★ | Required for Vercel Sandbox tools | ******** |
+
+Legend:
+- ✓ Required for local development
+- ★ Required for full Sandbox features (Create/Run/Wait/Get URL)
+- ◻︎ Optional, but enabling them unlocks more features
+
+Notes:
+- Do not commit secrets. Keep them in `.env.local` or your secret manager.
+- If you plan to use AWS Bedrock models, provide `AWS_*` credentials.
+- To use web scraping/search tools, set `FIRECRAWL_API_KEY`.
+
+## Run the Monorepo
+
+From the repo root:
+
+    pnpm dev
+
+This runs all apps in dev mode via Turborepo:
+- App: http://localhost:3000
+- Docs: http://localhost:3001
+
+Ensure your `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_DOCS_URL` match these ports for local development.
+
+### Run Apps Individually
+
+Run only the app:
+
+    pnpm --filter obby-app dev
+
+Run only the docs:
+
+    pnpm --filter obby-web dev
+
+## Verify Your Setup
+
+- Open http://localhost:3000
+  - Click “Models” to pick a provider/model and optionally add your own API key
+  - Try one of the suggested prompts to scaffold and run a sample app
+- Open http://localhost:3001
+  - The docs site should load with navigation and this page
+
+## Common Issues
+
+- Model not available
+  - Ensure you selected a provider and supplied a valid API key if the model is BYOK
+  - Some models require Bedrock or Gateway; configure the corresponding credentials
+- Sandbox preview URL missing
+  - The preview port must be exposed during sandbox creation
+  - Ensure your dev server is running (e.g., `pnpm run dev`) before getting the URL
+- Web tools failing
+  - Set `FIRECRAWL_API_KEY` for Web Scrape/Search features
+- Command sequencing
+  - Commands are stateless; avoid `cd` and use full relative paths
+  - Use “Wait Command” after installs/builds before dependent steps
+
+## Next Steps
+
+- Read the overview on the main page
+- Explore the full feature set in the Features page
+
+<Cards>
+  <Card title="Overview" href="/docs" />
+  <Card title="Features" href="/docs/features" />
+  <Card title="Repository" href="https://github.com/eersnington/obby-dev" />
+</Cards>

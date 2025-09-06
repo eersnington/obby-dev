@@ -1,0 +1,27 @@
+{
+  "name": "@repo/database",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "drizzle-orm": "^0.44.4",
+    "server-only": "^0.0.1",
+    "undici": "^7.10.0",
+    "ws": "^8.18.2",
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "22.15.21",
+    "@types/ws": "^8.18.1",
+    "bufferutil": "^4.0.9",
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^5.8.3"
+  }
+}

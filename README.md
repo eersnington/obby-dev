@@ -1,11 +1,10 @@
 <p align="center">
   <img src="./public/splash-image.png" alt="Screenshot of UI"/>
-  <h1 align="center">Obby – AI Background agent for your codebase (WIP)</h1>
+  <h1 align="center">Obby – OSS v0</h1>
 </p>
 
 <p align="center">
-  Obby is a background agent that takes instructions, navigates your codebase, and make changes in the background.
-</p>
+    Obby is Open Source implementation of v0 agent by Vercel. It helps you design, build, and ship real apps from scratch.
 
 <p align="center">
   Link: <a href="https://obby.dev">obby.dev</a>
@@ -41,8 +40,3 @@ pnpm run dev
 
 - Framework: Next.js
 - Database: Convex
-- Authentication: AuthKit by WorkOS
-- Payments: Paddle
-
-
-

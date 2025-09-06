@@ -1,0 +1,29 @@
+{
+  "name": "obby-web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev -p 3001 --turbo",
+    "start": "next start",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "next": "15.5.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "fumadocs-ui": "15.7.7",
+    "fumadocs-core": "15.7.7",
+    "fumadocs-mdx": "11.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.21",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
+    "typescript": "^5.9.2",
+    "@types/mdx": "^2.0.13",
+    "@tailwindcss/postcss": "^4.1.12",
+    "tailwindcss": "^4.1.12",
+    "postcss": "^8.5.6"
+  }
+}

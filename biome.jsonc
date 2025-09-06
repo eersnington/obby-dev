@@ -1,0 +1,38 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "extends": ["ultracite"],
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "solid": "none"
+    },
+    "rules": {
+      "complexity": {
+        "noExcessiveLinesPerFunction": "off"
+      },
+      "nursery": {
+        //Enforce type definitions to consistently use either interface or type.
+        "useConsistentTypeDefinitions": {
+          "level": "warn",
+          "options": {
+            "style": "type"
+          }
+        }
+      }
+    }
+  },
+
+  "files": {
+    "includes": [
+      "**",
+      "!**/packages/design-system/components/ui",
+      "!**/packages/design-system/lib",
+      "!**/packages/design-system/hooks",
+      "!**/apps/docs/**/*.json",
+      "!**/apps/email/.react-email",
+      "!**/apps/api/scripts",
+      "!**/apps/app/scripts",
+      "!**/*.css"
+    ]
+  }
+}
