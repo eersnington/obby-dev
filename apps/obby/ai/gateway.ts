@@ -1,23 +1,6 @@
-import { createGatewayProvider, type GatewayModelId } from '@ai-sdk/gateway';
 import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai';
 import type { JSONValue } from 'ai';
-import { env } from '@/env';
 import { logger } from '@/lib/logger';
-
-const gateway = createGatewayProvider({
-  apiKey: env.AI_GATEWAY_API_KEY ?? '',
-});
-
-type AvailableModel = {
-  id: GatewayModelId | 'openai/gpt-5';
-  name: string;
-};
-
-export async function getAvailableModels(): Promise<AvailableModel[]> {
-  const response = await gateway.getAvailableModels(); // this can errors out but doesn't have the need tell me it do. god i need effect
-
-  return [...response.models.map(({ id, name }) => ({ id, name }))];
-}
 
 type ModelOptions = {
   model: string;
@@ -28,7 +11,35 @@ type ModelOptions = {
 export function getModelOptions(modelId: string): ModelOptions {
   logger.info('getModelOptions', { modelId });
 
-  if (modelId === 'openai/o4-mini') {
+  if (modelId === 'gemini-2.5-flash') {
+    return {
+      model: modelId,
+      providerOptions: {
+        google: {
+          thinkingConfig: {
+            thinkingBudget: 2048,
+            includeThoughts: true,
+          },
+        },
+      },
+    };
+  }
+
+  if (modelId === 'gemini-2.5-pro') {
+    return {
+      model: modelId,
+      providerOptions: {
+        google: {
+          thinkingConfig: {
+            thinkingBudget: 2048,
+            includeThoughts: true,
+          },
+        },
+      },
+    };
+  }
+
+  if (modelId === 'openai/o4-mini' || modelId === 'o4-mini') {
     return {
       model: modelId,
       providerOptions: {
@@ -40,7 +51,7 @@ export function getModelOptions(modelId: string): ModelOptions {
     };
   }
 
-  if (modelId === 'openai/gpt-5') {
+  if (modelId === 'openai/gpt-5' || modelId === 'gpt-5') {
     return {
       model: modelId,
       providerOptions: {
@@ -53,7 +64,28 @@ export function getModelOptions(modelId: string): ModelOptions {
     };
   }
 
-  if (modelId === 'anthropic/claude-4-sonnet') {
+  if (
+    modelId === 'anthropic/claude-4-sonnet' ||
+    modelId === 'claude-sonnet-4-20250514' ||
+    modelId === 'us.anthropic.claude-sonnet-4-20250514-v1:0'
+  ) {
+    return {
+      model: modelId,
+      headers: { 'anthropic-beta': 'fine-grained-tool-streaming-2025-05-14' },
+      providerOptions: {
+        // gateway: { order: ["bedrock", "vertex"] },
+        anthropic: {
+          cacheControl: { type: 'ephemeral' },
+        },
+      },
+    };
+  }
+
+  if (
+    modelId === 'anthropic/claude-3.7-sonnet' ||
+    modelId === 'claude-3-7-sonnet-20250219' ||
+    modelId === 'us.anthropic.claude-3-7-sonnet-20250219-v1:0'
+  ) {
     return {
       model: modelId,
       headers: { 'anthropic-beta': 'fine-grained-tool-streaming-2025-05-14' },
