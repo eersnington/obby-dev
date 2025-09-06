@@ -2,6 +2,7 @@ import type { InferUITools, UIMessage, UIMessageStreamWriter } from 'ai';
 import type { ModelProvider } from '../constants';
 import type { DataPart } from '../messages/data-parts';
 import type { ToolOptions } from '../validation';
+import { context7 } from './context7';
 import { createSandbox } from './create-sandbox';
 import { generateFiles } from './generate-files';
 import { getSandboxURL } from './get-sandbox-url';
@@ -37,6 +38,7 @@ export function tools(params: ToolsBuilderParams) {
   const optional = {
     ...(enabled.webScrape ? { webScrape: webScrape({ writer }) } : {}),
     ...(enabled.webSearch ? { webSearch: webSearch({ writer }) } : {}),
+    ...(enabled.context7 ? { context7: context7({ writer }) } : {}),
   };
 
   return {
@@ -47,6 +49,10 @@ export function tools(params: ToolsBuilderParams) {
 
 export type ToolSet = InferUITools<ReturnType<typeof tools>>;
 
-export const AVAILABLE_OPTIONAL_TOOLS = ['webScrape', 'webSearch'] as const;
+export const AVAILABLE_OPTIONAL_TOOLS = [
+  'webScrape',
+  'webSearch',
+  'context7',
+] as const;
 
 export type OptionalToolName = (typeof AVAILABLE_OPTIONAL_TOOLS)[number];
