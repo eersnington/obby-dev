@@ -148,8 +148,8 @@ importers:
         specifier: 0.17.0
         version: 0.17.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-syntax-highlighter:
-        specifier: 15.6.1
-        version: 15.6.1(react@19.1.0)
+        specifier: 15.6.6
+        version: 15.6.6(react@19.1.0)
       rehype-raw:
         specifier: 7.0.0
         version: 7.0.0
@@ -479,8 +479,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-syntax-highlighter:
-        specifier: 15.6.1
-        version: 15.6.1(react@19.1.0)
+        specifier: 15.6.6
+        version: 15.6.6(react@19.1.0)
       recharts:
         specifier: ^2.15.3
         version: 2.15.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -563,7 +563,7 @@ importers:
         version: link:../typescript-config
       next:
         specifier: 15.5.2
-        version: 15.5.2(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.5.2(@opentelemetry/api@1.9.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
 
   packages/storage:
     dependencies:
@@ -6223,6 +6223,11 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
+  react-dom@19.1.1:
+    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
+    peerDependencies:
+      react: ^19.1.1
+
   react-hook-form@7.62.0:
     resolution: {integrity: sha512-7KWFejc98xqG/F4bAxpL41NB3o1nnvQO1RWZT3TqRZYL8RryQETGfEdVnJN2fy1crCiBLLjkRBVK05j24FxJGA==}
     engines: {node: '>=18.0.0'}
@@ -6305,8 +6310,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-syntax-highlighter@15.6.1:
-    resolution: {integrity: sha512-OqJ2/vL7lEeV5zTJyG7kmARppUjiB9h9udl4qHQjjgEos66z00Ia0OckwYfRxCSFrW8RJIBnsBwQsHZbVPspqg==}
+  react-syntax-highlighter@15.6.6:
+    resolution: {integrity: sha512-DgXrc+AZF47+HvAPEmn7Ua/1p10jNoVZVI/LoPiYdtY+OM+/nG5yefLHKJwdKqY1adMuHFbeyBaG9j64ML7vTw==}
     peerDependencies:
       react: '>= 0.14.0'
 
@@ -6318,6 +6323,10 @@ packages:
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.1.1:
+    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
     engines: {node: '>=0.10.0'}
 
   readable-stream@3.6.2:
@@ -13399,6 +13408,30 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  next@15.5.2(@opentelemetry/api@1.9.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      '@next/env': 15.5.2
+      '@swc/helpers': 0.5.15
+      caniuse-lite: 1.0.30001741
+      postcss: 8.4.31
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      styled-jsx: 5.1.6(react@19.1.1)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.5.2
+      '@next/swc-darwin-x64': 15.5.2
+      '@next/swc-linux-arm64-gnu': 15.5.2
+      '@next/swc-linux-arm64-musl': 15.5.2
+      '@next/swc-linux-x64-gnu': 15.5.2
+      '@next/swc-linux-x64-musl': 15.5.2
+      '@next/swc-win32-arm64-msvc': 15.5.2
+      '@next/swc-win32-x64-msvc': 15.5.2
+      '@opentelemetry/api': 1.9.0
+      sharp: 0.34.3
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
   no-case@2.3.2:
     dependencies:
       lower-case: 1.1.4
@@ -13823,6 +13856,11 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
+  react-dom@19.1.1(react@19.1.1):
+    dependencies:
+      react: 19.1.1
+      scheduler: 0.26.0
+
   react-hook-form@7.62.0(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -13921,7 +13959,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.5
 
-  react-syntax-highlighter@15.6.1(react@19.1.0):
+  react-syntax-highlighter@15.6.6(react@19.1.0):
     dependencies:
       '@babel/runtime': 7.28.4
       highlight.js: 10.7.3
@@ -13941,6 +13979,8 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   react@19.1.0: {}
+
+  react@19.1.1: {}
 
   readable-stream@3.6.2:
     dependencies:
@@ -14595,6 +14635,11 @@ snapshots:
     dependencies:
       client-only: 0.0.1
       react: 19.1.0
+
+  styled-jsx@5.1.6(react@19.1.1):
+    dependencies:
+      client-only: 0.0.1
+      react: 19.1.1
 
   stylis@4.3.6: {}
 
