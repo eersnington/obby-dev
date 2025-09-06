@@ -36,7 +36,7 @@ pnpm install
 pnpm run dev
 ```
 
-## Tech stack
+### Acknowledgment
 
-- Framework: Next.js
-- Database: Convex
+This project is based on OSS Vibe Coding Project in  [Vercel Examples](https://github.com/vercel/examples).
+Big thanks to the Vercel team for providing such great starter template on using Vercel Sanbox
