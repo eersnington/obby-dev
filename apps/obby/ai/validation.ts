@@ -23,6 +23,7 @@ export const ToolOptionsSchema = z
   .object({
     webScrape: z.boolean().optional(),
     webSearch: z.boolean().optional(),
+    context7: z.boolean().optional(),
   })
   .partial()
   .default({});
