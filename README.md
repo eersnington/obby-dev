@@ -5,6 +5,9 @@
 
 <p align="center">
     Obby is Open Source implementation of v0 agent by Vercel. It helps you design, build, and ship real apps from scratch.
+
+<p align="center">
+  Link: <a href="https://obby.dev">obby.dev</a>
 </p>
 
 ## Getting started
