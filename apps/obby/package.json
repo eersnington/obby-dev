@@ -29,7 +29,7 @@
     "@types/react-syntax-highlighter": "15.5.13",
     "@vercel/sandbox": "0.0.17",
     "@vercel/toolbar": "^0.1.38",
-    "ai": "5.0.0-beta.29",
+    "ai": "5.0.33",
     "botid": "1.4.5",
     "effect": "^3.17.10",
     "fuse.js": "^7.1.0",
