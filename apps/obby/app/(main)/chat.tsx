@@ -1,34 +1,34 @@
-'use client';
+"use client";
 
-import { useChat } from '@ai-sdk/react';
+import { useChat } from "@ai-sdk/react";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from '@repo/design-system/components/ai-elements/conversation';
+} from "@repo/design-system/components/ai-elements/conversation";
 import {
   PromptInput,
   PromptInputTextarea,
-} from '@repo/design-system/components/ai-elements/prompt-input';
-import { Button } from '@repo/design-system/components/ui/button';
-import { toast } from '@repo/design-system/sonner';
-import { MessageCircleIcon, SendIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { MoonLoader } from 'react-spinners';
-import { mutate } from 'swr';
-import { DEFAULT_MODEL, TEST_PROMPTS } from '@/ai/constants';
-import { Message } from '@/components/chat/message';
-import type { ChatUIMessage } from '@/components/chat/types';
-import { ModelSelector } from '@/components/model-selector/model-selector';
-import { ModelSelectorModal } from '@/components/model-selector/model-selector-cmdk';
-import { Panel, PanelHeader } from '@/components/panels/panels';
-import { ToolOptionsPopover } from '@/components/tool-options/tool-options-popover';
-import { logger } from '@/lib/logger';
-import { useLocalStorageValue } from '@/lib/use-local-storage-value';
-import { useModelStore } from '@/stores/use-model-store';
-import { useProviderKeysStore } from '@/stores/use-provider-keys-store';
-import { useToolOptionsStore } from '@/stores/use-tool-options-store';
-import { useDataStateMapper } from './state';
+} from "@repo/design-system/components/ai-elements/prompt-input";
+import { Button } from "@repo/design-system/components/ui/button";
+import { MessageCircleIcon, SendIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { MoonLoader } from "react-spinners";
+import { toast } from "sonner";
+import { mutate } from "swr";
+import { DEFAULT_MODEL, TEST_PROMPTS } from "@/ai/constants";
+import { Message } from "@/components/chat/message";
+import type { ChatUIMessage } from "@/components/chat/types";
+import { ModelSelector } from "@/components/model-selector/model-selector";
+import { ModelSelectorModal } from "@/components/model-selector/model-selector-cmdk";
+import { Panel, PanelHeader } from "@/components/panels/panels";
+import { ToolOptionsPopover } from "@/components/tool-options/tool-options-popover";
+import { logger } from "@/lib/logger";
+import { useLocalStorageValue } from "@/lib/use-local-storage-value";
+import { useModelStore } from "@/stores/use-model-store";
+import { useProviderKeysStore } from "@/stores/use-provider-keys-store";
+import { useToolOptionsStore } from "@/stores/use-tool-options-store";
+import { useDataStateMapper } from "./state";
 
 type Props = {
   className: string;
@@ -51,16 +51,16 @@ export function Chat({ className }: Props) {
   const provider = selectedProvider;
 
   const [modelModalOpen, setModelModalOpen] = useState(false);
-  const [input, setInput] = useLocalStorageValue('prompt-input');
+  const [input, setInput] = useLocalStorageValue("prompt-input");
   const mapDataToState = useDataStateMapper();
   const _messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status } = useChat<ChatUIMessage>({
-    onToolCall: () => mutate('/api/auth/info'),
+    onToolCall: () => mutate("/api/auth/info"),
     onData: mapDataToState,
     onError: (error) => {
       toast.error(`Communication error with the AI: ${error.message}`);
-      logger.error('Error sending message:', error);
+      logger.error("Error sending message:", error);
     },
   });
 
@@ -86,7 +86,7 @@ export function Chat({ className }: Props) {
         },
       }
     );
-    setInput('');
+    setInput("");
   };
 
   return (
@@ -142,7 +142,7 @@ export function Chat({ className }: Props) {
         >
           <PromptInputTextarea
             className="w-full bg-background font-mono text-sm"
-            disabled={status === 'streaming' || status === 'submitted'}
+            disabled={status === "streaming" || status === "submitted"}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
             value={input}
@@ -161,8 +161,8 @@ export function Chat({ className }: Props) {
             <ToolOptionsPopover />
           </div>
 
-          <Button disabled={status !== 'ready' || !input.trim()} type="submit">
-            {status === 'streaming' || status === 'submitted' ? (
+          <Button disabled={status !== "ready" || !input.trim()} type="submit">
+            {status === "streaming" || status === "submitted" ? (
               <MoonLoader color="currentColor" size={16} />
             ) : (
               <SendIcon className="h-4 w-4" />

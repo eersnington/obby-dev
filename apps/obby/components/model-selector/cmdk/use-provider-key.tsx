@@ -1,8 +1,8 @@
-import { toast } from '@repo/design-system/sonner';
-import { useState } from 'react';
-import type { ModelProvider } from '@/ai/constants';
-import type { ProviderKeyValue } from '@/stores/use-provider-keys-store';
-import { useProviderKeysStore } from '@/stores/use-provider-keys-store';
+import { useState } from "react";
+import { toast } from "sonner";
+import type { ModelProvider } from "@/ai/constants";
+import type { ProviderKeyValue } from "@/stores/use-provider-keys-store";
+import { useProviderKeysStore } from "@/stores/use-provider-keys-store";
 
 export function useProviderKey(provider: ModelProvider) {
   const getKey = useProviderKeysStore((s) => s.getKey);
@@ -17,11 +17,11 @@ export function useProviderKey(provider: ModelProvider) {
       setKey(provider, value);
 
       if (value === null) {
-        toast.success('Cleared', {
+        toast.success("Cleared", {
           description: `Your API key for ${provider} has been removed.`,
         });
       } else {
-        toast.success('Saved', {
+        toast.success("Saved", {
           description: `Your API key for ${provider} has been saved.`,
         });
       }
