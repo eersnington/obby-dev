@@ -205,6 +205,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@databuddy/sdk':
+        specifier: ^2.0.0
+        version: 2.0.0(react@19.1.0)
       fumadocs-core:
         specifier: 15.7.7
         version: 15.7.7(@types/react@19.1.5)(next@15.5.2(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -930,6 +933,17 @@ packages:
   '@csstools/css-tokenizer@3.0.4':
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
+
+  '@databuddy/sdk@2.0.0':
+    resolution: {integrity: sha512-jwNeLwg03jN3380W2eyhegjO/eqqVcVXekO01n/d9dzalnaCm6DCEG3lGd8PMBf8ztu/dv1QTivkd4W6rO+tNQ==}
+    peerDependencies:
+      react: '>=18'
+      vue: '>=3'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      vue:
+        optional: true
 
   '@daybrush/utils@1.13.0':
     resolution: {integrity: sha512-ALK12C6SQNNHw1enXK+UO8bdyQ+jaWNQ1Af7Z3FNxeAwjYhQT7do+TRE4RASAJ3ObaS2+TJ7TXR3oz2Gzbw0PQ==}
@@ -7951,6 +7965,10 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
 
   '@csstools/css-tokenizer@3.0.4': {}
+
+  '@databuddy/sdk@2.0.0(react@19.1.0)':
+    optionalDependencies:
+      react: 19.1.0
 
   '@daybrush/utils@1.13.0': {}
 
