@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import type { Route } from "next";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -16,7 +17,7 @@ export default function HomePage() {
         <div className="mt-6 flex items-center justify-center gap-3">
           <Link
             className="rounded-md border border-fd-muted-foreground/30 px-4 py-2 font-semibold transition-colors hover:bg-fd-muted/30"
-            href="/docs"
+            href={"/docs" as Route}
           >
             Read the Docs
           </Link>

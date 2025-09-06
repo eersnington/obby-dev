@@ -6,7 +6,6 @@
     "build": "next build",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
-    "test": "NODE_ENV=test vitest run",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -54,10 +53,7 @@
     "zustand": "^4.5.6"
   },
   "devDependencies": {
-    "@repo/testing": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.3.0",
     "@types/ms": "^2.1.0",
     "@types/node": "22.15.21",
     "@types/react": "19.1.5",
@@ -65,7 +61,6 @@
     "jsdom": "^26.1.0",
     "raw-loader": "4.0.2",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.8.3",
-    "vitest": "^3.1.4"
+    "typescript": "^5.8.3"
   }
 }
