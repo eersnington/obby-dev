@@ -30,7 +30,7 @@
     "@vercel/sandbox": "0.0.17",
     "@vercel/toolbar": "^0.1.38",
     "ai": "5.0.0-beta.29",
-    "botid": "1.4.5",
+    "botid": "1.5.4",
     "effect": "^3.17.10",
     "fuse.js": "^7.1.0",
     "import-in-the-middle": "^1.13.2",
