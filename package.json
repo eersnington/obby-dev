@@ -30,7 +30,7 @@
     "@biomejs/biome": "2.2.0",
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^2.5.3",
-    "@types/node": "^22.15.21",
+    "@types/node": "^24.3.1",
     "tsup": "^8.5.0",
     "turbo": "^2.5.3",
     "typescript": "^5.8.3",
