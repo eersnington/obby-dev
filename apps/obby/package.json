@@ -3,14 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000 --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@ai-sdk/amazon-bedrock": "^3.0.4",
+    "@ai-sdk/amazon-bedrock": "^3.0.4", 
     "@ai-sdk/anthropic": "^2.0.1",
     "@ai-sdk/gateway": "1.0.0-beta.15",
     "@ai-sdk/google": "^2.0.4",
